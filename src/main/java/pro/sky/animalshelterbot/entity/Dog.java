@@ -6,15 +6,20 @@ import java.util.Objects;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Table(name = "dog")
 public class Dog {
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
+    @Column(name = "name", nullable = false)
     private String name;
-    private Long age;
+    @Column(name = "age", nullable = false)
+    private Integer age;
+    @Column(name = "breed", nullable = false)
     private String breed;
 
-    public Dog(Long id, String name, Long age, String breed) {
+    public Dog(Long id, String name, Integer age, String breed) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -40,11 +45,11 @@ public class Dog {
         this.name = name;
     }
 
-    public Long getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(Long age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 
