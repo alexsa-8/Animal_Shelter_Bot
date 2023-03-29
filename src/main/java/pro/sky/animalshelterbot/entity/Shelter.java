@@ -102,4 +102,5 @@ public class Shelter {
                 ", map=" + Arrays.toString(map) +
                 '}';
     }
+
 }
