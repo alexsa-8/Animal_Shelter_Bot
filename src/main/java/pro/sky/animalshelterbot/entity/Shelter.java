@@ -8,15 +8,23 @@ import java.util.Objects;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
+@Table(name = "shelter")
 public class Shelter {
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
+    @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "address", nullable = false)
     private String address;
+    @Column(name = "phone", nullable = false)
     private String phone;
+    @Column(name = "mail", nullable = false)
     private String mail;
+    @Column(name = "opening_hours", nullable = false)
     private LocalDateTime openingHours;
+    @Column(name = "map", nullable = false)
     private byte[] map;
 
     public Long getId() {
