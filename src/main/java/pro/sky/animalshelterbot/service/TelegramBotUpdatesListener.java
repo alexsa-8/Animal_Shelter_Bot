@@ -16,7 +16,9 @@ import java.util.List;
 
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
+
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+
     private final TelegramBot telegramBot;
 
     public TelegramBotUpdatesListener(TelegramBot telegramBot) {
@@ -41,6 +43,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
             if (message != null && update.message().text().equals("/start")) {
                 greeting(update);
+
+                info(update);
             } else if (update.message().text().equals("/info")) {
                 info(update);
             } else if (update.message().text().equals("/volunteer")) {
