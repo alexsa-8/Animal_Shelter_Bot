@@ -28,4 +28,16 @@ CREATE TABLE shelter
     phone         TEXT NOT NULL,
     opening_hours TIMESTAMP NOT NULL,
     map           BYTEA
-)
+);
+
+-- changeset klikli:2
+
+ALTER TABLE owner_dog ADD COLUMN status TEXT;
+
+ALTER TABLE dog ADD COLUMN status TEXT;
+
+-- changeset klikli:3
+
+ALTER TABLE owner_dog ALTER COLUMN status SET  DEFAULT 'IN_SEARCH';
+
+ALTER TABLE dog ALTER COLUMN status SET DEFAULT 'FREE';

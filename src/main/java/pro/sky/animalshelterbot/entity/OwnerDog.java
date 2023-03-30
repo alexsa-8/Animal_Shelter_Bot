@@ -1,5 +1,7 @@
 package pro.sky.animalshelterbot.entity;
 
+import pro.sky.animalshelterbot.constant.OwnerStatus;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -20,6 +22,9 @@ public class OwnerDog {
     private String phone;
     @Column(name = "age", nullable = false)
     private int age;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private OwnerStatus status;
 
     @OneToOne
     @JoinColumn(name = "dog_id")
@@ -78,9 +83,12 @@ public class OwnerDog {
     public String toString() {
         return "OwnerDog{" +
                 "id=" + id +
+                ", chatId=" + chatId +
                 ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
                 ", age=" + age +
+                ", status=" + status +
+                ", dog=" + dog +
                 '}';
     }
 }
