@@ -1,5 +1,7 @@
 package pro.sky.animalshelterbot.entity;
 
+import pro.sky.animalshelterbot.constant.PetStatus;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -18,6 +20,12 @@ public class Dog {
     private Integer age;
     @Column(name = "breed", nullable = false)
     private String breed;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private PetStatus status;
+
+
 
     public Dog(Long id, String name, Integer age, String breed) {
         this.id = id;
