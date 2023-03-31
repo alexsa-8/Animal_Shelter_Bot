@@ -29,10 +29,11 @@ public class OwnerDogService {
         log.info("Request to getting owner dog  by id {}", id);
         return repository.findById(id).orElseThrow(OwnerDogNotFoundException::new);
     }
-    public OwnerDog update(OwnerDog ownerDog) {
+    public OwnerDog update(OwnerDog ownerDog, OwnerStatus status) {
         log.info("Request to update owner dog  {}", ownerDog);
         if (ownerDog.getId() != null) {
             if (find(ownerDog.getId()) != null) {
+                ownerDog.setStatus(status);
                 return repository.save(ownerDog);
             }
         }

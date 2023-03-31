@@ -30,10 +30,11 @@ public class DogService {
         log.info("Request to getting dog by id {}", id);
         return repository.findById(id).orElseThrow(DogNotFoundException::new);
     }
-    public Dog updateDog(Dog dog) {
+    public Dog updateDog(Dog dog, PetStatus status) {
         log.info("Request to update dog {}", dog);
         if (dog.getId() != null) {
             if (findDog(dog.getId()) != null) {
+                dog.setStatus(status);
                 return repository.save(dog);
             }
         }
