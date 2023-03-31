@@ -30,8 +30,9 @@ public class OwnerDogController {
     }
 
     @PutMapping
-    public ResponseEntity<OwnerDog> update(@RequestBody OwnerDog ownerDog) {
-        OwnerDog ownerDog1 = service.update(ownerDog);
+    public ResponseEntity<OwnerDog> update(@RequestBody OwnerDog ownerDog,
+                                           @RequestParam OwnerStatus status) {
+        OwnerDog ownerDog1 = service.update(ownerDog, status);
         if (ownerDog1 == null) {
             return ResponseEntity.notFound().build();
         }
