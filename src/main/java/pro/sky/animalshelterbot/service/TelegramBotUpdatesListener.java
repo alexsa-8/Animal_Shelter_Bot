@@ -52,9 +52,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 } else {
                     telegramBot.execute(new SendMessage(update.message().chat().id(), "Команда не найдена повторите запрос"));
                 }
-            } else if (update.message() == null) {
+            } else if (update.callbackQuery() != null) {
                 telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                         update.callbackQuery().data()));
+                if (update.callbackQuery() != null && update.callbackQuery().data().equals(" ")) {
+                    telegramBot.execute(startMenu(update));
+                }
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
@@ -64,33 +67,62 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public void greeting(Update update) {
         logger.info("Greeting to " + update.message().text());
         SendMessage greeting = new SendMessage(update.message().chat().id(),
-                "Привет, " + update.message().from().firstName() + "! \uD83D\uDE42");
+                "Привет, " + update.message().from().firstName() + "! \uD83D\uDE42 \n" +
+                        "\nЯ создан для того, что-бы помочь тебе найти друга, четвероного друга." +
+                        "Я живу в приюте для животных и рядом со мной находятся брошенные питомцы, " +
+                        "потерявшиеся при переезде, пережившие своих хозяев или рожденные на улице. " +
+                        "Поначалу животные в приютах ждут\uD83D\uDC15, что за ними вернутся старые владельцы. \uD83D\uDC64" +
+                        "Потом они ждут своих друзей-волонтеров \uD83D\uDC71\uD83C\uDFFB\u200D♂️ \uD83D\uDC71\uD83C\uDFFB\u200D♀️, " +
+                        "корм по расписанию⌛, посетителей, которые погладят и почешут за ухом.❤️ " +
+                        "Но больше всего приютские подопечные ждут, что их заберут домой.\uD83C\uDFE0 \n");
 
         telegramBot.execute(greeting);
     }
 
     public void description(Update update) {
         logger.info("Description to " + update.message().text());
-        String desc = "Я создан для того, что-бы помочь тебе найти друга, четвероного друга." +
-                " Я живу в приюте для животных и рядом со мной находятся брошенные питомцы, " +
-                "потерявшиеся при переезде, пережившие своих хозяев или рожденные на улице. " +
-                "Поначалу животные в приютах ждут\uD83D\uDC15, что за ними вернутся старые владельцы. \uD83D\uDC64" +
-                "Потом они ждут своих друзей-волонтеров \uD83D\uDC71\uD83C\uDFFB\u200D♂️ \uD83D\uDC71\uD83C\uDFFB\u200D♀️, " +
-                "корм по расписанию⌛, посетителей, которые погладят и почешут за ухом.❤️ " +
-                "Но больше всего приютские подопечные ждут, что их заберут домой.\uD83C\uDFE0 \n" +
-                "\nМоже ты и есть тот самый хозяин, который подарит новый дом нашему другу?";
+        String desc = update.message().from().firstName() + ", может ты и есть тот самый хозяин, который подарит новый дом нашему другу?";
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("ДА").callbackData("Вы нажали кнопку да"),
+                new InlineKeyboardButton("ДА").callbackData(" "),
                 new InlineKeyboardButton("Я еще подумаю").callbackData("Мы будем тебя ждать!")
         );
-
 
         SendMessage description = new SendMessage(update.message().chat().id(), desc);
         description.replyMarkup(inlineKeyboardMarkup);
 
         telegramBot.execute(description);
+
+    }
+
+    public SendMessage startMenu(Update update) {
+        String message = "Отлично, тут ты можешь узнать всю необходимую информацию о приюте и животных, " +
+                "если понадобится помощь, ты всегда можешь позвать волонтера";
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Информация о приюте").callbackData("Информация о приюте")
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Информация как взять питомца").callbackData("Информация как взять питомца")
+
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Прислать отчет").callbackData("Прислать отчет")
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Позвать волонтера").callbackData("Позвать волонтера")
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Расскажи о нас").switchInlineQuery(" ")
+        );
+
+
+        SendMessage mes = new SendMessage(update.callbackQuery().message().chat().id(), message);
+        mes.replyMarkup(inlineKeyboardMarkup);
+
+        return mes;
     }
 
     // method sends information to the user
