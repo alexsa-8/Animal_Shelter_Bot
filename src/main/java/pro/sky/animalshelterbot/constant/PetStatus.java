@@ -6,7 +6,6 @@ public enum PetStatus {
 
     private final String description;
 
-
     PetStatus(String description) {
         this.description = description;
     }
