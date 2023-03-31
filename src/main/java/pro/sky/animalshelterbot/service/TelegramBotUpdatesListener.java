@@ -11,6 +11,7 @@ import com.pengrad.telegrambot.request.SetMyCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.animalshelterbot.constant.Commands;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -18,32 +19,16 @@ import java.util.List;
 
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    public enum Command {
-        START("/start"),
-        INFO("/info"),
-        VOLUNTEER("/volunteer");
-
-        private String title;
-
-        Command(String title) {
-            this.title = title;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-    }
-
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     private final TelegramBot telegramBot;
 
     public TelegramBotUpdatesListener(TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
         telegramBot.execute(new SetMyCommands(
-                new BotCommand(Command.START.getTitle(), "Get a welcome message"),
-                new BotCommand(Command.INFO.getTitle(), "Get detailed information on all the features of the bot"),
-                new BotCommand(Command.VOLUNTEER.getTitle(), "Call a volunteer")
+                new BotCommand(Commands.START.getTitle(), Commands.START.getDescription()),
+                new BotCommand(Commands.INFO.getTitle(), Commands.INFO.getDescription()),
+                new BotCommand(Commands.CALL_VOLUNTEER.getTitle(), Commands.CALL_VOLUNTEER.getDescription())
         ));
     }
 
@@ -57,12 +42,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     public int process(List<Update> updates) {
         updates.forEach(update -> {
             if (update.message() != null) {
-                if (update.message().text().equals(Command.START.getTitle())) {
+                if (update.message().text().equals(Commands.START.getTitle())) {
                     greeting(update);
                     description(update);
-                } else if (update.message().text().equals(Command.INFO.getTitle())) {
+                } else if (update.message().text().equals(Commands.INFO.getTitle())) {
                     info(update);
-                } else if (update.message().text().equals(Command.VOLUNTEER.getTitle())) {
+                } else if (update.message().text().equals(Commands.CALL_VOLUNTEER.getTitle())) {
                     volunteer(update);
                 } else {
                     telegramBot.execute(new SendMessage(update.message().chat().id(), "Команда не найдена повторите запрос"));

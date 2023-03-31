@@ -1,22 +1,34 @@
 package pro.sky.animalshelterbot.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import pro.sky.animalshelterbot.constant.OwnerStatus;
+
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Table(name = "owner_dog")
 public class OwnerDog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "chat_id", nullable = false)
     private Long chatId;
+    @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "phone",nullable = false)
     private String phone;
+    @Column(name = "age", nullable = false)
     private int age;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private OwnerStatus status;
+
+    @OneToOne
+    @JoinColumn(name = "dog_id")
+    private Dog dog;
 
     public Long getId() {
         return id;
@@ -71,9 +83,12 @@ public class OwnerDog {
     public String toString() {
         return "OwnerDog{" +
                 "id=" + id +
+                ", chatId=" + chatId +
                 ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
                 ", age=" + age +
+                ", status=" + status +
+                ", dog=" + dog +
                 '}';
     }
 }
