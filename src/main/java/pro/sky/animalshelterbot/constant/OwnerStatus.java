@@ -1,8 +1,8 @@
 package pro.sky.animalshelterbot.constant;
 
 public enum OwnerStatus {
-    PROBATION("На испытательном сроке"),
     IN_SEARCH("В поиске питомца"),
+    PROBATION("На испытательном сроке"),
     APPROVED("Одобрен"),
     IN_BLACK_LIST("Не прошел испытательный срок, в ЧС");
 

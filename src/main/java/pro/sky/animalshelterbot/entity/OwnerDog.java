@@ -23,7 +23,7 @@ public class OwnerDog {
     @Column(name = "age", nullable = false)
     private int age;
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private OwnerStatus status;
 
     @OneToOne
@@ -64,6 +64,18 @@ public class OwnerDog {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public OwnerStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OwnerStatus status) {
+        this.status = status;
     }
 
     @Override

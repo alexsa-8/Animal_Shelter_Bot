@@ -22,16 +22,16 @@ public class Dog {
     private String breed;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private PetStatus status;
 
 
-
-    public Dog(Long id, String name, Integer age, String breed) {
+    public Dog(Long id, String name, Integer age, String breed, PetStatus status) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.breed = breed;
+        this.status = status;
     }
 
     public Dog() {
@@ -67,6 +67,14 @@ public class Dog {
 
     public void setBreed(String breed) {
         this.breed = breed;
+    }
+
+    public PetStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PetStatus status) {
+        this.status = status;
     }
 
     @Override
