@@ -48,19 +48,167 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 } else if (update.message().text().equals(Commands.INFO.getTitle())) {
                     info(update);
                 } else if (update.message().text().equals(Commands.CALL_VOLUNTEER.getTitle())) {
-                    volunteer(update);
+                    volunteerMenu(update);
                 } else {
                     telegramBot.execute(new SendMessage(update.message().chat().id(), "Команда не найдена повторите запрос"));
                 }
             } else if (update.callbackQuery() != null) {
                 telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                         update.callbackQuery().data()));
+                //startMenu
                 if (update.callbackQuery() != null && update.callbackQuery().data().equals(" ")) {
                     telegramBot.execute(startMenu(update));
+                }
+                //shelterInfoMenu
+                else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.INFO.getCallbackData())) {
+                    telegramBot.execute(shelterInfoMenu(update));
+                }
+                //animalInfoMenu
+                else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.ANIMAL_INFO.getCallbackData())) {
+                    telegramBot.execute(animalInfoMenu(update));
+                } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.DATING_RULES.getCallbackData())) {
+                    telegramBot.execute(datingRules(update));
+                } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.LIST_DOCUMENTS.getCallbackData())) {
+                    listDocuments(update);
+                } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.RECOMMENDATIONS.getCallbackData())) {
+                    telegramBot.execute(recommendation(update));
+                } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.ADVICES.getCallbackData())) {
+                    telegramBot.execute(advices(update));
+                } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.CONTACT_DETAILS.getCallbackData())) {
+                    telegramBot.execute(contactDetails(update));
+                } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.CALL_VOLUNTEER.getCallbackData())) {
+                    telegramBot.execute(volunteerMenu(update));
+                }
+
+                //submitReportMenu
+                else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.SUBMIT_REPORT.getCallbackData())) {
+                    telegramBot.execute(submitReportMenu(update));
+                } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.REPORT_FORM.getCallbackData())) {
+                    telegramBot.execute(reportForm(update));
+                } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.CALL_VOLUNTEER.getCallbackData())) {
+                    telegramBot.execute(volunteerMenu(update));
+                }
+
+                //volunteerMenu
+                else if (update.callbackQuery() != null && update.callbackQuery().data()
+                        .equals(Commands.CALL_VOLUNTEER.getCallbackData())) {
+                    telegramBot.execute(volunteerMenu(update));
                 }
             }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
+    }
+
+    private SendMessage contactDetails(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Контакты пользователя сохранить");
+        return message;
+    }
+
+    private SendMessage advices(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Советы по уходу и всему всему, отдельное меню надо");
+        return message;
+    }
+
+    private SendMessage recommendation(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Рекомендации");
+        return message;
+    }
+
+    private void listDocuments(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
+                "Лист документов");
+        telegramBot.execute(message);
+    }
+
+    private SendMessage datingRules(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
+                "Тут все про знакомство с питомцем");
+        return message;
+    }
+
+    private SendMessage reportForm(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
+                "Форма отчета");
+        return message;
+    }
+
+    private SendMessage volunteerMenu(Update update) {
+        SendMessage volunteer = new SendMessage(update.callbackQuery().message().chat().id(), "Волонтер скоро с вами свяжется\uD83D\uDE09");
+        return volunteer;
+    }
+
+    private SendMessage submitReportMenu(Update update) {
+        SendMessage report = new SendMessage(update.callbackQuery().message().chat().id(), "Затычка");
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.REPORT_FORM.getDescription())
+                        .callbackData(Commands.REPORT_FORM.getCallbackData())
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.CALL_VOLUNTEER.getDescription())
+                        .callbackData(Commands.CALL_VOLUNTEER.getCallbackData())
+
+        );
+
+        report.replyMarkup(inlineKeyboardMarkup);
+
+        return report;
+    }
+
+    private SendMessage animalInfoMenu(Update update) {
+        SendMessage animalInfo = new SendMessage(update.callbackQuery().message().chat().id(),
+                "Вы можете ознакомиться со всеми особенностями, с которыми нам с вами предстоид столкнуться, " +
+                        "прежде чем вы сможете найти себе нового друга");
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.DATING_RULES.getDescription())
+                        .callbackData(Commands.DATING_RULES.getCallbackData())
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.LIST_DOCUMENTS.getDescription())
+                        .callbackData(Commands.LIST_DOCUMENTS.getCallbackData())
+
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.RECOMMENDATIONS.getDescription())
+                        .callbackData(Commands.RECOMMENDATIONS.getCallbackData())
+
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.ADVICES.getDescription())
+                        .callbackData(Commands.ADVICES.getCallbackData())
+
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.CONTACT_DETAILS.getDescription())
+                        .callbackData(Commands.CONTACT_DETAILS.getCallbackData())
+
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.CALL_VOLUNTEER.getDescription())
+                        .callbackData(Commands.CALL_VOLUNTEER.getCallbackData())
+
+        );
+
+        animalInfo.replyMarkup(inlineKeyboardMarkup);
+
+        return animalInfo;
+    }
+
+    private SendMessage shelterInfoMenu(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Тут вся инфа по приюту");
+        return message;
     }
 
     // method sends a greeting to the user
@@ -79,6 +227,40 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         telegramBot.execute(greeting);
     }
 
+    public SendMessage startMenu(Update update) {
+        String message = "Отлично, тут ты можешь узнать всю необходимую информацию о приюте и животных, " +
+                "если понадобится помощь, ты всегда можешь позвать волонтера";
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.INFO.getDescription())
+                        .callbackData(Commands.INFO.getCallbackData())
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.ANIMAL_INFO.getDescription())
+                        .callbackData(Commands.ANIMAL_INFO.getCallbackData())
+
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.SUBMIT_REPORT.getDescription())
+                        .callbackData(Commands.SUBMIT_REPORT.getCallbackData())
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.CALL_VOLUNTEER.getDescription())
+                        .callbackData(Commands.CALL_VOLUNTEER.getCallbackData())
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton("Расскажи о нас")
+                        .switchInlineQuery("Помоги найти новый дом питомцам!")
+        );
+
+
+        SendMessage mes = new SendMessage(update.callbackQuery().message().chat().id(), message);
+        mes.replyMarkup(inlineKeyboardMarkup);
+
+        return mes;
+    }
+
     public void description(Update update) {
         logger.info("Description to " + update.message().text());
         String desc = update.message().from().firstName() + ", может ты и есть тот самый хозяин, который подарит новый дом нашему другу?";
@@ -94,35 +276,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
         telegramBot.execute(description);
 
-    }
-
-    public SendMessage startMenu(Update update) {
-        String message = "Отлично, тут ты можешь узнать всю необходимую информацию о приюте и животных, " +
-                "если понадобится помощь, ты всегда можешь позвать волонтера";
-
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("Информация о приюте").callbackData("Информация о приюте")
-        );
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("Информация как взять питомца").callbackData("Информация как взять питомца")
-
-        );
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("Прислать отчет").callbackData("Прислать отчет")
-        );
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("Позвать волонтера").callbackData("Позвать волонтера")
-        );
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("Расскажи о нас").switchInlineQuery(" ")
-        );
-
-
-        SendMessage mes = new SendMessage(update.callbackQuery().message().chat().id(), message);
-        mes.replyMarkup(inlineKeyboardMarkup);
-
-        return mes;
     }
 
     // method sends information to the user
@@ -143,11 +296,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     // The method calls the volunteer
-    public void volunteer(Update update) {
-        logger.info("volunteer to " + update.message().text());
-        SendMessage volunteer = new SendMessage(update.message().chat().id(), "Волонтер скоро с вами свяжется\uD83D\uDE09");
 
-        telegramBot.execute(volunteer);
-    }
 
 }
