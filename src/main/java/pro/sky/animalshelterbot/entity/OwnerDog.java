@@ -5,27 +5,58 @@ import pro.sky.animalshelterbot.constant.OwnerStatus;
 import javax.persistence.*;
 import java.util.Objects;
 
+/**
+ * Класс OwnerDog, представляет сущность владельца питомца
+ * @author Marina Gubina
+ */
 @Entity
 @Table(name = "owner_dog")
 public class OwnerDog {
 
+    /**
+     * Поле: идентификационный номер владельца
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
+    /**
+     * Поле: номер чата владельца
+     */
     @Column(name = "chat_id", nullable = false)
     private Long chatId;
+
+    /**
+     * Поле: имя владельца
+     */
     @Column(name = "name", nullable = false)
     private String name;
+
+    /**
+     * Поле: номер телефона владельца
+     */
     @Column(name = "phone",nullable = false)
     private String phone;
+
+    /**
+     * Поле: возраст владельца
+     */
     @Column(name = "age", nullable = false)
     private int age;
+
+    /**
+     * Поле: статус владельца
+     * @see OwnerStatus
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private OwnerStatus status;
 
+    /**
+     * Поле: имеющаяся собака
+     * @see Dog
+     */
     @OneToOne
     @JoinColumn(name = "dog_id")
     private Dog dog;

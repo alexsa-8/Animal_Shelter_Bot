@@ -1,5 +1,6 @@
 package pro.sky.animalshelterbot.entity;
 
+import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.constant.PetStatus;
 
 import javax.persistence.*;
@@ -7,25 +8,57 @@ import java.util.Objects;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+/**
+ * Класс Dog, представляет сущность собаки
+ * @author Kilikova Anna
+ */
 @Entity
 @Table(name = "dog")
 public class Dog {
+
+    /**
+     * Поле: идентификационный номер собаки
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
+    /**
+     * Поле: имя собаки
+     */
     @Column(name = "name", nullable = false)
     private String name;
+
+    /**
+     * Поле: возраст собаки
+     */
     @Column(name = "age", nullable = false)
     private Integer age;
+
+    /**
+     * Поле: порода собаки
+     */
     @Column(name = "breed", nullable = false)
     private String breed;
 
+    /**
+     * Поле: статус собаки
+     * @see PetStatus
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private PetStatus status;
 
 
+    /**
+     * Конструктор с параметрами для создания объекта "собака"
+     * @param id идентификационный номер
+     * @param name имя
+     * @param age возраст
+     * @param breed порода
+     * @param status статус
+     */
     public Dog(Long id, String name, Integer age, String breed, PetStatus status) {
         this.id = id;
         this.name = name;
@@ -34,6 +67,9 @@ public class Dog {
         this.status = status;
     }
 
+    /**
+     * Конструктор без параметров для создания объекта "собака"
+     */
     public Dog() {
     }
 
