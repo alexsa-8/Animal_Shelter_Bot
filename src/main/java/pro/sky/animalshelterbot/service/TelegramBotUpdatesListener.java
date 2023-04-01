@@ -111,6 +111,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     private SendMessage contactDetails(Update update) {
+
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Контакты пользователя сохранить");
         return message;
     }
