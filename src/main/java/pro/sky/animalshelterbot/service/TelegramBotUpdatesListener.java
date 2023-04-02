@@ -17,12 +17,30 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 
 
+/**
+ * Сервис TelegramBotUpdatesListener
+ * Сервис для обработки доступных обновлений в чате
+ * @author Kilikova Anna
+ * @author Bogomolov Ilya
+ * @see UpdatesListener
+ */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
+
+    /**
+     * Поле: объект, который запускает события журнала.
+     */
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
+    /**
+     * Поле: телеграм бот
+     */
     private final TelegramBot telegramBot;
 
+    /**
+     * Конструктор
+     * @param telegramBot телеграм бот
+     */
     public TelegramBotUpdatesListener(TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
         telegramBot.execute(new SetMyCommands(
@@ -32,12 +50,19 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         ));
     }
 
-
+    /**
+     * Метод, выполняющийся после инициализации объекта, задает обработчик обновлений
+     */
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
     }
 
+    /**
+     * Обработчик обратного вызова с доступными обновлениями
+     * @param updates доступные обновления
+     * @return id последнего обработанного обновления, которое не нужно доставлять повторно
+     */
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
@@ -110,45 +135,85 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
+    /**
+     * Метод для сохранения контактных данных пользователя
+     * @param update доступное обновление
+     * @return сообщение пользователю
+     */
     private SendMessage contactDetails(Update update) {
 
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Контакты пользователя сохранить");
         return message;
     }
 
+    /**
+     * Метод, выдающий советы пользователю
+     * @param update доступное обновление
+     * @return сообщение пользователю
+     */
     private SendMessage advices(Update update) {
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Советы по уходу и всему всему, отдельное меню надо");
         return message;
     }
 
+    /**
+     * Метод, выдающий рекомендации пользователю
+     * @param update доступное обновление
+     * @return сообщение пользователю
+     */
     private SendMessage recommendation(Update update) {
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Рекомендации");
         return message;
     }
 
+    /**
+     * Метод, выдающий список документов для позователя
+     * @param update доступное обновление
+     * @return сообщение пользователю
+     */
     private void listDocuments(Update update) {
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
                 "Лист документов");
         telegramBot.execute(message);
     }
 
+    /**
+     * Метод, выдающий информацию по знакомству с питомцем для пользователя
+     * @param update доступное обновление
+     * @return сообщение пользователю
+     */
     private SendMessage datingRules(Update update) {
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
                 "Тут все про знакомство с питомцем");
         return message;
     }
 
+    /**
+     * Метод, присылающий форму отчета для пользователя
+     * @param update доступное обновление
+     * @return форма отчета
+     */
     private SendMessage reportForm(Update update) {
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
                 "Форма отчета");
         return message;
     }
 
+    /**
+     * Метод, присылающий информацию по связи с волонтером для пользователя
+     * @param update доступное обновление
+     * @return сообщение пользователю
+     */
     private SendMessage volunteerMenu(Update update) {
         SendMessage volunteer = new SendMessage(update.callbackQuery().message().chat().id(), "Волонтер скоро с вами свяжется\uD83D\uDE09");
         return volunteer;
     }
 
+    /**
+     * Метод, вызывающий подменю по отчетам
+     * @param update доступное обновление
+     * @return меню для пользователя с кнопками
+     */
     private SendMessage submitReportMenu(Update update) {
         SendMessage report = new SendMessage(update.callbackQuery().message().chat().id(), "Затычка");
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -167,6 +232,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return report;
     }
 
+    /**
+     * Метод, вызывающий подменю по животным
+     * @param update доступное обновление
+     * @return меню для пользователя с кнопками
+     */
     private SendMessage animalInfoMenu(Update update) {
         SendMessage animalInfo = new SendMessage(update.callbackQuery().message().chat().id(),
                 "Вы можете ознакомиться со всеми особенностями, с которыми нам с вами предстоид столкнуться, " +
@@ -207,12 +277,20 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return animalInfo;
     }
 
+    /**
+     * Метод, присылающий информацию по приюту для пользователя
+     * @param update доступное обновление
+     * @return сообщение пользователю
+     */
     private SendMessage shelterInfoMenu(Update update) {
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Тут вся инфа по приюту");
         return message;
     }
 
-    // method sends a greeting to the user
+    /**
+     * Метод, присылающий приветствие для пользователя
+     * @param update доступное обновление
+     */
     public void greeting(Update update) {
         logger.info("Greeting to " + update.message().text());
         SendMessage greeting = new SendMessage(update.message().chat().id(),
@@ -228,6 +306,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         telegramBot.execute(greeting);
     }
 
+    /**
+     * Метод для запуска меню
+     * @param update доступное обновление
+     * @return меню для пользователя с кнопками
+     */
     public SendMessage startMenu(Update update) {
         String message = "Отлично, тут ты можешь узнать всю необходимую информацию о приюте и животных, " +
                 "если понадобится помощь, ты всегда можешь позвать волонтера";
@@ -279,6 +362,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     }
 
+    /**
+     * Метод, выдающий информацию для пользователя
+     * @param update доступное обновление
+     */
     // method sends information to the user
     public void info(Update update) {
         logger.info("Info to " + update.message().text());
