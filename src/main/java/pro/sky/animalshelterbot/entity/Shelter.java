@@ -7,23 +7,55 @@ import java.util.Objects;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+/**
+ * Класс Shelter, представляет сущность приюта
+ * @author Kilikova Anna
+ */
 @Entity
 @Table(name = "shelter")
 public class Shelter {
+
+    /**
+     * Поле: идентификационный номер приюта
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+
+    /**
+     * Поле: название приюта
+     */
     @Column(name = "name", nullable = false)
     private String name;
+
+    /**
+     * Поле: адрес приюта
+     */
     @Column(name = "address", nullable = false)
     private String address;
+
+    /**
+     * Поле: номер телефона приюта
+     */
     @Column(name = "phone", nullable = false)
     private String phone;
+
+    /**
+     * Поле: адрес электронной почты приюта
+     */
     @Column(name = "mail", nullable = false)
     private String mail;
+
+    /**
+     * Поле: часы работы приюта
+     */
     @Column(name = "opening_hours", nullable = false)
     private LocalDateTime openingHours;
+
+    /**
+     * Поле: схема расположения приюта на карте
+     */
     @Column(name = "map", nullable = false)
     private byte[] map;
 
