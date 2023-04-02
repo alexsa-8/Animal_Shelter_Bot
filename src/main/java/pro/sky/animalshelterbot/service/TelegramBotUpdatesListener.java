@@ -34,15 +34,8 @@ import java.util.List;
  */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
-
-    /**
-     * Поле: объект, который запускает события журнала.
-     */
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    /**
-     * Поле: телеграм бот
-     */
     private final TelegramBot telegramBot;
     private final DogRepository dogRepository;
     private final OwnerDogService ownerDogService;
@@ -65,9 +58,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         this.dogRepository = dogRepository;
     }
 
-    /**
-     * Метод, выполняющийся после инициализации объекта, задает обработчик обновлений
-     */
+
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
