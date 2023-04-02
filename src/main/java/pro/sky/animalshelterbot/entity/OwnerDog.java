@@ -69,10 +69,8 @@ public class OwnerDog {
         this.age = age;
         this.status = status;
     }
-
     public OwnerDog() {
     }
-
     public Long getId() {
         return id;
     }

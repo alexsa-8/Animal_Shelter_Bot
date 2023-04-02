@@ -42,12 +42,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * Поле: телеграм бот
      */
     private final TelegramBot telegramBot;
-    @Autowired
-    private OwnerDogRepository repository;
 
+    /**
+     * Конструктор
+     * @param telegramBot телеграм бот
+     */
     private final static Pattern PATTERN_MESSAGE = Pattern.compile(
             "([\\W+]+)(\\s)(\\+7\\d{3}[-.]?\\d{3}[-.]?\\d{4})(\\s)([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+)");
 
+    @Autowired
+    private OwnerDogRepository repository;
     /**
      * Конструктор
      * @param telegramBot телеграм бот
@@ -148,7 +152,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод для сохранения контактных данных пользователя
-     *
      * @param update доступное обновление
      * @return сообщение пользователю
      */
