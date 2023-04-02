@@ -10,11 +10,17 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.constant.OwnerStatus;
+import pro.sky.animalshelterbot.entity.OwnerDog;
+import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -36,6 +42,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * Поле: телеграм бот
      */
     private final TelegramBot telegramBot;
+    @Autowired
+    private OwnerDogRepository repository;
+
+    private final static Pattern PATTERN_MESSAGE = Pattern.compile(
+            "([\\W+]+)(\\s)(\\+7\\d{3}[-.]?\\d{3}[-.]?\\d{4})(\\s)([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+)");
 
     /**
      * Конструктор
@@ -137,13 +148,36 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод для сохранения контактных данных пользователя
+     *
      * @param update доступное обновление
      * @return сообщение пользователю
      */
     private SendMessage contactDetails(Update update) {
-
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Контакты пользователя сохранить");
-        return message;
+        String text = update.message().text();
+        try {
+            if (update.message().contact() != null) {
+                Matcher matcher = PATTERN_MESSAGE.matcher(text);
+                if (matcher.find()) {
+                    String name = matcher.group(1);
+                    String phone = matcher.group(3);
+                    int age = Integer.parseInt(matcher.group(5));
+                    OwnerDog ownerDog = new OwnerDog();
+                    ownerDog.setChatId(update.message().chat().id());
+                    ownerDog.setName(name);
+                    ownerDog.setPhone(phone);
+                    ownerDog.setAge(age);
+                    ownerDog.setStatus(OwnerStatus.IN_SEARCH);
+                    repository.save(ownerDog);
+                    SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Контакты пользователя сохранить");
+                    telegramBot.execute(message);
+                    return message;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Неверные данные");
+        }
+        // не уверена, что null
+        return null;
     }
 
     /**
