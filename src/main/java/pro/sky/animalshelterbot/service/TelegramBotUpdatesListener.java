@@ -6,14 +6,17 @@ import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 import java.util.List;
 
 
@@ -159,11 +162,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     /**
      * Метод, выдающий рекомендации пользователю
      * @param update доступное обновление
-     * @return сообщение пользователю
+     * @return документ с рекомендации по технике безопасности
      */
-    private SendMessage recommendation(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Рекомендации");
-        return message;
+    private SendDocument recommendation(Update update) {
+        String path = "src/main/resources/shelterInfo/Safety_in_shelter.pdf";
+        File recommendation = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                recommendation);
+        sendDocument.caption("Рекомендации по технике безопасности на территории " +
+                "приюта в прикрепленном документе \u2191 ");
+        return sendDocument;
     }
 
     /**
