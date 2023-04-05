@@ -205,8 +205,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод для сохранения контактных данных пользователя
-     *
      * @param update доступное обновление
+     * @return сообщение пользователю
      */
     private SendMessage contactDetails(Update update) {
         String text = update.message().text();
@@ -262,7 +262,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     /**
-     * Метод, выдающий список документов для позователя
+     * Метод, выдающий список документов для пользователя
      * @param update доступное обновление
      * @return сообщение пользователю
      */
@@ -568,28 +568,63 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return data;
     }
 
-    private SendMessage  recommendationsTransportation(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Рекомендации по транспортировке");
-        return message;
+    /**
+     * Метод получения рекомендации по транспортировке собаки
+     * @param update доступное обновление
+     * @return документ формата pdf
+     */
+    private SendDocument recommendationsTransportation(Update update) {
+        String path = "src/main/resources/shelterInfo/Recommendations_of_Transportation.pdf";
+        File recommendation = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                recommendation);
+        sendDocument.caption("С рекомендации по общим правилам транспортировки собак Вы можете ознакомиться  " +
+                "  в прикрепленном документе \u2191 ");
+        return sendDocument;
     }
 
-    private SendMessage  recommendationsDog(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Рекомендации по уходу за собакой");
-        return message;
+    /**
+     * Метод получения рекомендации по обустройству дома для взрослой собаки
+     * @param update доступное обновление
+     * @return документ формата pdf
+     */
+    private SendDocument recommendationsDog(Update update) {
+        String path = "src/main/resources/shelterInfo/Recommendations_for_Dog.pdf";
+        File recommendation = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                recommendation);
+        sendDocument.caption("С рекомендации по обустройству дома для взрослой собаки Вы можете ознакомиться  " +
+                "  в прикрепленном документе \u2191, а также посмотрите пункт Рекомендации по уходу за щенком");
+        return sendDocument;
+    }
+    /**
+     * Метод получения рекомендации по обустройству дома для щенка
+     * @param update доступное обновление
+     * @return документ формата pdf
+     */
+    private SendDocument recommendationsPuppy(Update update) {
+        String path = "src/main/resources/shelterInfo/Recommendations_for_Puppy.pdf";
+        File recommendation = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                recommendation);
+        sendDocument.caption("С рекомендации по обустройству дома для щенка Вы можете ознакомиться  " +
+                "  в прикрепленном документе \u2191 ");
+        return sendDocument;
     }
 
-    private SendMessage  recommendationsPuppy(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Рекомендации по уходу за щенком");
-        return message;
-    }
-
-    private SendMessage recommendationsDisabledDog(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Рекомендации по обустройству собаки с ограниченными возможностями");
-        return message;
+    /**
+     * Метод получения рекомендации по обустройству дома для собаки с ОВЗ
+     * @param update доступное обновление
+     * @return документ формата pdf
+     */
+    private SendDocument recommendationsDisabledDog(Update update) {
+        String path = "src/main/resources/shelterInfo/Recommendations_for_Disabled_Dog.pdf";
+        File recommendation = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                recommendation);
+        sendDocument.caption("С рекомендации по обустройству дома для собаки с ограниченными возможностями " +
+                "Вы можете ознакомиться в прикрепленном документе \u2191 ");
+        return sendDocument;
     }
 
     /**
