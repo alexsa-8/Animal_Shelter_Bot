@@ -64,7 +64,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Обработчик обратного вызова с доступными обновлениями
-     *
      * @param updates доступные обновления
      * @return id последнего обработанного обновления, которое не нужно доставлять повторно
      */
