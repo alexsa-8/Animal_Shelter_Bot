@@ -22,7 +22,30 @@ public enum Commands {
     SHELTER_IN_MAP("/map", "Схема проезда", "              "),
     SHELTER_OPENING_HOURS("/opening_hours", "Часы работы", "               "),
     SHELTER_PHONE("/phone","Телефон приюта", "                "),
-    START("/start","Старт", "                 ");
+    START("/start","Старт", "                 "),
+    BACK("/back","Назад", "                  "),
+    SHELTER_RECOMMENDATIONS("/shelter_recommendations",
+            "Рекомендации по технике безопасности в приюте", "                   "),
+    SHELTER_DATA("/shelter_data", "Данные о приюте", "                    "),
+    BACK_TO_ANIMAL_MENU("/back_animal_menu","Назад",
+            "                     "),
+    RECOMMENDATIONS_TRANSPORTATION("/recommendations_transportation","Рекомендации по траспортировке",
+            "                      "),
+    RECOMMENDATIONS_DOG("/recommendations_dog","Рекомендации по обустройству собаки",
+            "                       "),
+    RECOMMENDATIONS_PUPPY("/recommendations_puppy","Рекомендации по обустройству щенка",
+            "                        "),
+    RECOMMENDATIONS_DISABLED_DOG("/recommendations_disabled_dog",
+            "Рекомендации по обустройству собаки с ограниченными возможностями",
+            "                         "),
+    ADVICES_CYNOLOGISTS("/advices_cynologists","Советы кинологов",
+            "                          "),
+    LIST_CYNOLOGISTS("/list_cynologists","Список проверенных кинологов",
+            "                           "),
+    REASONS_REFUSAL("/reasons_refusal","Причины отказа в усыновлении",
+            "                            ");
+
+
 
     /**
      * Поле "Заголовок"
