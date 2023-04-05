@@ -13,11 +13,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.constant.OwnerStatus;
+import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.repository.DogRepository;
+import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -41,13 +46,23 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final TelegramBot telegramBot;
     private final DogRepository dogRepository;
 
+    private final static Pattern PATTERN_MESSAGE = Pattern.compile(
+            "([\\W+]+)(\\s)(\\+7\\d{3}[-.]?\\d{3}[-.]?\\d{4})(\\s)([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+)");
+
+
+    private final OwnerDogRepository ownerDogRepository;
     /**
      * Конструктор
-     * @param telegramBot телеграм бот
+     *
+     * @param telegramBot   телеграм бот
+     * @param dogRepository бд собак
+     * @param ownerDogRepository бл владельцев
      */
     public TelegramBotUpdatesListener(TelegramBot telegramBot,
-                                      DogRepository dogRepository) {
+                                      DogRepository dogRepository, OwnerDogRepository ownerDogRepository) {
         this.telegramBot = telegramBot;
+        this.dogRepository = dogRepository;
+        this.ownerDogRepository = ownerDogRepository;
         telegramBot.execute(new SetMyCommands(
                 new BotCommand(Commands.START.getTitle(), Commands.START.getDescription()),
                 new BotCommand(Commands.INFO.getTitle(), Commands.INFO.getDescription()),
@@ -190,12 +205,44 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод для сохранения контактных данных пользователя
+     *
+     * @param update доступное обновление
+     */
+    private SendMessage contactDetails(Update update) {
+        String text = update.message().text();
+        try {
+            if (text != null) {
+                Matcher matcher = PATTERN_MESSAGE.matcher(text);
+                if (matcher.find()) {
+                    String name = matcher.group(1);
+                    String phone = matcher.group(3);
+                    int age = Integer.parseInt(matcher.group(5));
+                    OwnerDog ownerDog = new OwnerDog();
+                    ownerDog.setChatId(update.message().chat().id());
+                    ownerDog.setName(name);
+                    ownerDog.setPhone(phone);
+                    ownerDog.setAge(age);
+                    ownerDog.setStatus(OwnerStatus.IN_SEARCH);
+                    ownerDogRepository.save(ownerDog);
+                    SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
+                            "Контакты пользователя сохранились, скоро с Вами свяжутня");
+                    telegramBot.execute(message);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Что-то ввели неверно");
+        }
+        return null;
+    }
+
+
+    /**
+     * Метод, выдающий советы пользователю
      * @param update доступное обновление
      * @return сообщение пользователю
      */
-    private SendMessage contactDetails(Update update) {
-
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Контакты пользователя сохранить");
+    private SendMessage advices(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Советы по уходу и всему всему, отдельное меню надо");
         return message;
     }
 
