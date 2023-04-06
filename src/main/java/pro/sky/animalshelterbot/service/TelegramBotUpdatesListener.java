@@ -23,6 +23,7 @@ import java.util.List;
 /**
  * Сервис TelegramBotUpdatesListener
  * Сервис для обработки доступных обновлений в чате
+ *
  * @author Kilikova Anna
  * @author Bogomolov Ilya
  * @see UpdatesListener
@@ -43,6 +44,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Конструктор
+     *
      * @param telegramBot телеграм бот
      */
     public TelegramBotUpdatesListener(TelegramBot telegramBot,
@@ -66,6 +68,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Обработчик обратного вызова с доступными обновлениями
+     *
      * @param updates доступные обновления
      * @return id последнего обработанного обновления, которое не нужно доставлять повторно
      */
@@ -91,13 +94,11 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     //startMenu
                     if (update.callbackQuery() != null && update.callbackQuery().data().equals(" ")) {
                         telegramBot.execute(startMenu(update));
-                    }
-                    else if(update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.BACK.getCallbackData())){
+                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                            .equals(Commands.BACK.getCallbackData())) {
                         telegramBot.execute(startMenu(update));
-                    }
-                    else if(update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.BACK_TO_ANIMAL_MENU.getCallbackData())){
+                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                            .equals(Commands.BACK_TO_ANIMAL_MENU.getCallbackData())) {
                         telegramBot.execute(animalInfoMenu(update));
                     }
                     //shelterInfoMenu
@@ -109,7 +110,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         telegramBot.execute(shelterRecommendation(update));
                     } else if (update.callbackQuery() != null && update.callbackQuery().data()
                             .equals(Commands.SHELTER_DATA.getCallbackData())) {
-                        telegramBot.execute(shelterData(update));}
+                        telegramBot.execute(shelterData(update));
+                    }
                     //animalInfoMenu
                     else if (update.callbackQuery() != null && update.callbackQuery().data()
                             .equals(Commands.ANIMAL_INFO.getCallbackData())) {
@@ -119,43 +121,39 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         telegramBot.execute(datingRules(update));
                     } else if (update.callbackQuery() != null && update.callbackQuery().data()
                             .equals(Commands.LIST_DOCUMENTS.getCallbackData())) {
-                        listDocuments(update);
+                        telegramBot.execute(listDocuments(update));
                     } else if (update.callbackQuery() != null && update.callbackQuery().data()
                             .equals(Commands.RECOMMENDATIONS.getCallbackData())) {
                         telegramBot.execute(recommendationMenu(update));
                     }
                     //подменю по рекомендациям
-                    else if(update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.RECOMMENDATIONS_TRANSPORTATION.getCallbackData())){
-                        telegramBot.execute(recommendationsTransportation(update));
-                    }else if(update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.RECOMMENDATIONS_DOG.getCallbackData())){
-                        telegramBot.execute(recommendationsDog(update));
-                    }else if(update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.RECOMMENDATIONS_PUPPY.getCallbackData())){
-                        telegramBot.execute(recommendationsPuppy(update));
-                    }else if(update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.RECOMMENDATIONS_DISABLED_DOG.getCallbackData())){
-                        telegramBot.execute(recommendationsDisabledDog(update));
-                    }
-
                     else if (update.callbackQuery() != null && update.callbackQuery().data()
+                            .equals(Commands.RECOMMENDATIONS_TRANSPORTATION.getCallbackData())) {
+                        telegramBot.execute(recommendationsTransportation(update));
+                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                            .equals(Commands.RECOMMENDATIONS_DOG.getCallbackData())) {
+                        telegramBot.execute(recommendationsDog(update));
+                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                            .equals(Commands.RECOMMENDATIONS_PUPPY.getCallbackData())) {
+                        telegramBot.execute(recommendationsPuppy(update));
+                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                            .equals(Commands.RECOMMENDATIONS_DISABLED_DOG.getCallbackData())) {
+                        telegramBot.execute(recommendationsDisabledDog(update));
+                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
                             .equals(Commands.ADVICES.getCallbackData())) {
                         telegramBot.execute(advicesMenu(update));
                     }
                     // подменю по советам
-                    else if(update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.ADVICES_CYNOLOGISTS.getCallbackData())){
-                        telegramBot.execute(advicesCynologists(update));
-                    }else if(update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.LIST_CYNOLOGISTS.getCallbackData())){
-                        telegramBot.execute(listCynologists(update));
-                    }else if(update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.REASONS_REFUSAL.getCallbackData())){
-                        telegramBot.execute(reasonsRefusal(update));
-                    }
-
                     else if (update.callbackQuery() != null && update.callbackQuery().data()
+                            .equals(Commands.ADVICES_CYNOLOGISTS.getCallbackData())) {
+                        telegramBot.execute(advicesCynologists(update));
+                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                            .equals(Commands.LIST_CYNOLOGISTS.getCallbackData())) {
+                        telegramBot.execute(listCynologists(update));
+                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
+                            .equals(Commands.REASONS_REFUSAL.getCallbackData())) {
+                        telegramBot.execute(reasonsRefusal(update));
+                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
                             .equals(Commands.CONTACT_DETAILS.getCallbackData())) {
                         telegramBot.execute(contactDetails(update));
                     } else if (update.callbackQuery() != null && update.callbackQuery().data()
@@ -182,8 +180,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     }
                 }
             });
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
@@ -191,6 +188,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод для сохранения контактных данных пользователя
+     *
      * @param update доступное обновление
      * @return сообщение пользователю
      */
@@ -202,6 +200,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, выдающий рекомендации о технике безопасности пользователю
+     *
      * @param update доступное обновление
      * @return документ с рекомендации по технике безопасности
      */
@@ -217,17 +216,25 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, выдающий список документов для позователя
+     *
      * @param update доступное обновление
-     * @return сообщение пользователю
+     * @return сообщение c документом пользователю
      */
-    private void listDocuments(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Лист документов");
-        telegramBot.execute(message);
+    private SendDocument listDocuments(Update update) {
+        String path = "src/main/resources/list_documents/Take_the_dog.pdf";
+        File listDocuments = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                listDocuments);
+        sendDocument.caption("Из неообходимых документов Вам потребуется только ПАСПОРТ\n" +
+                "\nНо прежде чем вы соберетесь на такой важный шаг, не только для себя, " +
+                "но и для вашего будущего питомца, просим Вас ознакомиться с информацие в прикрепленном документе \u2191");
+
+        return sendDocument;
     }
 
     /**
      * Метод, выдающий информацию по знакомству с питомцем для пользователя
+     *
      * @param update доступное обновление
      * @return сообщение пользователю
      */
@@ -239,6 +246,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, присылающий форму отчета для пользователя
+     *
      * @param update доступное обновление
      * @return форма отчета
      */
@@ -250,6 +258,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, присылающий информацию по связи с волонтером для пользователя
+     *
      * @param update доступное обновление
      * @return сообщение пользователю
      */
@@ -260,6 +269,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, вызывающий подменю по отчетам
+     *
      * @param update доступное обновление
      * @return меню для пользователя с кнопками
      */
@@ -287,6 +297,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, вызывающий подменю по животным
+     *
      * @param update доступное обновление
      * @return меню для пользователя с кнопками
      */
@@ -336,6 +347,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, присылающий информацию по приюту для пользователя
+     *
      * @param update доступное обновление
      * @return сообщение пользователю
      */
@@ -362,6 +374,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, присылающий приветствие для пользователя
+     *
      * @param update доступное обновление
      */
     public void greeting(Update update) {
@@ -381,6 +394,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод для запуска меню
+     *
      * @param update доступное обновление
      * @return меню для пользователя с кнопками
      */
@@ -437,6 +451,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, выдающий информацию для пользователя
+     *
      * @param update доступное обновление
      */
     // method sends information to the user
@@ -458,7 +473,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     // Подменю по рекомендациям
 
-    private SendMessage recommendationMenu(Update update){
+    private SendMessage recommendationMenu(Update update) {
         String message = "Список рекомендаций";
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
@@ -487,8 +502,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         recom.replyMarkup(inlineKeyboardMarkup);
         return recom;
     }
+
     // Подменю по советам
-    private SendMessage advicesMenu(Update update){
+    private SendMessage advicesMenu(Update update) {
         String message = "Список советов";
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
@@ -515,26 +531,26 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
     // Метод обработки запроса на предоставления данных о приюте
 
-    private SendMessage shelterData(Update update){
+    private SendMessage shelterData(Update update) {
         logger.info("Shelter data ");
         String dataMessage = "Инфо по приюту: расписание, адрес, схема, контактные данные";
         SendMessage data = new SendMessage(update.callbackQuery().message().chat().id(), dataMessage);
         return data;
     }
 
-    private SendMessage  recommendationsTransportation(Update update) {
+    private SendMessage recommendationsTransportation(Update update) {
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
                 "Рекомендации по транспортировке");
         return message;
     }
 
-    private SendMessage  recommendationsDog(Update update) {
+    private SendMessage recommendationsDog(Update update) {
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
                 "Рекомендации по уходу за собакой");
         return message;
     }
 
-    private SendMessage  recommendationsPuppy(Update update) {
+    private SendMessage recommendationsPuppy(Update update) {
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
                 "Рекомендации по уходу за щенком");
         return message;
@@ -548,24 +564,53 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, выдающий советы пользователю
+     *
      * @param update доступное обновление
-     * @return сообщение пользователю
+     * @return сообщение и документ пользователю
      */
-    private SendMessage advicesCynologists(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Советы от кинолога");
-        return message;
-    }
-    private SendMessage  listCynologists(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Лист проверенных кинологов");
-        return message;
+    private SendDocument advicesCynologists(Update update) {
+        String path = "src/main/resources/adviсe/Cynologist_adviсes.pdf";
+        File advices = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                advices);
+        sendDocument.caption("В этом докуметне, мы собрали ответы на самые важные вопросы по воспитанию " +
+                "и дресеровке вашего питомца \u2191 ");
+        return sendDocument;
     }
 
-    private SendMessage reasonsRefusal(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Причины отказа");
-        return message;
+    /**
+     * Метод, выдающий советы пользователю
+     *
+     * @param update доступное обновление
+     * @return сообщение и документ пользователю
+     */
+    private SendDocument listCynologists(Update update) {
+        String path = "src/main/resources/adviсe/List_of_cynologists.pdf";
+        File listCynologists = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                listCynologists);
+        sendDocument.caption("Мы подобрали небольшой список кинологов  \u2191, которые заслужили наше доверие, вы можете смело " +
+                "обращаться к ним за помощью и быть уверенны, что ваш питомец в надежных руках!");
+        return sendDocument;
+    }
+
+    /**
+     * Метод, выдающий советы пользователю
+     *
+     * @param update доступное обновление
+     * @return сообщение и документ пользователю
+     */
+    private SendDocument reasonsRefusal(Update update) {
+        String path = "src/main/resources/adviсe/Reasons_refusal.pdf";
+        File reasonsRefusal = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                reasonsRefusal);
+        sendDocument.caption("Все причины для отказа сводятся к желанию сделать так, чтобы животное, " +
+                "которое уже успело вкусить прелести уличной жизни, не оказалась выброшенным снова. " +
+                "Поэтому вряд ли стоит обижаться на работников приюта, " +
+                "если они не позволили вам забрать домой понравившегося питомца. \n" +
+                "\nС самыми частыми причинами отказов можете ознакомиться в прикрепленном файле \u2191");
+        return sendDocument;
     }
 
     // The method calls the volunteer
