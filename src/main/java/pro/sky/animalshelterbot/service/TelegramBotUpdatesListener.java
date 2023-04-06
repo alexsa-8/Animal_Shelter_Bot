@@ -6,6 +6,8 @@ import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.KeyboardButton;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
@@ -14,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.constant.OwnerStatus;
+import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.repository.DogRepository;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
@@ -44,18 +48,22 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     private final TelegramBot telegramBot;
     private final DogRepository dogRepository;
+    private final OwnerDogService ownerDogService;
 
     /**
      * Конструктор
      *
-
      * @param telegramBot   телеграм бот
      * @param dogRepository бд собак
      */
     public TelegramBotUpdatesListener(TelegramBot telegramBot,
-                                      DogRepository dogRepository) {
+                                      DogRepository dogRepository, OwnerDogService ownerDogService) {
         this.telegramBot = telegramBot;
+
+        this.ownerDogService = ownerDogService;
+
         this.dogRepository = dogRepository;
+
         telegramBot.execute(new SetMyCommands(
                 new BotCommand(Commands.START.getTitle(), Commands.START.getDescription()),
                 new BotCommand(Commands.INFO.getTitle(), Commands.INFO.getDescription()),
@@ -82,16 +90,30 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         try {
             updates.forEach(update -> {
                 if (update.message() != null) {
+
                     String message = update.message().text();
-                    if (message.equals(Commands.START.getTitle())) {
+
+                    if (update.message() != null && update.message().text() != null
+                            && message.equals(Commands.START.getTitle())) {
                         greeting(update);
                         description(update);
-                    } else if (message.equals(Commands.INFO.getTitle())) {
+                    } else if (update.message() != null && update.message().text() != null
+                            && message.equals(Commands.INFO.getTitle())) {
                         info(update);
-                    } else if (message.equals(Commands.CALL_VOLUNTEER.getTitle())) {
+                    } else if (update.message() != null && update.message().text() != null
+                            && message.equals(Commands.CALL_VOLUNTEER.getTitle())) {
                         volunteerMenu(update);
+                    } else if (update.message().contact() != null) {
+                        ownerDogService.create(new OwnerDog(update.message().chat().id(),
+                                update.message().contact().firstName(),
+                                update.message().contact().phoneNumber(),
+                                20,
+                                OwnerStatus.IN_SEARCH), OwnerStatus.IN_SEARCH);
+                        telegramBot.execute(new SendMessage(update.message().chat().id(),
+                                "Мы свяжемся с вами в ближайшее время!"));
                     } else {
-                        telegramBot.execute(new SendMessage(update.message().chat().id(), "Команда не найдена повторите запрос"));
+                        telegramBot.execute(new SendMessage(update.message().chat().id(),
+                                "Команда не найдена повторите запрос"));
                     }
                 } else if (update.callbackQuery() != null) {
                     telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
@@ -160,7 +182,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         telegramBot.execute(reasonsRefusal(update));
                     } else if (update.callbackQuery() != null && update.callbackQuery().data()
                             .equals(Commands.CONTACT_DETAILS.getCallbackData())) {
-                        telegramBot.execute(contactDetails(update));
+                        contactDetails(update);
                     } else if (update.callbackQuery() != null && update.callbackQuery().data()
                             .equals(Commands.CALL_VOLUNTEER.getCallbackData())) {
                         telegramBot.execute(volunteerMenu(update));
@@ -197,21 +219,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @param update доступное обновление
      * @return сообщение пользователю
      */
-    private SendMessage contactDetails(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Контакты пользователя сохранить");
-        return message;
-    }
 
+    private void contactDetails(Update update) {
 
-    /**
-     * Метод, выдающий советы пользователю
-     * @param update доступное обновление
-     * @return сообщение пользователю
-     */
-    private SendMessage advices(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Советы по уходу и всему всему, отдельное меню надо");
-        return message;
+        ReplyKeyboardMarkup msg = new ReplyKeyboardMarkup(new KeyboardButton("Оставить контактные данные").requestContact(true));
+        msg.resizeKeyboard(true);
+
+        SendMessage sendMessage = new SendMessage(update.callbackQuery().message().chat().id(),
+                "Оставьте свой контакт и мы свяжемся с вами в ближайшее время");
+        sendMessage.replyMarkup(msg);
+        telegramBot.execute(sendMessage);
     }
 
     /**
