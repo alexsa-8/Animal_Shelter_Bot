@@ -31,8 +31,10 @@ import java.util.regex.Pattern;
 /**
  * Сервис TelegramBotUpdatesListener
  * Сервис для обработки доступных обновлений в чате
+ *
  * @author Kilikova Anna
  * @author Bogomolov Ilya
+ * @author Marina Gubina
  * @see UpdatesListener
  */
 @Service
@@ -68,7 +70,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         this.dogRepository = dogRepository;
     }
 
-
+    /**
+     * Метод, выполняющийся после инициализации объекта, задает обработчик обновлений
+     */
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
@@ -239,8 +243,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     /**
-     * Метод, выдающий список документов для позователя
-     *
+     * Метод, выдающий список документов для пользователя
      * @param update доступное обновление
      * @return сообщение c документом пользователю
      */
