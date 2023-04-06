@@ -53,6 +53,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     /**
      * Конструктор
      *
+
      * @param telegramBot   телеграм бот
      * @param dogRepository бд собак
      */
@@ -106,9 +107,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     } else if (update.message().contact() != null) {
                         ownerDogService.create(new OwnerDog(update.message().chat().id(),
                                 update.message().contact().firstName(),
-                                update.message().contact().phoneNumber(),
-                                20,
-                                OwnerStatus.IN_SEARCH), OwnerStatus.IN_SEARCH);
+                                update.message().contact().phoneNumber()), OwnerStatus.IN_SEARCH);
                         telegramBot.execute(new SendMessage(update.message().chat().id(),
                                 "Мы свяжемся с вами в ближайшее время!"));
                     } else {
