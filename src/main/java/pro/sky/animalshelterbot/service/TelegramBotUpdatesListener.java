@@ -10,30 +10,42 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.constant.OwnerStatus;
+import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.repository.DogRepository;
+import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
  * Сервис TelegramBotUpdatesListener
  * Сервис для обработки доступных обновлений в чате
- *
  * @author Kilikova Anna
  * @author Bogomolov Ilya
  * @see UpdatesListener
  */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
+
+    /**
+     * Поле: объект, который запускает события журнала.
+     */
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
+    /**
+     * Поле: телеграм бот
+     */
     private final TelegramBot telegramBot;
     private final DogRepository dogRepository;
     private final OwnerDogService ownerDogService;
@@ -197,7 +209,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод для сохранения контактных данных пользователя
-     *
      * @param update доступное обновление
      * @return сообщение пользователю
      */
@@ -214,7 +225,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, выдающий рекомендации о технике безопасности пользователю
-     *
      * @param update доступное обновление
      * @return документ с рекомендации по технике безопасности
      */
@@ -248,7 +258,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, выдающий информацию по знакомству с питомцем для пользователя
-     *
      * @param update доступное обновление
      * @return сообщение пользователю
      */
@@ -260,7 +269,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, присылающий форму отчета для пользователя
-     *
      * @param update доступное обновление
      * @return форма отчета
      */
@@ -272,7 +280,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, присылающий информацию по связи с волонтером для пользователя
-     *
      * @param update доступное обновление
      * @return сообщение пользователю
      */
@@ -283,7 +290,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, вызывающий подменю по отчетам
-     *
      * @param update доступное обновление
      * @return меню для пользователя с кнопками
      */
@@ -311,7 +317,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, вызывающий подменю по животным
-     *
      * @param update доступное обновление
      * @return меню для пользователя с кнопками
      */
@@ -361,7 +366,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, присылающий информацию по приюту для пользователя
-     *
      * @param update доступное обновление
      * @return сообщение пользователю
      */
@@ -388,7 +392,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, присылающий приветствие для пользователя
-     *
      * @param update доступное обновление
      */
     public void greeting(Update update) {
@@ -408,7 +411,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод для запуска меню
-     *
      * @param update доступное обновление
      * @return меню для пользователя с кнопками
      */
@@ -465,7 +467,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     /**
      * Метод, выдающий информацию для пользователя
-     *
      * @param update доступное обновление
      */
     // method sends information to the user
@@ -516,7 +517,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         recom.replyMarkup(inlineKeyboardMarkup);
         return recom;
     }
-
     // Подменю по советам
     private SendMessage advicesMenu(Update update) {
         String message = "Список советов";
@@ -627,6 +627,29 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return sendDocument;
     }
 
+    /**
+     * Метод, выдающий советы пользователю
+     * @param update доступное обновление
+     * @return сообщение пользователю
+     */
+    private SendMessage advicesCynologists(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
+                "Советы от кинолога");
+        return message;
+    }
+    private SendMessage  listCynologists(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
+                "Лист проверенных кинологов");
+        return message;
+    }
+
+    private SendMessage reasonsRefusal(Update update) {
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
+                "Причины отказа");
+        return message;
+    }
+
     // The method calls the volunteer
+
 
 }
