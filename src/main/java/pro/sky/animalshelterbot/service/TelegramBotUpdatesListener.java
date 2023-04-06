@@ -8,21 +8,18 @@ import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
-import pro.sky.animalshelterbot.constant.OwnerStatus;
-import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.repository.DogRepository;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -30,6 +27,7 @@ import java.util.regex.Pattern;
  * Сервис для обработки доступных обновлений в чате
  * @author Kilikova Anna
  * @author Bogomolov Ilya
+ * @author Marina Gubina
  * @see UpdatesListener
  */
 @Service
@@ -46,23 +44,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final TelegramBot telegramBot;
     private final DogRepository dogRepository;
 
-    private final static Pattern PATTERN_MESSAGE = Pattern.compile(
-            "([\\W+]+)(\\s)(\\+7\\d{3}[-.]?\\d{3}[-.]?\\d{4})(\\s)([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+)");
-
-
-    private final OwnerDogRepository ownerDogRepository;
     /**
      * Конструктор
      *
      * @param telegramBot   телеграм бот
      * @param dogRepository бд собак
-     * @param ownerDogRepository бл владельцев
      */
     public TelegramBotUpdatesListener(TelegramBot telegramBot,
-                                      DogRepository dogRepository, OwnerDogRepository ownerDogRepository) {
+                                      DogRepository dogRepository) {
         this.telegramBot = telegramBot;
         this.dogRepository = dogRepository;
-        this.ownerDogRepository = ownerDogRepository;
         telegramBot.execute(new SetMyCommands(
                 new BotCommand(Commands.START.getTitle(), Commands.START.getDescription()),
                 new BotCommand(Commands.INFO.getTitle(), Commands.INFO.getDescription()),
@@ -209,30 +200,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @return сообщение пользователю
      */
     private SendMessage contactDetails(Update update) {
-        String text = update.message().text();
-        try {
-            if (text != null) {
-                Matcher matcher = PATTERN_MESSAGE.matcher(text);
-                if (matcher.find()) {
-                    String name = matcher.group(1);
-                    String phone = matcher.group(3);
-                    int age = Integer.parseInt(matcher.group(5));
-                    OwnerDog ownerDog = new OwnerDog();
-                    ownerDog.setChatId(update.message().chat().id());
-                    ownerDog.setName(name);
-                    ownerDog.setPhone(phone);
-                    ownerDog.setAge(age);
-                    ownerDog.setStatus(OwnerStatus.IN_SEARCH);
-                    ownerDogRepository.save(ownerDog);
-                    SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                            "Контакты пользователя сохранились, скоро с Вами свяжутня");
-                    telegramBot.execute(message);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Что-то ввели неверно");
-        }
-        return null;
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
+                "Контакты пользователя сохранить");
+        return message;
     }
 
 
@@ -561,11 +531,17 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
     // Метод обработки запроса на предоставления данных о приюте
 
-    private SendMessage shelterData(Update update){
-        logger.info("Shelter data ");
-        String dataMessage = "Инфо по приюту: расписание, адрес, схема, контактные данные";
-        SendMessage data = new SendMessage(update.callbackQuery().message().chat().id(), dataMessage);
-        return data;
+    private SendPhoto shelterData(Update update){
+        logger.info("Request to getting shelter data ");
+        String dataMessage = "  Доброго времени суток! Наши контактные данные:" +
+                "\n Адрес: г. Астана, Сарыарка район, Коктал ж/м, ул. Аккорган, 5в. " +
+                " \n Часы работы приюта: ежедневно с 11:00 до 18:00 \n Тел.: +7‒702‒481‒01‒58" +
+                " \n Email: animalshelterastaba@gmail.com  \n";
+        String path = "src/main/resources/shelterInfo/map.jpg";
+        File map = new File(path);
+        SendPhoto photo = new SendPhoto(update.callbackQuery().message().chat().id(), map);
+        photo.caption(dataMessage + " Схема проезда до нашего приюта \u2191");
+        return photo;
     }
 
     /**
@@ -574,7 +550,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @return документ формата pdf
      */
     private SendDocument recommendationsTransportation(Update update) {
-        String path = "src/main/resources/shelterInfo/Recommendations_of_Transportation.pdf";
+        logger.info("Request to recommendations of transportation dog");
+        String path = "src/main/resources/recommendations/Recommendations_of_Transportation.pdf";
         File recommendation = new File(path);
         SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                 recommendation);
@@ -589,7 +566,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @return документ формата pdf
      */
     private SendDocument recommendationsDog(Update update) {
-        String path = "src/main/resources/shelterInfo/Recommendations_for_Dog.pdf";
+        logger.info("Request to recommendations for dog");
+        String path = "src/main/resources/recommendations/Recommendations_for_Dog.pdf";
         File recommendation = new File(path);
         SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                 recommendation);
@@ -603,7 +581,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @return документ формата pdf
      */
     private SendDocument recommendationsPuppy(Update update) {
-        String path = "src/main/resources/shelterInfo/Recommendations_for_Puppy.pdf";
+        logger.info("Request to recommendations for puppy");
+        String path = "src/main/resources/recommendations/Recommendations_for_Puppy.pdf";
         File recommendation = new File(path);
         SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                 recommendation);
@@ -618,7 +597,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @return документ формата pdf
      */
     private SendDocument recommendationsDisabledDog(Update update) {
-        String path = "src/main/resources/shelterInfo/Recommendations_for_Disabled_Dog.pdf";
+        logger.info("Request to recommendations for disabled dog");
+        String path = "src/main/resources/recommendations/Recommendations_for_Disabled_Dog.pdf";
         File recommendation = new File(path);
         SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                 recommendation);
