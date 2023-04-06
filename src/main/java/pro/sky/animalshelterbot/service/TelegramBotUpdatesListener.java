@@ -10,6 +10,7 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import pro.sky.animalshelterbot.constant.Commands;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.repository.DogRepository;
+import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -30,6 +32,7 @@ import java.util.List;
  *
  * @author Kilikova Anna
  * @author Bogomolov Ilya
+ * @author Marina Gubina
  * @see UpdatesListener
  */
 @Service
@@ -50,19 +53,22 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     /**
      * Конструктор
      *
-     * @param telegramBot     телеграм бот
-     * @param ownerDogService
+     * @param telegramBot   телеграм бот
+     * @param dogRepository бд собак
      */
     public TelegramBotUpdatesListener(TelegramBot telegramBot,
                                       DogRepository dogRepository, OwnerDogService ownerDogService) {
         this.telegramBot = telegramBot;
+
         this.ownerDogService = ownerDogService;
+
+        this.dogRepository = dogRepository;
+
         telegramBot.execute(new SetMyCommands(
                 new BotCommand(Commands.START.getTitle(), Commands.START.getDescription()),
                 new BotCommand(Commands.INFO.getTitle(), Commands.INFO.getDescription()),
                 new BotCommand(Commands.CALL_VOLUNTEER.getTitle(), Commands.CALL_VOLUNTEER.getDescription())
         ));
-        this.dogRepository = dogRepository;
     }
 
     /**
@@ -213,6 +219,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * @param update доступное обновление
      * @return сообщение пользователю
      */
+
     private void contactDetails(Update update) {
 
         ReplyKeyboardMarkup msg = new ReplyKeyboardMarkup(new KeyboardButton("Оставить контактные данные").requestContact(true));
@@ -241,8 +248,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     /**
-     * Метод, выдающий список документов для позователя
-     *
+     * Метод, выдающий список документов для пользователя
      * @param update доступное обновление
      * @return сообщение c документом пользователю
      */
@@ -557,35 +563,80 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
     // Метод обработки запроса на предоставления данных о приюте
 
-    private SendMessage shelterData(Update update) {
-        logger.info("Shelter data ");
-        String dataMessage = "Инфо по приюту: расписание, адрес, схема, контактные данные";
-        SendMessage data = new SendMessage(update.callbackQuery().message().chat().id(), dataMessage);
-        return data;
+    private SendPhoto shelterData(Update update){
+        logger.info("Request to getting shelter data ");
+        String dataMessage = "  Доброго времени суток! Наши контактные данные:" +
+                "\n Адрес: г. Астана, Сарыарка район, Коктал ж/м, ул. Аккорган, 5в. " +
+                " \n Часы работы приюта: ежедневно с 11:00 до 18:00 \n Тел.: +7‒702‒481‒01‒58" +
+                " \n Email: animalshelterastaba@gmail.com  \n";
+        String path = "src/main/resources/shelterInfo/map.jpg";
+        File map = new File(path);
+        SendPhoto photo = new SendPhoto(update.callbackQuery().message().chat().id(), map);
+        photo.caption(dataMessage + " Схема проезда до нашего приюта \u2191");
+        return photo;
     }
 
-    private SendMessage recommendationsTransportation(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Рекомендации по транспортировке");
-        return message;
+    /**
+     * Метод получения рекомендации по транспортировке собаки
+     * @param update доступное обновление
+     * @return документ формата pdf
+     */
+    private SendDocument recommendationsTransportation(Update update) {
+        logger.info("Request to recommendations of transportation dog");
+        String path = "src/main/resources/recommendations/Recommendations_of_Transportation.pdf";
+        File recommendation = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                recommendation);
+        sendDocument.caption("С рекомендации по общим правилам транспортировки собак Вы можете ознакомиться  " +
+                "  в прикрепленном документе \u2191 ");
+        return sendDocument;
     }
 
-    private SendMessage recommendationsDog(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Рекомендации по уходу за собакой");
-        return message;
+    /**
+     * Метод получения рекомендации по обустройству дома для взрослой собаки
+     * @param update доступное обновление
+     * @return документ формата pdf
+     */
+    private SendDocument recommendationsDog(Update update) {
+        logger.info("Request to recommendations for dog");
+        String path = "src/main/resources/recommendations/Recommendations_for_Dog.pdf";
+        File recommendation = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                recommendation);
+        sendDocument.caption("С рекомендации по обустройству дома для взрослой собаки Вы можете ознакомиться  " +
+                "  в прикрепленном документе \u2191, а также посмотрите пункт Рекомендации по уходу за щенком");
+        return sendDocument;
+    }
+    /**
+     * Метод получения рекомендации по обустройству дома для щенка
+     * @param update доступное обновление
+     * @return документ формата pdf
+     */
+    private SendDocument recommendationsPuppy(Update update) {
+        logger.info("Request to recommendations for puppy");
+        String path = "src/main/resources/recommendations/Recommendations_for_Puppy.pdf";
+        File recommendation = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                recommendation);
+        sendDocument.caption("С рекомендации по обустройству дома для щенка Вы можете ознакомиться  " +
+                "  в прикрепленном документе \u2191 ");
+        return sendDocument;
     }
 
-    private SendMessage recommendationsPuppy(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Рекомендации по уходу за щенком");
-        return message;
-    }
-
-    private SendMessage recommendationsDisabledDog(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Рекомендации по обустройству собаки с ограниченными возможностями");
-        return message;
+    /**
+     * Метод получения рекомендации по обустройству дома для собаки с ОВЗ
+     * @param update доступное обновление
+     * @return документ формата pdf
+     */
+    private SendDocument recommendationsDisabledDog(Update update) {
+        logger.info("Request to recommendations for disabled dog");
+        String path = "src/main/resources/recommendations/Recommendations_for_Disabled_Dog.pdf";
+        File recommendation = new File(path);
+        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                recommendation);
+        sendDocument.caption("С рекомендации по обустройству дома для собаки с ограниченными возможностями " +
+                "Вы можете ознакомиться в прикрепленном документе \u2191 ");
+        return sendDocument;
     }
 
     /**
@@ -640,5 +691,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     // The method calls the volunteer
+
 
 }

@@ -2,13 +2,11 @@ package pro.sky.animalshelterbot.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.exception.DogNotFoundException;
 import pro.sky.animalshelterbot.exception.OwnerDogNotFoundException;
-import pro.sky.animalshelterbot.repository.DogRepository;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
 import java.util.Collection;
@@ -21,10 +19,13 @@ import java.util.Collection;
 
 @Service
 public class OwnerDogService {
-    @Autowired
-    private OwnerDogRepository repository;
+    private final OwnerDogRepository repository;
 
     private final static Logger log = LoggerFactory.getLogger(OwnerDog.class);
+
+    public OwnerDogService(OwnerDogRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Создание владельца собаки и сохранение его в БД
