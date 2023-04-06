@@ -51,13 +51,27 @@ public class Shelter {
      * Поле: часы работы приюта
      */
     @Column(name = "opening_hours", nullable = false)
-    private LocalDateTime openingHours;
+    private String openingHours;
 
     /**
      * Поле: схема расположения приюта на карте
      */
     @Column(name = "map", nullable = false)
     private byte[] map;
+
+    public Shelter(Long id, String name, String address, String phone, String mail, String openingHours, byte[] map) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.mail = mail;
+        this.openingHours = openingHours;
+        this.map = map;
+    }
+
+    public Shelter() {
+
+    }
 
     public Long getId() {
         return id;
@@ -99,11 +113,11 @@ public class Shelter {
         this.mail = mail;
     }
 
-    public LocalDateTime getOpeningHours() {
+    public String getOpeningHours() {
         return openingHours;
     }
 
-    public void setOpeningHours(LocalDateTime openingHours) {
+    public void setOpeningHours(String openingHours) {
         this.openingHours = openingHours;
     }
 
