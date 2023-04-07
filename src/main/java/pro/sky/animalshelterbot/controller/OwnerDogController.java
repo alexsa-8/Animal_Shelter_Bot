@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +25,12 @@ import java.util.Collection;
 @RestController
 @RequestMapping("owners")
 public class OwnerDogController {
-    @Autowired
-    private OwnerDogService service;
+
+    private final OwnerDogService service;
+
+    public OwnerDogController(OwnerDogService service) {
+        this.service = service;
+    }
 
     @Operation(
             summary = "Добавление владельца в базу данных",
