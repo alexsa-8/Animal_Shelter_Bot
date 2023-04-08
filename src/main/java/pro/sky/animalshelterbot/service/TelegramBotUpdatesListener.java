@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
-import pro.sky.animalshelterbot.constant.OwnerStatus;
-import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.repository.DogRepository;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
@@ -86,129 +84,146 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @Override
     public int process(List<Update> updates) {
         try {
-            updates.forEach(update -> {
-                if (update.message() != null) {
-
-                    String message = update.message().text();
-
-                    if (update.message() != null && update.message().text() != null
-                            && message.equals(Commands.START.getTitle())) {
-                        greeting(update);
-                        description(update);
-                    } else if (update.message() != null && update.message().text() != null
-                            && message.equals(Commands.INFO.getTitle())) {
-                        info(update);
-                    } else if (update.message() != null && update.message().text() != null
-                            && message.equals(Commands.CALL_VOLUNTEER.getTitle())) {
-                        volunteerMenu(update);
-                    } else if (update.message().contact() != null) {
-                        ownerDogService.create(new OwnerDog(update.message().chat().id(),
-                                update.message().contact().firstName(),
-                                update.message().contact().phoneNumber(),
-                                20,
-                                OwnerStatus.IN_SEARCH), OwnerStatus.IN_SEARCH);
-                        telegramBot.execute(new SendMessage(update.message().chat().id(),
-                                "Мы свяжемся с вами в ближайшее время!"));
-                    } else {
-                        telegramBot.execute(new SendMessage(update.message().chat().id(),
-                                "Команда не найдена повторите запрос"));
-                    }
-                } else if (update.callbackQuery() != null) {
-                    telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
-                            update.callbackQuery().data()));
-                    //startMenu
-                    if (update.callbackQuery() != null && update.callbackQuery().data().equals(" ")) {
-                        telegramBot.execute(startMenu(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.BACK.getCallbackData())) {
-                        telegramBot.execute(startMenu(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.BACK_TO_ANIMAL_MENU.getCallbackData())) {
-                        telegramBot.execute(animalInfoMenu(update));
-                    }
-                    //shelterInfoMenu
-                    else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.INFO.getCallbackData())) {
-                        telegramBot.execute(shelterInfoMenu(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.SHELTER_RECOMMENDATIONS.getCallbackData())) {
-                        telegramBot.execute(shelterRecommendation(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.SHELTER_DATA.getCallbackData())) {
-                        telegramBot.execute(shelterData(update));
-                    }
-                    //animalInfoMenu
-                    else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.ANIMAL_INFO.getCallbackData())) {
-                        telegramBot.execute(animalInfoMenu(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.DATING_RULES.getCallbackData())) {
-                        telegramBot.execute(datingRules(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.LIST_DOCUMENTS.getCallbackData())) {
-                        telegramBot.execute(listDocuments(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.RECOMMENDATIONS.getCallbackData())) {
-                        telegramBot.execute(recommendationMenu(update));
-                    }
-                    //подменю по рекомендациям
-                    else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.RECOMMENDATIONS_TRANSPORTATION.getCallbackData())) {
-                        telegramBot.execute(recommendationsTransportation(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.RECOMMENDATIONS_DOG.getCallbackData())) {
-                        telegramBot.execute(recommendationsDog(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.RECOMMENDATIONS_PUPPY.getCallbackData())) {
-                        telegramBot.execute(recommendationsPuppy(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.RECOMMENDATIONS_DISABLED_DOG.getCallbackData())) {
-                        telegramBot.execute(recommendationsDisabledDog(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.ADVICES.getCallbackData())) {
-                        telegramBot.execute(advicesMenu(update));
-                    }
-                    // подменю по советам
-                    else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.ADVICES_CYNOLOGISTS.getCallbackData())) {
-                        telegramBot.execute(advicesCynologists(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.LIST_CYNOLOGISTS.getCallbackData())) {
-                        telegramBot.execute(listCynologists(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.REASONS_REFUSAL.getCallbackData())) {
-                        telegramBot.execute(reasonsRefusal(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.CONTACT_DETAILS.getCallbackData())) {
-                        contactDetails(update);
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.CALL_VOLUNTEER.getCallbackData())) {
-                        telegramBot.execute(volunteerMenu(update));
-                    }
-
-                    //submitReportMenu
-                    else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.SUBMIT_REPORT.getCallbackData())) {
-                        telegramBot.execute(submitReportMenu(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.REPORT_FORM.getCallbackData())) {
-                        telegramBot.execute(reportForm(update));
-                    } else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.CALL_VOLUNTEER.getCallbackData())) {
-                        telegramBot.execute(volunteerMenu(update));
-                    }
-
-                    //volunteerMenu
-                    else if (update.callbackQuery() != null && update.callbackQuery().data()
-                            .equals(Commands.CALL_VOLUNTEER.getCallbackData())) {
-                        telegramBot.execute(volunteerMenu(update));
-                    }
-                }
-            });
+            updates.forEach(update -> processUpdate(update));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
+    }
+
+    /**
+     * Обработчик обратного вызова с доступными обновлениями,
+     * проверяет было отправлено сообщение или нажата кнопка
+     *
+     * @param update доступные обновления
+     */
+    private void processUpdate(Update update) {
+        if (update.message() != null) {
+            processMessage(update);
+        } else if (update.callbackQuery() != null) {
+            processCallbackQuery(update);
+        }
+    }
+
+    /**
+     * Обработка принятых сообщений от пользователя
+     *
+     * @param update доступные обновления
+     */
+    private void processMessage(Update update) {
+        if (update.message().text() == null) {
+            return;
+        }
+        StringBuilder command = new StringBuilder(update.message().text());
+        command.delete(0, 1);
+        switch (Commands.valueOf(command.toString().toUpperCase())) {
+            case START:
+                greeting(update);
+                description(update);
+                break;
+            case INFO:
+                info(update);
+                break;
+            case CALL_VOLUNTEER:
+                volunteerMenu(update);
+                break;
+            default:
+                telegramBot.execute(new SendMessage(update.message().chat().id(), "Команда не найдена повторите запрос"));
+                break;
+        }
+    }
+
+    /**
+     * Обработка нажатия кнопки пользователем
+     *
+     * @param update доступные обновления
+     */
+    private void processCallbackQuery(Update update) {
+        String data = update.callbackQuery().data();
+        String command = null;
+        for (Commands currentCommand : Commands.values()) {
+            if (currentCommand.getCallbackData().equals(data)) {
+                command = currentCommand.name();
+            }
+        }
+        switch (Commands.valueOf(command)) {
+            // Стартовое меню
+            case NO:
+                telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                        "Мы будем ждать твоего возвращения!"));
+                break;
+            case START_MENU:
+            case BACK:
+                telegramBot.execute(startMenu(update));
+                break;
+            // Информационное меню приюта
+            case BACK_TO_ANIMAL_MENU:
+            case ANIMAL_INFO:
+                telegramBot.execute(animalInfoMenu(update));
+                break;
+            case DATING_RULES:
+                telegramBot.execute(datingRules(update));
+                break;
+            case LIST_DOCUMENTS:
+                telegramBot.execute(listDocuments(update));
+                break;
+            // Подменю по рекомендациям
+            case RECOMMENDATIONS:
+                telegramBot.execute(recommendationMenu(update));
+                break;
+            case RECOMMENDATIONS_TRANSPORTATION:
+                telegramBot.execute(recommendationsTransportation(update));
+                break;
+            case RECOMMENDATIONS_DOG:
+                telegramBot.execute(recommendationsDog(update));
+                break;
+            case RECOMMENDATIONS_PUPPY:
+                telegramBot.execute(recommendationsPuppy(update));
+                break;
+            case RECOMMENDATIONS_DISABLED_DOG:
+                telegramBot.execute(recommendationsDisabledDog(update));
+                break;
+            // Подменю по советам
+            case ADVICES:
+                telegramBot.execute(advicesMenu(update));
+                break;
+            case ADVICES_CYNOLOGISTS:
+                telegramBot.execute(advicesCynologists(update));
+                break;
+            case LIST_CYNOLOGISTS:
+                telegramBot.execute(listCynologists(update));
+                break;
+            case REASONS_REFUSAL:
+                telegramBot.execute(reasonsRefusal(update));
+                break;
+            case CONTACT_DETAILS:
+                contactDetails(update);
+                break;
+            // Меню волонтера
+            case CALL_VOLUNTEER:
+                telegramBot.execute(volunteerMenu(update));
+                break;
+            // Меню информации о приюте
+            case INFO:
+                telegramBot.execute(shelterInfoMenu(update));
+                break;
+            case SHELTER_RECOMMENDATIONS:
+                telegramBot.execute(shelterRecommendation(update));
+                break;
+            case SHELTER_DATA:
+                telegramBot.execute(shelterData(update));
+                break;
+            // Меню отправки отчета
+            case SUBMIT_REPORT:
+                telegramBot.execute(submitReportMenu(update));
+                break;
+            case REPORT_FORM:
+                telegramBot.execute(reportForm(update));
+                break;
+            default:
+                telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
+                        "Упс... что-то пошло не так, мы скоро решим проблему, не переживайте"));
+        }
     }
 
     /**
@@ -457,8 +472,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("ДА").callbackData(" "),
-                new InlineKeyboardButton("Я еще подумаю").callbackData("Мы будем тебя ждать!")
+                new InlineKeyboardButton("ДА").callbackData(Commands.START_MENU.getCallbackData()),
+                new InlineKeyboardButton("Я еще подумаю").callbackData(Commands.NO.getCallbackData())
         );
 
         SendMessage description = new SendMessage(update.message().chat().id(), desc);
