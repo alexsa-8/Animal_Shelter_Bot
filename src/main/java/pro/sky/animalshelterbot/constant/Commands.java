@@ -8,6 +8,8 @@ package pro.sky.animalshelterbot.constant;
  * @author Bogomolov Ilya
  */
 public enum Commands {
+    NO("/no", "Отказ перед стартовым меню", generateCallbackData()),
+    START_MENU("/start_menu", "Start menu", generateCallbackData()),
     CONTACT_DETAILS("/contact_details", "Оставить контактные данные", generateCallbackData()),
     ADVICES("/advices", "Советы", generateCallbackData()),
     LIST_DOCUMENTS("/list_documents", "Список документов", generateCallbackData()),
@@ -70,8 +72,8 @@ public enum Commands {
      * @param callbackData данные обратного вызова нажатия кнопки
      */
     Commands(String title, String description, String callbackData) {
-        this.description = description;
         this.title = title;
+        this.description = description;
         this.callbackData = callbackData;
     }
 
@@ -113,4 +115,5 @@ public enum Commands {
         count += 1;
         return sb.toString();
     }
+
 }
