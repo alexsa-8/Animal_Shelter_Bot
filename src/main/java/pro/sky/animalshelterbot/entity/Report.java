@@ -2,39 +2,58 @@ package pro.sky.animalshelterbot.entity;
 
 import pro.sky.animalshelterbot.constant.ReportStatus;
 
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * Класс Report, представляет сущность отчета
  * @author Gubina Marina
  */
+@Entity
+@Table(name = "report")
 public class Report {
 
     /**
      * Поле: идентификационный номер отчета
      */
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
+
     /**
      * Поле: фото в отчете
      */
+    @Column(name = "photo",nullable = false)
     private byte[] photo;
+
     /**
      * Поле: рацион собаки
      */
+    @Column(name = "animal_diet", nullable = false)
     private String animalDiet;
+
     /**
      * Поле: общая информация
      */
+    @Column(name = "general_info",nullable = false)
     private String generalInfo;
+
     /**
      * Поле: изменения в поведении
      */
+    @Column(name = "change_behavior",nullable = false)
     private String changeBehavior;
+
     /**
      * Поле: статус отчета
      * @see ReportStatus
      */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private ReportStatus reportStatus;
 
     public Report(byte[] photo, String animalDiet, String generalInfo, String changeBehavior) {
@@ -43,6 +62,10 @@ public class Report {
         this.generalInfo = generalInfo;
         this.changeBehavior = changeBehavior;
         this.reportStatus = ReportStatus.REPORT_POSTED;
+    }
+
+    public Report(){
+
     }
 
     public Long getId() {
