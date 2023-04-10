@@ -71,4 +71,5 @@ ALTER TABLE report
     ADD COLUMN file_size BIGINT;
 
 ALTER TABLE report ALTER COLUMN photo TYPE oid;
+
     

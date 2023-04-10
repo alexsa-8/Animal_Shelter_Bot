@@ -203,7 +203,8 @@ public class Report {
                 ", animalDiet='" + animalDiet + '\'' +
                 ", generalInfo='" + generalInfo + '\'' +
                 ", changeBehavior='" + changeBehavior + '\'' +
-                ", dataMessage=" + dateMessage +
+                ", dateMessage=" + dateMessage +
+                ", days=" + days +
                 ", reportStatus=" + reportStatus +
                 '}';
     }

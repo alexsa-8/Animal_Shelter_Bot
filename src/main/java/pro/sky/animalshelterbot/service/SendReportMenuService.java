@@ -89,7 +89,6 @@ public class SendReportMenuService {
             String animalDiet = matcher.group(3);
             String generalIngo = matcher.group(7);
             String changeBehavior = matcher.group(9);
-
             GetFile getFile = new GetFile(update.message().photo()[1].fileId());
             GetFileResponse getFileResponse = telegramBot.execute(getFile);
             try {

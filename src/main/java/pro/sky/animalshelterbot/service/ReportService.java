@@ -52,9 +52,7 @@ public class ReportService {
         report.setChangeBehavior(changeBehavior);
         report.setDateMessage(dateMessage);
         report.setDays(daysOfReports);
-
         this.repository.save(report);
-
     }
 
     /**

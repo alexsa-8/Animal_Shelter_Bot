@@ -173,7 +173,7 @@ public class ProcessCallbackQueryService {
                 telegramBot.execute(sendReportMenuService.submitReportMenu(update));
                 break;
             case REPORT_FORM:
-                sendReportMenuService.reportForm(update);
+                 sendReportMenuService.reportForm(update);
                 break;
             default:
                 telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),

@@ -11,7 +11,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  * Класс Volunteer, представляет сущность волонтёра
  * @author Rogozin Alexandr
  */
-@Entity
+//@Entity
 @Table(name = "volunteer")
 public class Volunteer {
     /**
