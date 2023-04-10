@@ -3,6 +3,7 @@ package pro.sky.animalshelterbot.entity;
 import pro.sky.animalshelterbot.constant.ReportStatus;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -23,10 +24,13 @@ public class Report {
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-
+    private Long chatId;
+    private String filePath;
+    private long fileSize;
     /**
      * Поле: фото в отчете
      */
+    @Lob
     @Column(name = "photo",nullable = false)
     private byte[] photo;
 
@@ -48,6 +52,9 @@ public class Report {
     @Column(name = "change_behavior",nullable = false)
     private String changeBehavior;
 
+    private Date dateMessage;
+    private long days;
+
     /**
      * Поле: статус отчета
      * @see ReportStatus
@@ -56,7 +63,9 @@ public class Report {
     @Column(name = "status")
     private ReportStatus reportStatus;
 
-    public Report(byte[] photo, String animalDiet, String generalInfo, String changeBehavior) {
+    public Report(String filePath, long fileSize, byte[] photo, String animalDiet, String generalInfo, String changeBehavior, ReportStatus reportStatus) {
+        this.filePath = filePath;
+        this.fileSize = fileSize;
         this.photo = photo;
         this.animalDiet = animalDiet;
         this.generalInfo = generalInfo;
@@ -64,8 +73,36 @@ public class Report {
         this.reportStatus = ReportStatus.REPORT_POSTED;
     }
 
-    public Report(){
+    public Report(Long chatId, String filePath, long fileSize, byte[] photo, String animalDiet,
+                  String generalInfo, String changeBehavior, Date dataMessage, ReportStatus reportStatus) {
+        this.chatId = chatId;
+        this.filePath = filePath;
+        this.fileSize = fileSize;
+        this.photo = photo;
+        this.animalDiet = animalDiet;
+        this.generalInfo = generalInfo;
+        this.changeBehavior = changeBehavior;
+        this.dateMessage = dataMessage;
+        this.reportStatus = ReportStatus.REPORT_POSTED;
+    }
 
+    public Report(){
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public Date getDateMessage() {
+        return dateMessage;
     }
 
     public Long getId() {
@@ -96,6 +133,50 @@ public class Report {
         this.reportStatus = reportStatus;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
+    public void setAnimalDiet(String animalDiet) {
+        this.animalDiet = animalDiet;
+    }
+
+    public void setGeneralInfo(String generalInfo) {
+        this.generalInfo = generalInfo;
+    }
+
+    public void setChangeBehavior(String changeBehavior) {
+        this.changeBehavior = changeBehavior;
+    }
+
+    public void setDateMessage(Date dateMessage) {
+        this.dateMessage = dateMessage;
+    }
+
+    public long getDays() {
+        return days;
+    }
+
+    public void setDays(long days) {
+        this.days = days;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -115,10 +196,14 @@ public class Report {
     public String toString() {
         return "Report{" +
                 "id=" + id +
+                ", chatId=" + chatId +
+                ", filePath='" + filePath + '\'' +
+                ", fileSize=" + fileSize +
                 ", photo=" + Arrays.toString(photo) +
                 ", animalDiet='" + animalDiet + '\'' +
                 ", generalInfo='" + generalInfo + '\'' +
                 ", changeBehavior='" + changeBehavior + '\'' +
+                ", dataMessage=" + dateMessage +
                 ", reportStatus=" + reportStatus +
                 '}';
     }
