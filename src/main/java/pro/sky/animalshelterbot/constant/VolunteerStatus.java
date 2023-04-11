@@ -14,7 +14,6 @@ public enum VolunteerStatus {
 
     /**
      * Конструктор создания статуса волонтёра
-     *
      * @param description описание статуса волонтёра
      */
     VolunteerStatus(String description) {
@@ -23,7 +22,6 @@ public enum VolunteerStatus {
 
     /**
      * Получение описания статуса
-     *
      * @return описание
      */
     public String getDescription() {

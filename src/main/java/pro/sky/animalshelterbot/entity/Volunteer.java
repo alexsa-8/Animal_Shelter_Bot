@@ -5,20 +5,18 @@ import pro.sky.animalshelterbot.constant.VolunteerStatus;
 import javax.persistence.*;
 import java.util.Objects;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 /**
  * Класс Volunteer, представляет сущность волонтёра
  * @author Rogozin Alexandr
  */
-//@Entity
+@Entity
 @Table(name = "volunteer")
 public class Volunteer {
     /**
      * Поле: идентификационный номер волонтёра
      */
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -63,6 +61,12 @@ public class Volunteer {
     public Volunteer() {
     }
 
+    public Long getId() {return id;}
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -92,18 +96,19 @@ public class Volunteer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Volunteer volunteer = (Volunteer) o;
-        return Objects.equals(name, volunteer.name) && Objects.equals(phone, volunteer.phone) && status == volunteer.status;
+        return Objects.equals(id, volunteer.id) && Objects.equals(name, volunteer.name) && Objects.equals(phone, volunteer.phone) && status == volunteer.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, phone, status);
+        return Objects.hash(id, name, phone, status);
     }
 
     @Override
     public String toString() {
         return "Volunteer{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
                 ", status=" + status +
                 '}';
