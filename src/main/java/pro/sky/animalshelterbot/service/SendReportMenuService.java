@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,16 +41,13 @@ public class SendReportMenuService {
      * Поле: объект, который запускает события журнала.
      */
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
-    private static final String REGEX_MESSAGE = "(Рацион:)(\\s)(\\W+)(;)\n" +
-            "(Общая инфа:)(\\s)(\\W+)(;)\n" +
-            "(Поведение:)(\\s)(\\W+)(;)";
+    private static final Pattern REGEX_MESSAGE = Pattern.compile("([0-9\\.\\:\\s]{16})(\\s)([\\W+]+)");
     @Autowired
     private ReportService reportService;
 
     @Autowired
     TelegramBot telegramBot;
 
-    private Long daysOfReports;
     /**
      * Метод, вызывающий подменю по отчетам
      *
@@ -82,32 +82,20 @@ public class SendReportMenuService {
      * @param update доступное обновление
      * @return форма отчета
      */
-    public void reportForm(Update update) {
-        Pattern pattern = Pattern.compile(REGEX_MESSAGE);
-        Matcher matcher = pattern.matcher(update.message().text());
+    public SendMessage reportForm(Update update) {
+        logger.info("test");
+        Matcher matcher = REGEX_MESSAGE.matcher(update.callbackQuery().data());
         if (matcher.matches()) {
             String animalDiet = matcher.group(3);
             String generalIngo = matcher.group(7);
-            String changeBehavior = matcher.group(9);
-            GetFile getFile = new GetFile(update.message().photo()[1].fileId());
-            GetFileResponse getFileResponse = telegramBot.execute(getFile);
-            try {
-                File file = getFileResponse.file();
-                file.fileSize();
-                String fullPathPhoto = file.filePath();
-
-                long timeDate = update.message().date();
-                Date dateSendMessage = new Date(timeDate * 1000);
-                byte[] fileContent = telegramBot.getFileContent(file);
-
-                reportService.downloadReport(update.message().chat().id(), fileContent, file,
-                        animalDiet, generalIngo, changeBehavior, fullPathPhoto, dateSendMessage, daysOfReports);
-
-                telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), "Отчет успешно принят!"));
-            } catch (IOException e) {
-                System.out.println("Ошибка загрузки фото!");
-            }
+            String changeBehavior = matcher.group(11);
+            LocalDate date = LocalDate.now();
+           reportService.downloadReport(update.message().chat().id(),
+                        animalDiet, generalIngo, changeBehavior, date.atStartOfDay());
         }
-        }
+        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(), "Отчет успешно принят!");
+        telegramBot.execute(message);
+        return message;
+    }
 
 }

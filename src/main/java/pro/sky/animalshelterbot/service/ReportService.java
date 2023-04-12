@@ -10,6 +10,9 @@ import pro.sky.animalshelterbot.exception.ReportNotFoundException;
 import pro.sky.animalshelterbot.repository.ReportRepository;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Date;
 
@@ -40,18 +43,15 @@ public class ReportService {
         return repository.save(report);
     }
 
-    public void downloadReport(Long id, byte[] photo, File file, String animalDiet, String generalInfo, String changeBehavior,
-                               String filePath, Date dateMessage, long daysOfReports) throws IOException {
+    public void downloadReport(Long id, String animalDiet, String generalInfo, String changeBehavior,
+                             LocalDateTime dateMessage) {
         Report report = new Report();
         report.setChatId(id);
-        report.setPhoto(photo);
-        report.setFilePath(filePath);
-        report.setFileSize(file.fileSize());
         report.setAnimalDiet(animalDiet);
         report.setGeneralInfo(generalInfo);
         report.setChangeBehavior(changeBehavior);
-        report.setDateMessage(dateMessage);
-        report.setDays(daysOfReports);
+        report.setLocalDate(dateMessage.toLocalDate());
+
         this.repository.save(report);
     }
 

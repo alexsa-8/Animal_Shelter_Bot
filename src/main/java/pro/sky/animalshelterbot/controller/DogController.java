@@ -72,7 +72,7 @@ public class DogController {
             tags = "Собаки"
     )
     @GetMapping("{id}")
-    public ResponseEntity<Dog> findDog(@Parameter(description = "Ввод id собаки", name = "ID собаки") @PathVariable Long id) {
+    public ResponseEntity<Dog> findDog(@PathVariable Long id) {
         Dog dog = service.findDog(id);
         if (dog == null) {
             return ResponseEntity.notFound().build();
