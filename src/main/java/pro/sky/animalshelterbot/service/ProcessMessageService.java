@@ -2,14 +2,21 @@ package pro.sky.animalshelterbot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Сервис ProcessMessageService
@@ -33,13 +40,21 @@ public class ProcessMessageService {
      */
     private final TelegramBot telegramBot;
 
+    private static final Pattern REPORT_PATTERN = Pattern.compile(
+            "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)\n" +
+                    "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)\n" +
+                    "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)");
+    private final ReportService reportService;
+
     /**
      * Конструктор
      *
-     * @param telegramBot  телеграм бот
+     * @param telegramBot   телеграм бот
+     * @param reportService
      */
-    public ProcessMessageService(TelegramBot telegramBot) {
+    public ProcessMessageService(TelegramBot telegramBot, ReportService reportService) {
         this.telegramBot = telegramBot;
+        this.reportService = reportService;
     }
 
     /**
@@ -132,5 +147,43 @@ public class ProcessMessageService {
     private SendMessage volunteerMenu(Update update) {
         SendMessage volunteer = new SendMessage(update.callbackQuery().message().chat().id(), "Волонтер скоро с вами свяжется\uD83D\uDE09");
         return volunteer;
+    }
+
+    public void downloadReport(Update update) {
+        String text = update.message().caption();
+        Matcher matcher = REPORT_PATTERN.matcher(text);
+
+        System.out.println(text);
+
+        if (matcher.matches()) {
+            String animalDiet = matcher.group(3);
+            String generalInfo = matcher.group(6);
+            String changeBehavior = matcher.group(9);
+
+            if (animalDiet != null && generalInfo != null && changeBehavior != null) {
+                GetFile getFileRequest = new GetFile(update.message().photo()[1].fileId());
+                GetFileResponse getFileResponse = telegramBot.execute(getFileRequest);
+                try {
+                    File file = getFileResponse.file();
+                    file.fileSize();
+
+                    byte[] photo = telegramBot.getFileContent(file);
+                    reportService.downloadReport(update.message().chat().id(), animalDiet, generalInfo, changeBehavior, photo);
+                    telegramBot.execute(new SendMessage(update.message().chat().id(), "Отчет успешно принят!"));
+
+                } catch (IOException e) {
+                    logger.error("Ошибка загрузки фото");
+                    telegramBot.execute(new SendMessage(update.message().chat().id(),
+                            "Ошибка загрузки фото"));
+                }
+            }
+            else {
+                telegramBot.execute(new SendMessage(update.message().chat().id(),
+                        "Введены не все данные! Повторите ввод!"));
+            }
+        }
+        else {telegramBot.execute(new SendMessage(update.message().chat().id(),
+                "Некорректный формат"));
+        }
     }
 }

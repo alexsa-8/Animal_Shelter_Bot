@@ -24,6 +24,8 @@ public class Report {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "chat_id", nullable = false)
+    private Long chatId;
     /**
      * Поле: фото в отчете
      */
@@ -56,7 +58,8 @@ public class Report {
     @Column(name = "status")
     private ReportStatus reportStatus;
 
-    public Report(byte[] photo, String animalDiet, String generalInfo, String changeBehavior) {
+    public Report(Long chatId, byte[] photo, String animalDiet, String generalInfo, String changeBehavior) {
+        this.chatId = chatId;
         this.photo = photo;
         this.animalDiet = animalDiet;
         this.generalInfo = generalInfo;
@@ -94,6 +97,30 @@ public class Report {
 
     public void setReportStatus(ReportStatus reportStatus) {
         this.reportStatus = reportStatus;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
+    public void setAnimalDiet(String animalDiet) {
+        this.animalDiet = animalDiet;
+    }
+
+    public void setGeneralInfo(String generalInfo) {
+        this.generalInfo = generalInfo;
+    }
+
+    public void setChangeBehavior(String changeBehavior) {
+        this.changeBehavior = changeBehavior;
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
     @Override

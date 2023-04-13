@@ -66,3 +66,7 @@ CREATE TABLE report
     change_behavior TEXT NOT NULL ,
     status          TEXT DEFAULT 'REPORT_POSTED'
 );
+
+-- changeset MarinaGubina:2
+
+ALTER TABLE report ADD COLUMN chat_id BIGINT;

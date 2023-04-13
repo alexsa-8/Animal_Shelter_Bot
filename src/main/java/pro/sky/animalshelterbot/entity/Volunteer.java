@@ -9,7 +9,7 @@ import java.util.Objects;
  * Класс Volunteer, представляет сущность волонтёра
  * @author Rogozin Alexandr
  */
-@Entity
+//@Entity
 @Table(name = "volunteer")
 public class Volunteer {
     /**
