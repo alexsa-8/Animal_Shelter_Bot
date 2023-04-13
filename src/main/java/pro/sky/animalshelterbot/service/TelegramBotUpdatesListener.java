@@ -100,9 +100,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
     private void processUpdate(Update update) {
         if (update.message() != null) {
-            processMessageService.processMessage(update);
+            if(update.message().photo() != null || update.message().caption()!=null){
+                processMessageService.downloadReport(update);
+            }
+            else {processMessageService.processMessage(update);}
         } else if (update.callbackQuery() != null) {
             processCallbackQueryService.processCallbackQuery(update);
         }
     }
+
 }

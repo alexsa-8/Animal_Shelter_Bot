@@ -1,5 +1,6 @@
 package pro.sky.animalshelterbot.service;
 
+import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+
 
 
 /**
@@ -27,6 +29,13 @@ public class SendReportMenuService {
      * Поле: объект, который запускает события журнала.
      */
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+
+    private final TelegramBot telegramBot;
+
+
+    public SendReportMenuService(TelegramBot telegramBot) {
+        this.telegramBot = telegramBot;
+    }
 
     /**
      * Метод, вызывающий подменю по отчетам
@@ -64,8 +73,11 @@ public class SendReportMenuService {
      */
     public SendMessage reportForm(Update update) {
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Форма отчета");
+                "ЗАГРУЗИТЕ ОТЧЕТ В ФОРМАТЕ \n" +
+                        "Рацион: данные о рационе \n"+
+                        "Информация: общая информация \n"+
+                        "Привычки: данные о изменении привычек \n"+
+                        "И прикрепите фото");
         return message;
     }
-
 }

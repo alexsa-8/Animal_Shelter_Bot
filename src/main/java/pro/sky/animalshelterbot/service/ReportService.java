@@ -37,6 +37,18 @@ public class ReportService {
         return repository.save(report);
     }
 
+    public Report downloadReport(Long chatId,String animalDiet, String generalInfo, String changeBehavior, byte[] photo){
+        log.info("Request to download report");
+        Report report = new Report();
+        report.setChatId(chatId);
+        report.setAnimalDiet(animalDiet);
+        report.setGeneralInfo(generalInfo);
+        report.setChangeBehavior(changeBehavior);
+        report.setPhoto(photo);
+
+        return repository.save(report);
+    }
+
     /**
      * Поиск отчета  в БД по id
      * Используется метод репозитория {@link ReportRepository#findById(Object)}
@@ -87,4 +99,5 @@ public class ReportService {
         log.info("Request to get all reports");
         return repository.findAll();
     }
+
 }
