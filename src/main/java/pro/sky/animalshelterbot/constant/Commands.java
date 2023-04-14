@@ -14,7 +14,7 @@ public enum Commands {
     ADVICES("/advices", "Советы", generateCallbackData()),
     LIST_DOCUMENTS("/list_documents", "Список документов", generateCallbackData()),
     DATING_RULES("/dating_rules", "Правила знакомства", generateCallbackData()),
-    REPORT_FORM("/report_form", "Форма отчета", generateCallbackData()),
+    REPORT_FORM("/report_form", "Отправить отчет", generateCallbackData()),
     CALL_VOLUNTEER("/volunteer", "Позвать волонтера", generateCallbackData()),
     INFO("/info", "Информация о приюте", generateCallbackData()),
     ANIMAL_INFO("/animal_info", "Информация как взять питомца", generateCallbackData()),

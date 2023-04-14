@@ -3,6 +3,7 @@ package pro.sky.animalshelterbot.entity;
 import pro.sky.animalshelterbot.constant.ReportStatus;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -24,8 +25,12 @@ public class Report {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    /**
+     * Поле: идентификационный номер чата
+     */
     @Column(name = "chat_id", nullable = false)
     private Long chatId;
+
     /**
      * Поле: фото в отчете
      */
@@ -51,6 +56,12 @@ public class Report {
     private String changeBehavior;
 
     /**
+     * Поле: дата отправки отчета
+     */
+    @Column(name = "date_message", nullable = false)
+    private LocalDate dateMessage;
+
+    /**
      * Поле: статус отчета
      * @see ReportStatus
      */
@@ -58,12 +69,14 @@ public class Report {
     @Column(name = "status")
     private ReportStatus reportStatus;
 
-    public Report(Long chatId, byte[] photo, String animalDiet, String generalInfo, String changeBehavior) {
+    public Report(Long chatId, byte[] photo, String animalDiet,
+                  String generalInfo, String changeBehavior, LocalDate date) {
         this.chatId = chatId;
         this.photo = photo;
         this.animalDiet = animalDiet;
         this.generalInfo = generalInfo;
         this.changeBehavior = changeBehavior;
+        this.dateMessage = date;
         this.reportStatus = ReportStatus.REPORT_POSTED;
     }
 
@@ -75,20 +88,52 @@ public class Report {
         return id;
     }
 
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
+    }
+
     public byte[] getPhoto() {
         return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
 
     public String getAnimalDiet() {
         return animalDiet;
     }
 
+    public void setAnimalDiet(String animalDiet) {
+        this.animalDiet = animalDiet;
+    }
+
     public String getGeneralInfo() {
         return generalInfo;
     }
 
+    public void setGeneralInfo(String generalInfo) {
+        this.generalInfo = generalInfo;
+    }
+
     public String getChangeBehavior() {
         return changeBehavior;
+    }
+
+    public void setChangeBehavior(String changeBehavior) {
+        this.changeBehavior = changeBehavior;
+    }
+
+    public LocalDate getDateMessage() {
+        return dateMessage;
+    }
+
+    public void setDateMessage(LocalDate dateMessage) {
+        this.dateMessage = dateMessage;
     }
 
     public ReportStatus getReportStatus() {
@@ -97,30 +142,6 @@ public class Report {
 
     public void setReportStatus(ReportStatus reportStatus) {
         this.reportStatus = reportStatus;
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
-    }
-
-    public void setAnimalDiet(String animalDiet) {
-        this.animalDiet = animalDiet;
-    }
-
-    public void setGeneralInfo(String generalInfo) {
-        this.generalInfo = generalInfo;
-    }
-
-    public void setChangeBehavior(String changeBehavior) {
-        this.changeBehavior = changeBehavior;
-    }
-
-    public Long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
     }
 
     @Override
