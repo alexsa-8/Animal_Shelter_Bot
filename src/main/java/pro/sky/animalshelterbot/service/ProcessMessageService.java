@@ -35,8 +35,7 @@ public class ProcessMessageService {
 
     /**
      * Конструктор
-     *
-     * @param telegramBot  телеграм бот
+     * @param telegramBot   телеграм бот
      */
     public ProcessMessageService(TelegramBot telegramBot) {
         this.telegramBot = telegramBot;
@@ -133,4 +132,5 @@ public class ProcessMessageService {
         SendMessage volunteer = new SendMessage(update.callbackQuery().message().chat().id(), "Волонтер скоро с вами свяжется\uD83D\uDE09");
         return volunteer;
     }
+
 }

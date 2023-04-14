@@ -58,3 +58,27 @@ CREATE TABLE report
     change_behavior TEXT NOT NULL ,
     status          TEXT DEFAULT 'REPORT_POSTED'
 );
+
+-- changeset klikli:5
+
+ALTER TABLE report
+    ADD COLUMN chat_id BIGINT,
+    ADD COLUMN date_message TIMESTAMP,
+    ADD COLUMN days BIGINT;
+
+ALTER TABLE report
+    ADD COLUMN file_path VARCHAR,
+    ADD COLUMN file_size BIGINT;
+
+
+-- changeset klikli:6
+
+ALTER TABLE report
+    DROP COLUMN days,
+    DROP COLUMN file_path,
+    DROP COLUMN file_size,
+    DROP COLUMN photo,
+    ALTER COLUMN date_message TYPE DATE;
+
+-- changeset MarinaGubina:2
+ALTER TABLE report ADD COLUMN  photo BYTEA;
