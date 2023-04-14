@@ -79,3 +79,6 @@ ALTER TABLE report
     DROP COLUMN file_size,
     DROP COLUMN photo,
     ALTER COLUMN date_message TYPE DATE;
+
+-- changeset MarinaGubina:2
+ALTER TABLE report ADD COLUMN  photo BYTEA;

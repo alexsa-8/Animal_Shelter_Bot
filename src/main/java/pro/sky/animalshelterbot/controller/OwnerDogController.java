@@ -134,8 +134,7 @@ public class OwnerDogController {
             tags = "Владельцы собак"
     )
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteDog(@Parameter(description = "Ввод id владельца", name = "ID владельца")
-                                              @PathVariable long id) {
+    public ResponseEntity<Void> deleteDog(@PathVariable long id) {
         service.delete(id);
         return ResponseEntity.ok().build();
     }

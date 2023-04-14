@@ -1,6 +1,5 @@
 package pro.sky.animalshelterbot.service;
 
-import com.pengrad.telegrambot.model.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -9,12 +8,8 @@ import pro.sky.animalshelterbot.entity.Report;
 import pro.sky.animalshelterbot.exception.ReportNotFoundException;
 import pro.sky.animalshelterbot.repository.ReportRepository;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * Сервис  ReportService
@@ -43,16 +38,19 @@ public class ReportService {
         return repository.save(report);
     }
 
-    public void downloadReport(Long id, String animalDiet, String generalInfo, String changeBehavior,
-                             LocalDateTime dateMessage) {
+    public Report downloadReport(Long chatId, String animalDiet, String generalInfo,
+                                 String changeBehavior, byte[] photo, LocalDate date){
+        log.info("Request to download report");
         Report report = new Report();
-        report.setChatId(id);
+        report.setChatId(chatId);
         report.setAnimalDiet(animalDiet);
         report.setGeneralInfo(generalInfo);
         report.setChangeBehavior(changeBehavior);
-        report.setLocalDate(dateMessage.toLocalDate());
+        report.setPhoto(photo);
+        report.setDateMessage(date);
+        report.setReportStatus(ReportStatus.REPORT_POSTED);
 
-        this.repository.save(report);
+        return repository.save(report);
     }
 
     /**
@@ -105,4 +103,5 @@ public class ReportService {
         log.info("Request to get all reports");
         return repository.findAll();
     }
+
 }
