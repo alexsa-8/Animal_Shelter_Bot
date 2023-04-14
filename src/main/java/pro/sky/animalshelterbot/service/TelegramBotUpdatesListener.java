@@ -47,19 +47,26 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final ProcessCallbackQueryService processCallbackQueryService;
 
     /**
+     * Поле: сервис по обработке отчетов
+     */
+    private final SendReportMenuService sendReportMenuService;
+
+    /**
      * Конструктор
      *
      * @param telegramBot                 телеграм бот
      * @param processMessageService       сервис по обработке сообщений
      * @param processCallbackQueryService сервис по обработке нажатия кнопок
+     * @param sendReportMenuService       сервис по обработке отчетов
      */
     public TelegramBotUpdatesListener(TelegramBot telegramBot,
                                       ProcessMessageService processMessageService,
-                                      ProcessCallbackQueryService processCallbackQueryService) {
+                                      ProcessCallbackQueryService processCallbackQueryService, SendReportMenuService sendReportMenuService) {
 
         this.telegramBot = telegramBot;
         this.processMessageService = processMessageService;
         this.processCallbackQueryService = processCallbackQueryService;
+        this.sendReportMenuService = sendReportMenuService;
 
         telegramBot.execute(new SetMyCommands(
                 new BotCommand(Commands.START.getTitle(), Commands.START.getDescription()),
@@ -101,7 +108,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private void processUpdate(Update update) {
         if (update.message() != null) {
             if(update.message().photo() != null || update.message().caption()!=null){
-                processMessageService.downloadReport(update);
+                sendReportMenuService.downloadReport(update);
             }
             else {processMessageService.processMessage(update);}
         } else if (update.callbackQuery() != null) {
