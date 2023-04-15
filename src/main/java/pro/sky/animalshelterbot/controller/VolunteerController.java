@@ -19,8 +19,8 @@ import java.util.Collection;
  * Сервис VolunteerController
  * Сервис используется для занесения усыновителя в БД, получения отчёта и обратная связь по нему,
  * предупреждение о задержке отчёта или его не полном заполнении, информация остаётся животное у хозяина или нет
- * @see VolunteerService
  * @author Rogozin Alexandr
+ * @see VolunteerService
  */
 
 @RestController
@@ -32,23 +32,23 @@ public class VolunteerController {
         this.service = service;
     }
 
-//    @Operation(
-//            summary = "Добавление волонтёра в базу данных",
-//            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-//                    description = "Добавленный волонтёр",
-//                    content = @Content(
-//                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-//                            schema = @Schema(implementation = Volunteer.class)
-//                    )
-//            ),
-//            tags = "Волонтёры"
-//    )
-//    @PostMapping
-//    public Volunteer create(RequestBody Volunteer volunteer,
-//                            @Parameter(description = "Установка статуса волонтёра", example = "ON_LINE")
-//                            @RequestParam(name = "Статус") VolunteerStatus status) {
-//        return service.create(volunteer, status);
-//    }
+    @Operation(
+            summary = "Добавление волонтёра в базу данных",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Добавленный волонтёр",
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Volunteer.class)
+                    )
+            ),
+            tags = "Волонтёры"
+    )
+    @PostMapping
+    public Volunteer create(@RequestBody Volunteer volunteer,
+                            @Parameter(description = "Установка статуса волонтёра", example = "ON_LINE")
+                            @RequestParam(name = "Статус") VolunteerStatus status) {
+        return service.create(volunteer, status);
+    }
 
     @Operation(
             summary = "Поиск волонтёра в базе данных по id",
