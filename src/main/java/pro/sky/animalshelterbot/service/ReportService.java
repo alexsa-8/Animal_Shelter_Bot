@@ -8,6 +8,7 @@ import pro.sky.animalshelterbot.entity.Report;
 import pro.sky.animalshelterbot.exception.ReportNotFoundException;
 import pro.sky.animalshelterbot.repository.ReportRepository;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 /**
@@ -34,6 +35,21 @@ public class ReportService {
      */
     public Report createReport(Report report){
         log.info("Request to create report {}",report);
+        return repository.save(report);
+    }
+
+    public Report downloadReport(Long chatId, String animalDiet, String generalInfo,
+                                 String changeBehavior, byte[] photo, LocalDate date){
+        log.info("Request to download report");
+        Report report = new Report();
+        report.setChatId(chatId);
+        report.setAnimalDiet(animalDiet);
+        report.setGeneralInfo(generalInfo);
+        report.setChangeBehavior(changeBehavior);
+        report.setPhoto(photo);
+        report.setDateMessage(date);
+        report.setReportStatus(ReportStatus.REPORT_POSTED);
+
         return repository.save(report);
     }
 
@@ -87,4 +103,5 @@ public class ReportService {
         log.info("Request to get all reports");
         return repository.findAll();
     }
+
 }

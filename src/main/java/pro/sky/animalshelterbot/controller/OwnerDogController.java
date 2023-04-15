@@ -72,8 +72,7 @@ public class OwnerDogController {
             tags = "Владельцы собак"
     )
     @GetMapping("{id}")
-    public ResponseEntity<OwnerDog> find(@Parameter(description = "Ввод id владельца", name = "ID владельца")
-                                             @PathVariable Long id) {
+    public ResponseEntity<OwnerDog> find(@PathVariable Long id) {
         OwnerDog ownerDog = service.find(id);
         if (ownerDog == null) {
             return ResponseEntity.notFound().build();
@@ -135,8 +134,7 @@ public class OwnerDogController {
             tags = "Владельцы собак"
     )
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteDog(@Parameter(description = "Ввод id владельца", name = "ID владельца")
-                                              @PathVariable long id) {
+    public ResponseEntity<Void> deleteDog(@PathVariable long id) {
         service.delete(id);
         return ResponseEntity.ok().build();
     }
