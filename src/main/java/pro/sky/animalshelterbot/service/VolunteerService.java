@@ -34,7 +34,7 @@ public class VolunteerService {
      * @return созданный волонтёр
      */
     public Volunteer create(Volunteer volunteer, VolunteerStatus status) {
-        LOGGER.info("Request to create owner dog {}", volunteer);
+        LOGGER.info("Request to create a volunteer {}", volunteer);
         volunteer.setStatus(status);
         return repository.save(volunteer);
     }
