@@ -29,7 +29,6 @@ import java.util.regex.Pattern;
 /**
  * Сервис TelegramBotUpdatesListener
  * Сервис для обработки доступных обновлений в чате
- *
  * @author Kilikova Anna
  * @author Bogomolov Ilya
  * @author Marina Gubina

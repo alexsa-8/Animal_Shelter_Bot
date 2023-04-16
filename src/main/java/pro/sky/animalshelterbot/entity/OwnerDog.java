@@ -61,17 +61,16 @@ public class OwnerDog {
     @JoinColumn(name = "dog_id")
     private Dog dog;
 
-    public OwnerDog(Long chatId, String name, String phone, int age, OwnerStatus status) {
+
+    public OwnerDog(Long chatId, String name, String phone) {
+        this.id = id;
         this.chatId = chatId;
         this.name = name;
         this.phone = phone;
-        this.age = age;
-        this.status = status;
     }
 
     public OwnerDog() {
     }
-
     public Long getId() {
         return id;
     }
