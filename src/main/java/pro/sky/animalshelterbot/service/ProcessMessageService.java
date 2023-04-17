@@ -91,7 +91,8 @@ public class ProcessMessageService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("ДА").callbackData(Commands.START_MENU.getCallbackData()),
+                new InlineKeyboardButton("Собаку").callbackData(Commands.START_MENU.getCallbackData()),
+                new InlineKeyboardButton("Кошку").callbackData(Commands.START_MENU.getCallbackData()),
                 new InlineKeyboardButton("Я еще подумаю").callbackData(Commands.NO.getCallbackData())
         );
 
