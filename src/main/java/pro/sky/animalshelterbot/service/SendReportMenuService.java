@@ -48,9 +48,9 @@ public class SendReportMenuService {
     private final ReportService reportService;
 
     private static final Pattern REPORT_PATTERN = Pattern.compile(
-            "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)\n" +
-                    "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)\n" +
-                    "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)");
+            "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)\n" +
+                    "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)\n" +
+                    "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)");
 
     /**
      * Конструктор
