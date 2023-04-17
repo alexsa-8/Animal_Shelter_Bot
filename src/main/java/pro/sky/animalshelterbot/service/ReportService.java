@@ -104,4 +104,12 @@ public class ReportService {
         return repository.findAll();
     }
 
+    public Collection<Report> findNewReports() {
+        return repository.findReports();
+    }
+
+    public Collection<Report> findOldReports() {
+        return repository.findFirstReports();
+    }
+
 }

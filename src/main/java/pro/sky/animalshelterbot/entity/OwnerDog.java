@@ -71,6 +71,15 @@ public class OwnerDog {
 
     public OwnerDog() {
     }
+
+    public Dog getDog() {
+        return dog;
+    }
+
+    public void setDog(Dog dog) {
+        this.dog = dog;
+    }
+
     public Long getId() {
         return id;
     }
