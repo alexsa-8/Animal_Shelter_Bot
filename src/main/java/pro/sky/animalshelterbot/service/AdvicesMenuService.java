@@ -69,6 +69,10 @@ public class AdvicesMenuService {
      * @return сообщение и документ пользователю
      */
     public SendDocument advicesCynologists(Update update) {
+
+        logger.info("Launched method: advices_cynologists, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         String path = "src/main/resources/adviсe/Cynologist_adviсes.pdf";
         File advices = new File(path);
         SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
@@ -86,6 +90,10 @@ public class AdvicesMenuService {
      * @return сообщение и документ пользователю
      */
     public SendDocument listCynologists(Update update) {
+
+        logger.info("Launched method: list_cynologists, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         String path = "src/main/resources/adviсe/List_of_cynologists.pdf";
         File listCynologists = new File(path);
         SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
@@ -102,6 +110,10 @@ public class AdvicesMenuService {
      * @return сообщение и документ пользователю
      */
     public SendDocument reasonsRefusal(Update update) {
+
+        logger.info("Launched method: reasons_refusal, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         String path = "src/main/resources/adviсe/Reasons_refusal.pdf";
         File reasonsRefusal = new File(path);
         SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),

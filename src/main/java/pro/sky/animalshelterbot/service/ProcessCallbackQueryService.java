@@ -146,7 +146,7 @@ public class ProcessCallbackQueryService {
                 telegramBot.execute(recommendationMenuService.recommendationsPuppy(update));
                 break;
             case RECOMMENDATIONS_DISABLED_DOG:
-                telegramBot.execute(recommendationMenuService.recommendationsDisabledDog(update));
+                telegramBot.execute(recommendationMenuService.recommendationsDisabled(update));
                 break;
             // Подменю по советам (advicesMenuService)
             case ADVICES:
@@ -184,6 +184,10 @@ public class ProcessCallbackQueryService {
         }
     }
 
+    /**
+     * Если пользователь выбирает собачий приют, возвращается true, иначе false
+     * @return boolean значение выбора приюта
+     */
     public static boolean isDog() {
         return isDog;
     }

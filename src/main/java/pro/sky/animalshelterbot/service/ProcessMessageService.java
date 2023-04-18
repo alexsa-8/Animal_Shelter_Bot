@@ -74,6 +74,10 @@ public class ProcessMessageService {
      * @param update доступное обновление
      */
     public void greeting(Update update) {
+
+        logger.info("Launched method: greeting, for user with id: " +
+                update.message().chat().id());
+
         SendMessage greeting = new SendMessage(update.message().chat().id(),
                 "Привет, " + update.message().from().firstName() + "! \uD83D\uDE42 \n" +
                         "\nЯ создан для того, что-бы помочь тебе найти друга, четвероного друга." +
@@ -107,6 +111,10 @@ public class ProcessMessageService {
      * @param update доступное обновление
      */
     public void info(Update update) {
+
+        logger.info("Launched method: info, for user with id: " +
+                update.message().chat().id());
+
         String infoMsg = "«Приют» — слово, от которого становится тоскливо.\uD83D\uDE14" +
                 "«Приют для животных» звучит еще более безрадостно.\uD83D\uDE22" +
                 "Это место, где живут брошенные питомцы, потерявшиеся при переезде, пережившие своих хозяев или рожденные на улице. \uD83C\uDF27" +
@@ -128,6 +136,10 @@ public class ProcessMessageService {
      * @return сообщение пользователю
      */
     private SendMessage volunteerMenu(Update update) {
+
+        logger.info("Launched method: volunteer, for user with id: " +
+                update.message().chat().id());
+
         SendMessage volunteer = new SendMessage(update.callbackQuery().message().chat().id(), "Волонтер скоро с вами свяжется\uD83D\uDE09");
         return volunteer;
     }

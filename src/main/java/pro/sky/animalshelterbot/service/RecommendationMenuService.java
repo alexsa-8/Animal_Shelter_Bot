@@ -73,6 +73,10 @@ public class RecommendationMenuService {
      * @return документ формата pdf
      */
     public SendDocument recommendationsTransportation(Update update) {
+
+        logger.info("Launched method: recommendations_transportation, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         String pathDog = "src/main/resources/recommendations/Recommendations_of_Transportation.pdf";
         String pathKitten = "src/main/resources/recommendations/Recommendations_of_Transportation.pdf";
         File recommendation;
@@ -101,6 +105,10 @@ public class RecommendationMenuService {
      * @return документ формата pdf
      */
     public SendDocument recommendations(Update update) {
+
+        logger.info("Launched method: recommendations, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         String pathDog = "src/main/resources/recommendations/Recommendations_for_Dog.pdf";
         String pathKitten = "src/main/resources/recommendations/Recommendations_for_Dog.pdf";
         File recommendation;
@@ -130,6 +138,10 @@ public class RecommendationMenuService {
      * @return документ формата pdf
      */
     public SendDocument recommendationsPuppy(Update update) {
+
+        logger.info("Launched method: recommendations_puppy, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         String pathDog = "src/main/resources/recommendations/Recommendations_for_Puppy.pdf";
         String pathKitten = "src/main/resources/recommendations/Recommendations_for_Puppy.pdf";
         File recommendation;
@@ -157,7 +169,11 @@ public class RecommendationMenuService {
      * @param update доступное обновление
      * @return документ формата pdf
      */
-    public SendDocument recommendationsDisabledDog(Update update) {
+    public SendDocument recommendationsDisabled(Update update) {
+
+        logger.info("Launched method: recommendations_disabled, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         String pathDog = "src/main/resources/recommendations/Recommendations_for_Disabled_Dog.pdf";
         String pathKitten = "src/main/resources/recommendations/Recommendations_for_Disabled_Dog.pdf";
         File recommendation;

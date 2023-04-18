@@ -55,6 +55,10 @@ public class ShelterDataMenuService {
      * @return документ с рекомендации по технике безопасности
      */
     public SendDocument shelterRecommendation(Update update) {
+
+        logger.info("Launched method: shelter_recommendation, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         String pathDog = "src/main/resources/shelterInfo/Safety_in_shelter.pdf";
         String pathKitten = "src/main/resources/shelterInfo/Safety_in_shelter.pdf";
         File recommendation;
@@ -80,6 +84,10 @@ public class ShelterDataMenuService {
      * @return меню для пользователя с кнопками
      */
     public SendPhoto shelterData(Update update) {
+
+        logger.info("Launched method: shelter_data, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         String dataMessageDogShelter = "  Доброго времени суток! Наши контактные данные:" +
                 "\n Адрес: г. Астана, Сарыарка район, Коктал ж/м, ул. Аккорган, 5в. " +
                 " \n Часы работы приюта: ежедневно с 11:00 до 18:00 \n Тел.: +7‒702‒481‒01‒58" +
