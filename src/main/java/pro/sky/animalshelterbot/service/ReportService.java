@@ -80,8 +80,10 @@ public class ReportService {
                 report.setReportStatus(status);
             }
         }
-        log.error("Request report is not found");
-        throw new ReportNotFoundException();
+        else{
+            log.error("Request report is not found");
+            throw new ReportNotFoundException();}
+        return report;
     }
 
     /**
