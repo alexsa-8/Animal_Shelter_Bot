@@ -111,7 +111,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 sendReportMenuService.downloadReport(update);
             }
             else {processMessageService.processMessage(update);}
-        } else if (update.callbackQuery() != null) {
+        }
+        else if (update.callbackQuery() != null) {
             processCallbackQueryService.processCallbackQuery(update);
         }
     }
