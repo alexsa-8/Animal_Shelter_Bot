@@ -97,6 +97,10 @@ public class SendReportMenuService {
      * @return форма отчета
      */
     public SendMessage reportForm(Update update) {
+
+        logger.info("Launched method: report_form, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
                 "ЗАГРУЗИТЕ ОТЧЕТ В ФОРМАТЕ: \n \n" +
                         "Рацион: данные о рационе \n"+
@@ -111,6 +115,10 @@ public class SendReportMenuService {
      * @param update    доступное обновление
      */
     public void downloadReport(Update update) {
+
+        logger.info("Launched method: download_report, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         String text = update.message().caption();
         Matcher matcher = REPORT_PATTERN.matcher(text);
 

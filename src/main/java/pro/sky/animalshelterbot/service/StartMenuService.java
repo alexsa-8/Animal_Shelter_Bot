@@ -35,8 +35,20 @@ public class StartMenuService {
      * @return меню для пользователя с кнопками
      */
     public SendMessage startMenu(Update update) {
-        String message = "Отлично, тут ты можешь узнать всю необходимую информацию о приюте и животных, " +
-                "если понадобится помощь, ты всегда можешь позвать волонтера";
+        String message;
+        if (ProcessCallbackQueryService.isDog()) {
+            logger.info("Launched method: start_menu, for dog shelter");
+
+            message = "Отлично, мы с радостью поможем подобрать тебе щенка, " +
+                    "тут ты можешь узнать всю необходимую информацию о приюте и животных, " +
+                    "если понадобится помощь, ты всегда можешь позвать волонтера";
+        } else {
+            logger.info("Launched method: start_menu, for kitten shelter");
+
+            message = "Отлично, мы с радостью поможем подобрать тебе котенка, " +
+                    "тут ты можешь узнать всю необходимую информацию о приюте и животных, " +
+                    "если понадобится помощь, ты всегда можешь позвать волонтера";
+        }
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
@@ -57,7 +69,7 @@ public class StartMenuService {
                         .callbackData(Commands.CALL_VOLUNTEER.getCallbackData())
         );
         inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("Расскажи о нас")
+                new InlineKeyboardButton("\uD83D\uDCE2 Расскажи о нас")
                         .switchInlineQuery("Помоги найти новый дом питомцам!")
         );
 
@@ -75,6 +87,9 @@ public class StartMenuService {
      * @return сообщение пользователю
      */
     public SendMessage volunteerMenu(Update update) {
+        logger.info("Launched method: volunteer, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
         SendMessage volunteer = new SendMessage(update.callbackQuery().message().chat().id(), "Волонтер скоро с вами свяжется\uD83D\uDE09");
         return volunteer;
     }
