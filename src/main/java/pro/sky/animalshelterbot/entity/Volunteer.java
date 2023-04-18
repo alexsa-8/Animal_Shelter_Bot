@@ -60,6 +60,9 @@ public class Volunteer {
     /**
      * Конструктор без параметров для создания объекта "волонтёр"
      */
+    public Volunteer(Long chatId, String name, String phone) {
+    }
+
     public Volunteer() {
     }
 
