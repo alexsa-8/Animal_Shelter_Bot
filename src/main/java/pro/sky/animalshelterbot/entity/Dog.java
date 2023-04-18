@@ -1,6 +1,5 @@
 package pro.sky.animalshelterbot.entity;
 
-import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.constant.PetStatus;
 
 import javax.persistence.*;
@@ -109,7 +108,7 @@ public class Dog {
         return status;
     }
 
-    public void setStatus(OwnerStatus status) {
+    public void setStatus(PetStatus status) {
         this.status = status;
     }
 
@@ -135,4 +134,5 @@ public class Dog {
                 ", breed='" + breed + '\'' +
                 '}';
     }
+
 }

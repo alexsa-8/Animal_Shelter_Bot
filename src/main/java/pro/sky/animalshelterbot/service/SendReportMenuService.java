@@ -191,7 +191,7 @@ public class SendReportMenuService {
             Long ownerDogId = report.getOwnerDog().getId();
             if (report.getDateMessage().equals(LocalDate.now().minusDays(30))) {
                 repository.save(report);
-                report.getOwnerDog().getDog().setStatus(OwnerStatus.APPROVED);
+                report.getOwnerDog().setStatus(OwnerStatus.APPROVED);
                 SendMessage sendMessage = new SendMessage(ownerDogId, report.getOwnerDog().getName() + "! поздравляем," +
                         "испытательный срок в 30 дней для собаки " + report.getOwnerDog().getDog().getName() +
                         " (id: " + report.getOwnerDog().getDog().getId() + ") закончен");

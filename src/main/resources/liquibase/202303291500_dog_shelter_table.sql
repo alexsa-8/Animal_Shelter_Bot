@@ -99,3 +99,8 @@ ALTER TABLE report
 
 ALTER TABLE volunteer
     ADD COLUMN chat_id BIGINT;
+
+-- changeset klikli:8
+
+ALTER TABLE owner_dog
+    ADD COLUMN number_of_report_days BIGINT;
