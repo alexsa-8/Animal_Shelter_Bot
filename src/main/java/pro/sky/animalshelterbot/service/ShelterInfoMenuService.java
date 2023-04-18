@@ -57,11 +57,16 @@ public class ShelterInfoMenuService {
                         .callbackData(Commands.RECOMMENDATIONS.getCallbackData())
 
         );
-        inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton(Commands.ADVICES.getDescription())
-                        .callbackData(Commands.ADVICES.getCallbackData())
-
-        );
+        if (ProcessCallbackQueryService.isDog()) {
+            inlineKeyboardMarkup.addRow(
+                    new InlineKeyboardButton(Commands.ADVICES.getDescription())
+                            .callbackData(Commands.ADVICES.getCallbackData())
+            );
+        } else {
+            inlineKeyboardMarkup.addRow(
+                    new InlineKeyboardButton(Commands.REASONS_REFUSAL.getDescription())
+                            .callbackData(Commands.REASONS_REFUSAL.getCallbackData()));
+        }
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton(Commands.CONTACT_DETAILS.getDescription())
                         .callbackData(Commands.CONTACT_DETAILS.getCallbackData())
@@ -89,24 +94,41 @@ public class ShelterInfoMenuService {
      * @return сообщение пользователю
      */
     public SendMessage datingRules(Update update) {
-        SendMessage message = new SendMessage(update.callbackQuery().message().chat().id(),
-                "Тут все про знакомство с питомцем");
+        SendMessage message;
+        if (ProcessCallbackQueryService.isDog()) {
+            message = new SendMessage(update.callbackQuery().message().chat().id(),
+                    "Тут все про знакомство с собакой");
+        } else {
+            message = new SendMessage(update.callbackQuery().message().chat().id(),
+                    "Тут все про знакомство с котенком");
+        }
+
         return message;
     }
 
     /**
      * Метод, выдающий список документов для пользователя
+     *
      * @param update доступное обновление
      * @return сообщение c документом пользователю
      */
     public SendDocument listDocuments(Update update) {
         String path = "src/main/resources/list_documents/Take_the_dog.pdf";
         File listDocuments = new File(path);
-        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
-                listDocuments);
-        sendDocument.caption("Из неообходимых документов Вам потребуется только ПАСПОРТ\n" +
-                "\nНо прежде чем вы соберетесь на такой важный шаг, не только для себя, " +
-                "но и для вашего будущего питомца, просим Вас ознакомиться с информацие в прикрепленном документе \u2191");
+
+        SendDocument sendDocument;
+
+        if (ProcessCallbackQueryService.isDog()) {
+            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    listDocuments);
+            sendDocument.caption("Из неообходимых документов Вам потребуется только ПАСПОРТ\n" +
+                    "\nНо прежде чем вы соберетесь на такой важный шаг, не только для себя, " +
+                    "но и для вашего будущего питомца, просим Вас ознакомиться с информацие в прикрепленном документе \u2191");
+        } else {
+            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    listDocuments);
+            sendDocument.caption(" Все про документы для оформления котенка");
+        }
 
         return sendDocument;
     }

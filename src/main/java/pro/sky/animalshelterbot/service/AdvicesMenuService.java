@@ -75,6 +75,7 @@ public class AdvicesMenuService {
                 advices);
         sendDocument.caption("В этом докуметне, мы собрали ответы на самые важные вопросы по воспитанию " +
                 "и дресеровке вашего питомца \u2191 ");
+
         return sendDocument;
     }
 

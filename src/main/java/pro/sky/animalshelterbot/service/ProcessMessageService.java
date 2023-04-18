@@ -55,7 +55,6 @@ public class ProcessMessageService {
         switch (Commands.valueOf(command.toString().toUpperCase())) {
             case START:
                 greeting(update);
-//                description(update);
                 break;
             case INFO:
                 info(update);
@@ -91,8 +90,8 @@ public class ProcessMessageService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("ДА").callbackData(Commands.START_MENU.getCallbackData()),
-                new InlineKeyboardButton("Я еще подумаю").callbackData(Commands.NO.getCallbackData())
+                new InlineKeyboardButton("Хочу взять собаку! \uD83D\uDC36").callbackData(Commands.TAKE_THE_DOG.getCallbackData()),
+                new InlineKeyboardButton("Хочу взять котенка! \uD83D\uDC31").callbackData(Commands.TAKE_A_KITTEN.getCallbackData())
         );
 
         SendMessage description = new SendMessage(update.message().chat().id(), desc);

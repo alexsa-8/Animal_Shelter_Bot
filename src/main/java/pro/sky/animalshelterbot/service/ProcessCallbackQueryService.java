@@ -62,6 +62,11 @@ public class ProcessCallbackQueryService {
     private final SendReportMenuService sendReportMenuService;
 
     /**
+     * Поле: выбор приюта
+     */
+    static boolean isDog = true;
+
+    /**
      * Конструктор
      *
      * @param telegramBot               телеграм бот
@@ -104,11 +109,9 @@ public class ProcessCallbackQueryService {
         }
         switch (Commands.valueOf(command)) {
             // Стартовое меню (startMenuService)
-            case NO:
-                telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
-                        "Мы будем ждать твоего возвращения!"));
-                break;
-            case START_MENU:
+            case TAKE_A_KITTEN:
+                isDog = false;
+            case TAKE_THE_DOG:
             case BACK:
                 telegramBot.execute(startMenuService.startMenu(update));
                 break;
@@ -137,7 +140,7 @@ public class ProcessCallbackQueryService {
                 telegramBot.execute(recommendationMenuService.recommendationsTransportation(update));
                 break;
             case RECOMMENDATIONS_DOG:
-                telegramBot.execute(recommendationMenuService.recommendationsDog(update));
+                telegramBot.execute(recommendationMenuService.recommendations(update));
                 break;
             case RECOMMENDATIONS_PUPPY:
                 telegramBot.execute(recommendationMenuService.recommendationsPuppy(update));
@@ -179,5 +182,9 @@ public class ProcessCallbackQueryService {
                 telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                         "Упс... что-то пошло не так, мы скоро решим проблему, не переживайте"));
         }
+    }
+
+    public static boolean isDog() {
+        return isDog;
     }
 }

@@ -68,61 +68,115 @@ public class RecommendationMenuService {
 
     /**
      * Метод получения рекомендации по транспортировке собаки
+     *
      * @param update доступное обновление
      * @return документ формата pdf
      */
     public SendDocument recommendationsTransportation(Update update) {
-        String path = "src/main/resources/recommendations/Recommendations_of_Transportation.pdf";
-        File recommendation = new File(path);
-        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
-                recommendation);
-        sendDocument.caption("С рекомендации по общим правилам транспортировки собак Вы можете ознакомиться  " +
-                "  в прикрепленном документе \u2191 ");
+        String pathDog = "src/main/resources/recommendations/Recommendations_of_Transportation.pdf";
+        String pathKitten = "src/main/resources/recommendations/Recommendations_of_Transportation.pdf";
+        File recommendation;
+        SendDocument sendDocument;
+        if (ProcessCallbackQueryService.isDog()) {
+            recommendation = new File(pathDog);
+            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    recommendation);
+            sendDocument.caption("С рекомендации по общим правилам транспортировки собак Вы можете ознакомиться  " +
+                    "  в прикрепленном документе \u2191 ");
+        } else {
+            recommendation = new File(pathKitten);
+            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    recommendation);
+            sendDocument.caption("С рекомендации по общим правилам транспортировки кошек Вы можете ознакомиться  " +
+                    "  в прикрепленном документе \u2191 ");
+        }
+
         return sendDocument;
     }
 
     /**
-     * Метод получения рекомендации по обустройству дома для взрослой собаки
+     * Метод получения рекомендации по обустройству дома для взрослой собаки/кошки
+     *
      * @param update доступное обновление
      * @return документ формата pdf
      */
-    public SendDocument recommendationsDog(Update update) {
-        String path = "src/main/resources/recommendations/Recommendations_for_Dog.pdf";
-        File recommendation = new File(path);
-        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
-                recommendation);
-        sendDocument.caption("С рекомендации по обустройству дома для взрослой собаки Вы можете ознакомиться  " +
-                "  в прикрепленном документе \u2191, а также посмотрите пункт Рекомендации по уходу за щенком");
+    public SendDocument recommendations(Update update) {
+        String pathDog = "src/main/resources/recommendations/Recommendations_for_Dog.pdf";
+        String pathKitten = "src/main/resources/recommendations/Recommendations_for_Dog.pdf";
+        File recommendation;
+        SendDocument sendDocument;
+
+        if (ProcessCallbackQueryService.isDog()) {
+            recommendation = new File(pathDog);
+            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    recommendation);
+            sendDocument.caption("С рекомендации по обустройству дома для взрослой собаки Вы можете ознакомиться  " +
+                    "  в прикрепленном документе \u2191, а также посмотрите пункт Рекомендации по уходу за щенком");
+        } else {
+            recommendation = new File(pathKitten);
+            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    recommendation);
+            sendDocument.caption("С рекомендации по обустройству дома для взрослой кошки/кота Вы можете ознакомиться  " +
+                    "  в прикрепленном документе \u2191, а также посмотрите пункт Рекомендации по уходу за котенком");
+        }
+
         return sendDocument;
     }
 
     /**
-     * Метод получения рекомендации по обустройству дома для щенка
+     * Метод получения рекомендации по обустройству дома для щенка/котенка
+     *
      * @param update доступное обновление
      * @return документ формата pdf
      */
     public SendDocument recommendationsPuppy(Update update) {
-        String path = "src/main/resources/recommendations/Recommendations_for_Puppy.pdf";
-        File recommendation = new File(path);
-        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
-                recommendation);
-        sendDocument.caption("С рекомендации по обустройству дома для щенка Вы можете ознакомиться  " +
-                "  в прикрепленном документе \u2191 ");
+        String pathDog = "src/main/resources/recommendations/Recommendations_for_Puppy.pdf";
+        String pathKitten = "src/main/resources/recommendations/Recommendations_for_Puppy.pdf";
+        File recommendation;
+        SendDocument sendDocument;
+        if (ProcessCallbackQueryService.isDog()) {
+            recommendation = new File(pathDog);
+            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    recommendation);
+            sendDocument.caption("С рекомендации по обустройству дома для щенка Вы можете ознакомиться  " +
+                    "  в прикрепленном документе \u2191 ");
+        } else {
+            recommendation = new File(pathKitten);
+            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    recommendation);
+            sendDocument.caption("С рекомендации по обустройству дома для котенка Вы можете ознакомиться  " +
+                    "  в прикрепленном документе \u2191 ");
+        }
+
         return sendDocument;
     }
 
     /**
-     * Метод получения рекомендации по обустройству дома для собаки с ОВЗ
+     * Метод получения рекомендации по обустройству дома для собаки/кошки с ОВЗ
+     *
      * @param update доступное обновление
      * @return документ формата pdf
      */
     public SendDocument recommendationsDisabledDog(Update update) {
-        String path = "src/main/resources/recommendations/Recommendations_for_Disabled_Dog.pdf";
-        File recommendation = new File(path);
-        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
-                recommendation);
-        sendDocument.caption("С рекомендации по обустройству дома для собаки с ограниченными возможностями " +
-                "Вы можете ознакомиться в прикрепленном документе \u2191 ");
+        String pathDog = "src/main/resources/recommendations/Recommendations_for_Disabled_Dog.pdf";
+        String pathKitten = "src/main/resources/recommendations/Recommendations_for_Disabled_Dog.pdf";
+        File recommendation;
+        SendDocument sendDocument;
+
+        if (ProcessCallbackQueryService.isDog()) {
+            recommendation = new File(pathDog);
+            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    recommendation);
+            sendDocument.caption("С рекомендации по обустройству дома для собаки с ограниченными возможностями " +
+                    "Вы можете ознакомиться в прикрепленном документе \u2191 ");
+        } else {
+            recommendation = new File(pathKitten);
+            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    recommendation);
+            sendDocument.caption("С рекомендации по обустройству дома для кошки с ограниченными возможностями " +
+                    "Вы можете ознакомиться в прикрепленном документе \u2191 ");
+        }
+
         return sendDocument;
     }
 
