@@ -109,7 +109,7 @@ public class Dog {
         return status;
     }
 
-    public void setStatus(PetStatus status) {
+    public void setStatus(OwnerStatus status) {
         this.status = status;
     }
 

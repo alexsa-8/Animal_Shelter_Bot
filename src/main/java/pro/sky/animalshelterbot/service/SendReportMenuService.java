@@ -14,11 +14,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.constant.OwnerStatus;
+import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.entity.Report;
 import pro.sky.animalshelterbot.entity.Volunteer;
+import pro.sky.animalshelterbot.repository.OwnerDogRepository;
+import pro.sky.animalshelterbot.repository.ReportRepository;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,21 +57,27 @@ public class SendReportMenuService {
      */
     private final ReportService reportService;
     private Volunteer volunteer;
+    private final ReportRepository repository;
 
     private static final Pattern REPORT_PATTERN = Pattern.compile(
             "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)\n" +
                     "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)\n" +
                     "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)");
+    private final OwnerDogRepository ownerDogRepository;
 
     /**
      * Конструктор
      *
      * @param telegramBot   телеграм бот
      * @param reportService сервис по отчета
+     * @param repository
      */
-    public SendReportMenuService(TelegramBot telegramBot, ReportService reportService) {
+    public SendReportMenuService(TelegramBot telegramBot, ReportService reportService, ReportRepository repository,
+                                 OwnerDogRepository ownerDogRepository) {
         this.telegramBot = telegramBot;
         this.reportService = reportService;
+        this.repository = repository;
+        this.ownerDogRepository = ownerDogRepository;
     }
 
     /**
@@ -171,9 +182,20 @@ public class SendReportMenuService {
                 telegramBot.execute(sendMessage);
             }
             if (report.getDateMessage().equals(LocalDate.now().minusDays(1))) {
-                SendMessage sendToOwner = new SendMessage(report.getOwnerDog().getChatId(), "Дорогой усыновитель, " +
+                SendMessage sendToOwner = new SendMessage(report.getOwnerDog().getChatId(), "Дорогой владелец, " +
                         "не забудь сегодня отправить отчет");
                 telegramBot.execute(sendToOwner);
+            }
+        }
+        for (Report report : reportService.findOldReports()) {
+            Long ownerDogId = report.getOwnerDog().getId();
+            if (report.getDateMessage().equals(LocalDate.now().minusDays(30))) {
+                repository.save(report);
+                report.getOwnerDog().getDog().setStatus(OwnerStatus.APPROVED);
+                SendMessage sendMessage = new SendMessage(ownerDogId, report.getOwnerDog().getName() + "! поздравляем," +
+                        "испытательный срок в 30 дней для собаки " + report.getOwnerDog().getDog().getName() +
+                        " (id: " + report.getOwnerDog().getDog().getId() + ") закончен");
+                telegramBot.execute(sendMessage);
             }
         }
     }
