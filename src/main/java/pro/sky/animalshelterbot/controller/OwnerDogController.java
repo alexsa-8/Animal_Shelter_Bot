@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
+import pro.sky.animalshelterbot.constant.PetStatus;
+import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.service.OwnerDogService;
 
@@ -158,4 +160,13 @@ public class OwnerDogController {
         return ResponseEntity.ok(service.getAll());
     }
 
+    @PutMapping("/days")
+    public ResponseEntity<OwnerDog> changeDays(@RequestParam Long id,
+                                          @RequestParam Long numberDays) {
+        OwnerDog ownerDog1 = service.changeNumberOfReportDays(id, numberDays);
+        if (ownerDog1 == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ownerDog1);
+    }
 }

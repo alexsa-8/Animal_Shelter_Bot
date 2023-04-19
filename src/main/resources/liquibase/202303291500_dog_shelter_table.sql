@@ -91,3 +91,16 @@ ALTER TABLE report
 
 -- changeset MarinaGubina:2
 ALTER TABLE report ADD COLUMN  photo BYTEA;
+
+-- changeset klikli:7
+
+ALTER TABLE report
+    ADD COLUMN owner_dog_id BIGINT REFERENCES owner_dog(id);
+
+ALTER TABLE volunteer
+    ADD COLUMN chat_id BIGINT;
+
+-- changeset klikli:8
+
+ALTER TABLE owner_dog
+    ADD COLUMN number_of_report_days BIGINT;

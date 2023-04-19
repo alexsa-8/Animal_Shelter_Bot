@@ -36,7 +36,7 @@ public class OwnerDog {
     /**
      * Поле: номер телефона владельца
      */
-    @Column(name = "phone",nullable = false)
+    @Column(name = "phone", nullable = false)
     private String phone;
 
     /**
@@ -47,6 +47,7 @@ public class OwnerDog {
 
     /**
      * Поле: статус владельца
+     *
      * @see OwnerStatus
      */
     @Enumerated(EnumType.STRING)
@@ -55,15 +56,25 @@ public class OwnerDog {
 
     /**
      * Поле: имеющаяся собака
+     *
      * @see Dog
      */
     @OneToOne
     @JoinColumn(name = "dog_id")
     private Dog dog;
 
+    @Column(name = "number_of_report_days" )
+    private Long numberOfReportDays;
+
+    public OwnerDog(Long chatId, String name, String phone, Long numberOfReportDays) {
+        this.id = id;
+        this.chatId = chatId;
+        this.name = name;
+        this.phone = phone;
+        this.numberOfReportDays = numberOfReportDays;
+    }
 
     public OwnerDog(Long chatId, String name, String phone) {
-        this.id = id;
         this.chatId = chatId;
         this.name = name;
         this.phone = phone;
@@ -71,6 +82,15 @@ public class OwnerDog {
 
     public OwnerDog() {
     }
+
+    public Dog getDog() {
+        return dog;
+    }
+
+    public void setDog(Dog dog) {
+        this.dog = dog;
+    }
+
     public Long getId() {
         return id;
     }
@@ -119,17 +139,25 @@ public class OwnerDog {
         this.status = status;
     }
 
+    public Long getNumberOfReportDays() {
+        return numberOfReportDays;
+    }
+
+    public void setNumberOfReportDays(Long numberOfReportDays) {
+        this.numberOfReportDays = numberOfReportDays;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OwnerDog ownerDog = (OwnerDog) o;
-        return age == ownerDog.age && Objects.equals(id, ownerDog.id) && Objects.equals(chatId, ownerDog.chatId) && Objects.equals(name, ownerDog.name) && Objects.equals(phone, ownerDog.phone);
+        return age == ownerDog.age && Objects.equals(id, ownerDog.id) && Objects.equals(chatId, ownerDog.chatId) && Objects.equals(name, ownerDog.name) && Objects.equals(phone, ownerDog.phone) && status == ownerDog.status && Objects.equals(dog, ownerDog.dog) && Objects.equals(numberOfReportDays, ownerDog.numberOfReportDays);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, chatId, name, phone, age);
+        return Objects.hash(id, chatId, name, phone, age, status, dog, numberOfReportDays);
     }
 
     @Override
@@ -142,6 +170,7 @@ public class OwnerDog {
                 ", age=" + age +
                 ", status=" + status +
                 ", dog=" + dog +
+                ", numberOfReportDays=" + numberOfReportDays +
                 '}';
     }
 }

@@ -1,6 +1,5 @@
 package pro.sky.animalshelterbot.entity;
 
-import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.constant.PetStatus;
 
 import javax.persistence.*;
@@ -135,4 +134,5 @@ public class Dog {
                 ", breed='" + breed + '\'' +
                 '}';
     }
+
 }
