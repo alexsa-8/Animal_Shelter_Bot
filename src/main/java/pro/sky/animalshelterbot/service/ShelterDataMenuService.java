@@ -55,12 +55,25 @@ public class ShelterDataMenuService {
      * @return документ с рекомендации по технике безопасности
      */
     public SendDocument shelterRecommendation(Update update) {
-        String path = "src/main/resources/shelterInfo/Safety_in_shelter.pdf";
-        File recommendation = new File(path);
+
+        logger.info("Launched method: shelter_recommendation, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
+        String pathDog = "src/main/resources/shelterInfo/Safety_in_shelter.pdf";
+        String pathKitten = "src/main/resources/shelterInfo/Safety_in_shelter.pdf";
+        File recommendation;
+
+        if (ProcessCallbackQueryService.isDog()) {
+            recommendation = new File(pathDog);
+        } else {
+            recommendation = new File(pathKitten);
+        }
+
         SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                 recommendation);
         sendDocument.caption("Рекомендации по технике безопасности на территории " +
                 "приюта в прикрепленном документе \u2191 ");
+
         return sendDocument;
     }
 
@@ -71,14 +84,35 @@ public class ShelterDataMenuService {
      * @return меню для пользователя с кнопками
      */
     public SendPhoto shelterData(Update update) {
-        String dataMessage = "  Доброго времени суток! Наши контактные данные:" +
+
+        logger.info("Launched method: shelter_data, for user with id: " +
+                update.callbackQuery().message().chat().id());
+
+        String dataMessageDogShelter = "  Доброго времени суток! Наши контактные данные:" +
                 "\n Адрес: г. Астана, Сарыарка район, Коктал ж/м, ул. Аккорган, 5в. " +
                 " \n Часы работы приюта: ежедневно с 11:00 до 18:00 \n Тел.: +7‒702‒481‒01‒58" +
                 " \n Email: animalshelterastaba@gmail.com  \n";
-        String path = "src/main/resources/shelterInfo/map.jpg";
-        File map = new File(path);
-        SendPhoto photo = new SendPhoto(update.callbackQuery().message().chat().id(), map);
-        photo.caption(dataMessage + " Схема проезда до нашего приюта \u2191");
+
+        String dataMessageKittenShelter = "  Доброго времени суток! Наши контактные данные:" +
+                "\n Адрес: г. Астана, Сарыарка район, Коктал ж/м, ул. Аккорган, 5в. " +
+                " \n Часы работы приюта: ежедневно с 11:00 до 18:00 \n Тел.: +7‒702‒481‒01‒58" +
+                " \n Email: animalshelterastaba@gmail.com  \n";
+
+        String pathDog = "src/main/resources/shelterInfo/map.jpg";
+        String pathKitten = "src/main/resources/shelterInfo/map.jpg";
+        File map;
+        SendPhoto photo;
+
+        if (ProcessCallbackQueryService.isDog()) {
+            map = new File(pathDog);
+            photo = new SendPhoto(update.callbackQuery().message().chat().id(), map);
+            photo.caption(dataMessageDogShelter + " Схема проезда до нашего приюта \u2191");
+        } else {
+            map = new File(pathKitten);
+            photo = new SendPhoto(update.callbackQuery().message().chat().id(), map);
+            photo.caption(dataMessageKittenShelter + " Схема проезда до нашего приюта \u2191");
+        }
+
         return photo;
     }
 

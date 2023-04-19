@@ -96,4 +96,21 @@ public class OwnerDogService {
         log.info("Request to delete owner dog by id {}", id);
         repository.deleteById(id);
     }
+
+    /**
+     * @param ownerDog добавление количества дней исп.срока
+     * @return измененные данные
+     */
+    public OwnerDog changeNumberOfReportDays(Long id, Long number) {
+        OwnerDog ownerDog = new OwnerDog();
+        if (ownerDog.getId() != null) {
+            if (find(ownerDog.getId()) != null) {
+                ownerDog.setNumberOfReportDays(ownerDog.getNumberOfReportDays() + number);
+                return repository.save(ownerDog);
+            }
+        }
+        log.error("Request owner dog is not found");
+        throw new DogNotFoundException();
+    }
+
 }

@@ -54,12 +54,12 @@ public class Report {
      */
     @Column(name = "change_behavior",nullable = false)
     private String changeBehavior;
-
     /**
      * Поле: дата отправки отчета
      */
     @Column(name = "date_message", nullable = false)
     private LocalDate dateMessage;
+
 
     /**
      * Поле: статус отчета
@@ -68,6 +68,10 @@ public class Report {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ReportStatus reportStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_dog_id")
+    private OwnerDog ownerDog;
 
     public Report(Long chatId, byte[] photo, String animalDiet,
                   String generalInfo, String changeBehavior, LocalDate date) {
@@ -88,8 +92,48 @@ public class Report {
         return id;
     }
 
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public String getAnimalDiet() {
+        return animalDiet;
+    }
+
+    public String getGeneralInfo() {
+        return generalInfo;
+    }
+
+    public String getChangeBehavior() {
+        return changeBehavior;
+    }
+
+    public ReportStatus getReportStatus() {
+        return reportStatus;
+    }
+
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
+    public void setAnimalDiet(String animalDiet) {
+        this.animalDiet = animalDiet;
+    }
+
+    public void setGeneralInfo(String generalInfo) {
+        this.generalInfo = generalInfo;
+    }
+
+    public void setChangeBehavior(String changeBehavior) {
+        this.changeBehavior = changeBehavior;
+    }
+
+    public void setReportStatus(ReportStatus reportStatus) {
+        this.reportStatus = reportStatus;
     }
 
     public Long getChatId() {
@@ -100,38 +144,6 @@ public class Report {
         this.chatId = chatId;
     }
 
-    public byte[] getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
-    }
-
-    public String getAnimalDiet() {
-        return animalDiet;
-    }
-
-    public void setAnimalDiet(String animalDiet) {
-        this.animalDiet = animalDiet;
-    }
-
-    public String getGeneralInfo() {
-        return generalInfo;
-    }
-
-    public void setGeneralInfo(String generalInfo) {
-        this.generalInfo = generalInfo;
-    }
-
-    public String getChangeBehavior() {
-        return changeBehavior;
-    }
-
-    public void setChangeBehavior(String changeBehavior) {
-        this.changeBehavior = changeBehavior;
-    }
-
     public LocalDate getDateMessage() {
         return dateMessage;
     }
@@ -140,12 +152,12 @@ public class Report {
         this.dateMessage = dateMessage;
     }
 
-    public ReportStatus getReportStatus() {
-        return reportStatus;
+    public OwnerDog getOwnerDog() {
+        return ownerDog;
     }
 
-    public void setReportStatus(ReportStatus reportStatus) {
-        this.reportStatus = reportStatus;
+    public void setOwnerDog(OwnerDog ownerDog) {
+        this.ownerDog = ownerDog;
     }
 
     @Override
@@ -153,12 +165,12 @@ public class Report {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Report report = (Report) o;
-        return Objects.equals(id, report.id) && Arrays.equals(photo, report.photo) && Objects.equals(animalDiet, report.animalDiet) && Objects.equals(generalInfo, report.generalInfo) && Objects.equals(changeBehavior, report.changeBehavior) && reportStatus == report.reportStatus;
+        return Objects.equals(id, report.id) && Objects.equals(chatId, report.chatId) && Arrays.equals(photo, report.photo) && Objects.equals(animalDiet, report.animalDiet) && Objects.equals(generalInfo, report.generalInfo) && Objects.equals(changeBehavior, report.changeBehavior) && Objects.equals(dateMessage, report.dateMessage) && reportStatus == report.reportStatus;
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, animalDiet, generalInfo, changeBehavior, reportStatus);
+        int result = Objects.hash(id, chatId, animalDiet, generalInfo, changeBehavior, dateMessage, reportStatus);
         result = 31 * result + Arrays.hashCode(photo);
         return result;
     }
@@ -167,11 +179,14 @@ public class Report {
     public String toString() {
         return "Report{" +
                 "id=" + id +
+                ", chatId=" + chatId +
                 ", photo=" + Arrays.toString(photo) +
                 ", animalDiet='" + animalDiet + '\'' +
                 ", generalInfo='" + generalInfo + '\'' +
                 ", changeBehavior='" + changeBehavior + '\'' +
+                ", dateMessage=" + dateMessage +
                 ", reportStatus=" + reportStatus +
+                ", ownerDog=" + ownerDog +
                 '}';
     }
 }
