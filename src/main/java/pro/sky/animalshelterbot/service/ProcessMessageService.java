@@ -50,9 +50,18 @@ public class ProcessMessageService {
         if (update.message().text() == null) {
             return;
         }
-        StringBuilder command = new StringBuilder(update.message().text());
-        command.delete(0, 1);
-        switch (Commands.valueOf(command.toString().toUpperCase())) {
+        StringBuilder text = new StringBuilder(update.message().text());
+        text.delete(0, 1);
+        Commands command;
+        try {
+            command = Commands.valueOf(text.toString().toUpperCase());
+        } catch (IllegalArgumentException e){
+            logger.info("The command was not found in Enum Commands");
+            telegramBot.execute(new SendMessage(update.message().chat().id(), "Некорректный ввод, повторите запрос"));
+            return;
+        }
+
+        switch (command) {
             case START:
                 greeting(update);
                 break;
@@ -61,9 +70,6 @@ public class ProcessMessageService {
                 break;
             case CALL_VOLUNTEER:
                 volunteerMenu(update);
-                break;
-            default:
-                telegramBot.execute(new SendMessage(update.message().chat().id(), "Команда не найдена повторите запрос"));
                 break;
         }
     }

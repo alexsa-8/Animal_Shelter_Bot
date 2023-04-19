@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
-import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.entity.Report;
 import pro.sky.animalshelterbot.entity.Volunteer;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
@@ -23,7 +22,6 @@ import pro.sky.animalshelterbot.repository.ReportRepository;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,9 +58,10 @@ public class SendReportMenuService {
     private final ReportRepository repository;
 
     private static final Pattern REPORT_PATTERN = Pattern.compile(
-            "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)\n" +
-                    "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)\n" +
-                    "([А-яA-z\\s\\d]+):(\\s)([А-яA-z\\s\\d]+)");
+            "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)\n" +
+                    "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)\n" +
+                    "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)");
+
     private final OwnerDogRepository ownerDogRepository;
 
     /**
@@ -136,7 +135,7 @@ public class SendReportMenuService {
     public void downloadReport(Update update) {
 
         logger.info("Launched method: download_report, for user with id: " +
-                update.callbackQuery().message().chat().id());
+                update.message().chat().id());
 
         String text = update.message().caption();
         Matcher matcher = REPORT_PATTERN.matcher(text);
@@ -148,31 +147,27 @@ public class SendReportMenuService {
             String generalInfo = matcher.group(6);
             String changeBehavior = matcher.group(9);
 
-            if (animalDiet != null && generalInfo != null && changeBehavior != null) {
-                GetFile getFileRequest = new GetFile(update.message().photo()[1].fileId());
-                GetFileResponse getFileResponse = telegramBot.execute(getFileRequest);
-                try {
-                    File file = getFileResponse.file();
-                    file.fileSize();
+            GetFile getFileRequest = new GetFile(update.message().photo()[1].fileId());
+            GetFileResponse getFileResponse = telegramBot.execute(getFileRequest);
+            try {
+                File file = getFileResponse.file();
+                file.fileSize();
 
-                    byte[] photo = telegramBot.getFileContent(file);
-                    LocalDate date = LocalDate.now();
-                    reportService.downloadReport(update.message().chat().id(), animalDiet, generalInfo,
-                            changeBehavior, photo, LocalDate.from(date.atStartOfDay()));
-                    telegramBot.execute(new SendMessage(update.message().chat().id(), "Отчет успешно принят!"));
+                byte[] photo = telegramBot.getFileContent(file);
+                LocalDate date = LocalDate.now();
+                reportService.downloadReport(update.message().chat().id(), animalDiet, generalInfo,
+                        changeBehavior, photo, LocalDate.from(date.atStartOfDay()));
+                telegramBot.execute(new SendMessage(update.message().chat().id(), "Отчет успешно принят!"));
 
-                } catch (IOException e) {
-                    logger.error("Ошибка загрузки фото");
-                    telegramBot.execute(new SendMessage(update.message().chat().id(),
-                            "Ошибка загрузки фото"));
-                }
-            } else {
+            } catch (IOException e) {
+                logger.error("Ошибка загрузки фото");
                 telegramBot.execute(new SendMessage(update.message().chat().id(),
-                        "Введены не все данные! Повторите ввод!"));
+                            "Ошибка загрузки фото"));
             }
-        } else {
-            telegramBot.execute(new SendMessage(update.message().chat().id(),
-                    "Некорректный формат"));
+        }
+        else {
+                telegramBot.execute(new SendMessage(update.message().chat().id(),
+                        "Введены не все данные, заполните все поля в отчете! Повторите ввод!"));
         }
     }
 
@@ -207,5 +202,6 @@ public class SendReportMenuService {
             }
         }
     }
+
 
 }

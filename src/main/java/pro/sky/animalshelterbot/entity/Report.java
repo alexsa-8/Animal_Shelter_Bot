@@ -31,7 +31,6 @@ public class Report {
     @Column(name = "chat_id", nullable = false)
     private Long chatId;
 
-
     /**
      * Поле: фото в отчете
      */
