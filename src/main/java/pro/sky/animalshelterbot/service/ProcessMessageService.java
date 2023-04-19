@@ -50,21 +50,26 @@ public class ProcessMessageService {
         if (update.message().text() == null) {
             return;
         }
-        StringBuilder command = new StringBuilder(update.message().text());
-        command.delete(0, 1);
-        switch (Commands.valueOf(command.toString().toUpperCase())) {
+        StringBuilder text = new StringBuilder(update.message().text());
+        text.delete(0, 1);
+        Commands command;
+        try {
+            command = Commands.valueOf(text.toString().toUpperCase());
+        } catch (IllegalArgumentException e){
+            logger.info("The command was not found in Enum Commands");
+            telegramBot.execute(new SendMessage(update.message().chat().id(), "Некорректный ввод, повторите запрос"));
+            return;
+        }
+
+        switch (command) {
             case START:
                 greeting(update);
-//                description(update);
                 break;
             case INFO:
                 info(update);
                 break;
             case CALL_VOLUNTEER:
                 volunteerMenu(update);
-                break;
-            default:
-                telegramBot.execute(new SendMessage(update.message().chat().id(), "Команда не найдена повторите запрос"));
                 break;
         }
     }
@@ -75,6 +80,10 @@ public class ProcessMessageService {
      * @param update доступное обновление
      */
     public void greeting(Update update) {
+
+        logger.info("Launched method: greeting, for user with id: " +
+                update.message().chat().id());
+
         SendMessage greeting = new SendMessage(update.message().chat().id(),
                 "Привет, " + update.message().from().firstName() + "! \uD83D\uDE42 \n" +
                         "\nЯ создан для того, что-бы помочь тебе найти друга, четвероного друга." +
@@ -91,9 +100,8 @@ public class ProcessMessageService {
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton("Собаку").callbackData(Commands.START_MENU.getCallbackData()),
-                new InlineKeyboardButton("Кошку").callbackData(Commands.START_MENU.getCallbackData()),
-                new InlineKeyboardButton("Я еще подумаю").callbackData(Commands.NO.getCallbackData())
+                new InlineKeyboardButton("Хочу взять собаку! \uD83D\uDC36").callbackData(Commands.TAKE_THE_DOG.getCallbackData()),
+                new InlineKeyboardButton("Хочу взять котенка! \uD83D\uDC31").callbackData(Commands.TAKE_A_KITTEN.getCallbackData())
         );
 
         SendMessage description = new SendMessage(update.message().chat().id(), desc);
@@ -109,6 +117,10 @@ public class ProcessMessageService {
      * @param update доступное обновление
      */
     public void info(Update update) {
+
+        logger.info("Launched method: info, for user with id: " +
+                update.message().chat().id());
+
         String infoMsg = "«Приют» — слово, от которого становится тоскливо.\uD83D\uDE14" +
                 "«Приют для животных» звучит еще более безрадостно.\uD83D\uDE22" +
                 "Это место, где живут брошенные питомцы, потерявшиеся при переезде, пережившие своих хозяев или рожденные на улице. \uD83C\uDF27" +
@@ -130,6 +142,10 @@ public class ProcessMessageService {
      * @return сообщение пользователю
      */
     private SendMessage volunteerMenu(Update update) {
+
+        logger.info("Launched method: volunteer, for user with id: " +
+                update.message().chat().id());
+
         SendMessage volunteer = new SendMessage(update.callbackQuery().message().chat().id(), "Волонтер скоро с вами свяжется\uD83D\uDE09");
         return volunteer;
     }

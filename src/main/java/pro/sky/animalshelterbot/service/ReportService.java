@@ -80,8 +80,10 @@ public class ReportService {
                 report.setReportStatus(status);
             }
         }
-        log.error("Request report is not found");
-        throw new ReportNotFoundException();
+        else{
+            log.error("Request report is not found");
+            throw new ReportNotFoundException();}
+        return report;
     }
 
     /**
@@ -102,6 +104,14 @@ public class ReportService {
     public Collection<Report> getAllReport(){
         log.info("Request to get all reports");
         return repository.findAll();
+    }
+
+    public Collection<Report> findNewReports() {
+        return repository.findReports();
+    }
+
+    public Collection<Report> findOldReports() {
+        return repository.findFirstReports();
     }
 
 }

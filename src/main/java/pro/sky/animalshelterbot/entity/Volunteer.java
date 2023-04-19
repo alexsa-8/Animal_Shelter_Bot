@@ -22,6 +22,8 @@ public class Volunteer {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "chat_id")
+    private Long chatId;
     /**
      * Поле: имя волонтёра
      */
@@ -50,8 +52,9 @@ public class Volunteer {
      * @param phone  телефон
      * @param status статус
      */
-    public Volunteer(Long id, String name, String phone, VolunteerStatus status) {
+    public Volunteer(Long id, Long chatId, String name, String phone, VolunteerStatus status) {
         this.id = id;
+        this.chatId = chatId;
         this.name = name;
         this.phone = phone;
         this.status = status;
@@ -64,6 +67,14 @@ public class Volunteer {
     }
 
     public Volunteer() {
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
     public Long getId() {return id;}
