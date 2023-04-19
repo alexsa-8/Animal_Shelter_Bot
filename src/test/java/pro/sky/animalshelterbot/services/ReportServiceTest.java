@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalshelterbot.constant.ReportStatus;
 import pro.sky.animalshelterbot.entity.Report;
@@ -17,6 +18,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,7 +89,8 @@ public class ReportServiceTest {
 
     @Test
     public void shouldDeleteReport(){
-
+        service.deleteReport(1L);
+        verify(repository, Mockito.times(1)).deleteById(1L);
     }
 
     @Test
