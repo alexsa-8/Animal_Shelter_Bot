@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
-import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.entity.Report;
 import pro.sky.animalshelterbot.entity.Volunteer;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
@@ -23,7 +22,6 @@ import pro.sky.animalshelterbot.repository.ReportRepository;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -137,7 +135,7 @@ public class SendReportMenuService {
     public void downloadReport(Update update) {
 
         logger.info("Launched method: download_report, for user with id: " +
-                update.callbackQuery().message().chat().id());
+                update.message().chat().id());
 
         String text = update.message().caption();
         Matcher matcher = REPORT_PATTERN.matcher(text);

@@ -4,27 +4,14 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.KeyboardButton;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
-import com.pengrad.telegrambot.request.SendDocument;
-import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.request.SetMyCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
-import pro.sky.animalshelterbot.repository.DogRepository;
-import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 
 /**
  * Сервис TelegramBotUpdatesListener
@@ -46,22 +33,38 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      * Поле: телеграм бот
      */
     private final TelegramBot telegramBot;
-    private final DogRepository dogRepository;
-    private final OwnerDogService ownerDogService;
+
+    /**
+     * Поле: сервис по обработке сообщений
+     */
+    private final ProcessMessageService processMessageService;
+
+    /**
+     * Поле: сервис по обработке нажатия кнопок
+     */
+    private final ProcessCallbackQueryService processCallbackQueryService;
+
+    /**
+     * Поле: сервис по обработке отчетов
+     */
+    private final SendReportMenuService sendReportMenuService;
 
     /**
      * Конструктор
      *
-     * @param telegramBot   телеграм бот
-     * @param dogRepository бд собак
+     * @param telegramBot                 телеграм бот
+     * @param processMessageService       сервис по обработке сообщений
+     * @param processCallbackQueryService сервис по обработке нажатия кнопок
+     * @param sendReportMenuService       сервис по обработке отчетов
      */
     public TelegramBotUpdatesListener(TelegramBot telegramBot,
-                                      DogRepository dogRepository, OwnerDogService ownerDogService) {
+                                      ProcessMessageService processMessageService,
+                                      ProcessCallbackQueryService processCallbackQueryService, SendReportMenuService sendReportMenuService) {
+
         this.telegramBot = telegramBot;
-
-        this.ownerDogService = ownerDogService;
-
-        this.dogRepository = dogRepository;
+        this.processMessageService = processMessageService;
+        this.processCallbackQueryService = processCallbackQueryService;
+        this.sendReportMenuService = sendReportMenuService;
 
         telegramBot.execute(new SetMyCommands(
                 new BotCommand(Commands.START.getTitle(), Commands.START.getDescription()),
@@ -111,5 +114,4 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             processCallbackQueryService.processCallbackQuery(update);
         }
     }
-
 }
