@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.constant.OwnerStatus;
+import pro.sky.animalshelterbot.entity.OwnerDog;
 
 /**
  * Сервис ProcessMessageService
@@ -34,11 +36,19 @@ public class ProcessMessageService {
     private final TelegramBot telegramBot;
 
     /**
-     * Конструктор
-     * @param telegramBot   телеграм бот
+     * Поле: сервис владельца
      */
-    public ProcessMessageService(TelegramBot telegramBot) {
+    private final OwnerDogService ownerDogService;
+
+    /**
+     * Конструктор
+     *
+     * @param telegramBot     телеграм бот
+     * @param ownerDogService сервис владельца
+     */
+    public ProcessMessageService(TelegramBot telegramBot, OwnerDogService ownerDogService) {
         this.telegramBot = telegramBot;
+        this.ownerDogService = ownerDogService;
     }
 
     /**
@@ -47,7 +57,11 @@ public class ProcessMessageService {
      * @param update доступные обновления
      */
     public void processMessage(Update update) {
-        if (update.message().text() == null) {
+        if(update.message().contact() != null){
+            createContactInDB(update);
+            return;
+        }
+        else if (update.message().text() == null) {
             return;
         }
         StringBuilder text = new StringBuilder(update.message().text());
@@ -148,6 +162,18 @@ public class ProcessMessageService {
 
         SendMessage volunteer = new SendMessage(update.callbackQuery().message().chat().id(), "Волонтер скоро с вами свяжется\uD83D\uDE09");
         return volunteer;
+    }
+
+    private void createContactInDB(Update update){
+        logger.info("Created owner in database: " +
+                update.message().chat().id());
+
+        ownerDogService.create(new OwnerDog(update.message().chat().id(),
+                update.message().contact().firstName(),
+                update.message().contact().phoneNumber()),
+                OwnerStatus.IN_SEARCH);
+        telegramBot.execute(new SendMessage(update.message().chat().id(),
+                    "Мы свяжемся с вами в ближайшее время!"));
     }
 
 }

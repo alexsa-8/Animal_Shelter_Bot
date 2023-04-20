@@ -107,8 +107,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         if (update.message() != null) {
             if(update.message().photo() != null || update.message().caption()!=null){
                 sendReportMenuService.downloadReport(update);
-            }
-            else {processMessageService.processMessage(update);}
+            } else {processMessageService.processMessage(update);}
         }
         else if (update.callbackQuery() != null) {
             processCallbackQueryService.processCallbackQuery(update);

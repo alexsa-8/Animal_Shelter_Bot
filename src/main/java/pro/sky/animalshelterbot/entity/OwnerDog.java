@@ -67,7 +67,6 @@ public class OwnerDog {
     private Long numberOfReportDays;
 
     public OwnerDog(Long chatId, String name, String phone, Long numberOfReportDays) {
-        this.id = id;
         this.chatId = chatId;
         this.name = name;
         this.phone = phone;
