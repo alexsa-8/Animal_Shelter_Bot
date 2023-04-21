@@ -1,7 +1,9 @@
 package pro.sky.animalshelterbot.service;
 
+import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.entity.OwnerDog;
@@ -19,7 +21,6 @@ import java.util.Collection;
 @Service
 public class OwnerDogService {
     private final OwnerDogRepository repository;
-
     private final static Logger log = LoggerFactory.getLogger(OwnerDog.class);
 
     public OwnerDogService(OwnerDogRepository repository) {
@@ -71,15 +72,13 @@ public class OwnerDogService {
      * <br>
      * Используется метод репозитория {@link OwnerDogRepository#save(Object)}
      * @param ownerDog изменяемый владелец
-     * @param status статус владельца (изменить или оставить прежним)
      * @throws OwnerDogNotFoundException, если указанный владелец собаки не найден
      * @return измененный владелец собаки
      */
-    public OwnerDog update(OwnerDog ownerDog, OwnerStatus status) {
+    public OwnerDog update(OwnerDog ownerDog) {
         log.info("Request to update owner dog  {}", ownerDog);
         if (ownerDog.getId() != null) {
             if (find(ownerDog.getId()) != null) {
-                ownerDog.setStatus(status);
                 return repository.save(ownerDog);
             }
         }
@@ -110,19 +109,45 @@ public class OwnerDogService {
     }
 
     /**
-     * добавление количества дней исп.срока
-     * @return измененные данные
+     * Изменение количества дней испытательного срока
+     * @param id идентификатор владельца
+     * @param number количество дней, на которое изменяется (1 - 14, 2 - 30)
+     * @return владелец с измененным испытательным сроком
      */
     public OwnerDog changeNumberOfReportDays(Long id, Long number) {
-        OwnerDog ownerDog = new OwnerDog();
-        if (ownerDog.getId() != null) {
-            if (find(ownerDog.getId()) != null) {
-                ownerDog.setNumberOfReportDays(ownerDog.getNumberOfReportDays() + number);
-                return repository.save(ownerDog);
-            }
+        OwnerDog ownerDog = repository.findById(id).orElseThrow(() -> {
+            log.error("There is not owner dog with id = {}", id);
+            return new OwnerDogNotFoundException();
+        });
+        if (ownerDog.getNumberOfReportDays() == null) {
+            throw new RuntimeException();
         }
-        log.error("Request owner dog is not found");
-        throw new OwnerDogNotFoundException();
+        if (number == 1) {
+            ownerDog.setNumberOfReportDays(ownerDog.getNumberOfReportDays() + 14);
+            SendMessage message = new SendMessage(ownerDog.getChatId(), "Вам продлили период испытательного срока на 14 дней");
+
+        } else if (number == 2) {
+            ownerDog.setNumberOfReportDays(ownerDog.getNumberOfReportDays() + 30);
+            SendMessage message = new SendMessage(ownerDog.getChatId(), "Вам продлили период испытательного срока на 30 дней");
+        }
+        return repository.save(ownerDog);
     }
+
+    /**
+     * Изменение статуса владельца
+     * @param id идентификатор владельца
+     * @param status выбираемый статус
+     * @return владелец с измененным статусом
+     */
+    public OwnerDog updateStatus(Long id, OwnerStatus status) {
+        log.info("Request to update owner dog status {}", status);
+        OwnerDog ownerDog = repository.findById(id).orElseThrow(() -> {
+            log.error("There is not owner dog with id = {}", id);
+            return new OwnerDogNotFoundException();
+        });
+        ownerDog.setStatus(status);
+        return repository.save(ownerDog);
+    }
+
 
 }

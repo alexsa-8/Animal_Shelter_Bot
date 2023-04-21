@@ -1,11 +1,14 @@
 package pro.sky.animalshelterbot.service;
 
+import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.entity.OwnerCat;
+import pro.sky.animalshelterbot.entity.OwnerCat;
 import pro.sky.animalshelterbot.exception.OwnerCatNotFoundException;
+import pro.sky.animalshelterbot.exception.OwnerDogNotFoundException;
 import pro.sky.animalshelterbot.repository.OwnerCatRepository;
 
 import java.util.Collection;
@@ -71,15 +74,13 @@ public class OwnerCatService {
      * <br>
      * Используется метод репозитория {@link OwnerCatRepository#save(Object)}
      * @param owner изменяемый владелец
-     * @param status статус владельца (изменить или оставить прежним)
      * @throws OwnerCatNotFoundException, если указанный владелец кота не найден
      * @return измененный владелец кота
      */
-    public OwnerCat update(OwnerCat owner, OwnerStatus status) {
+    public OwnerCat update(OwnerCat owner) {
         log.info("Request to update owner cat  {}", owner);
         if (owner.getId() != null) {
             if (find(owner.getId()) != null) {
-                owner.setStatus(status);
                 return repository.save(owner);
             }
         }
@@ -110,19 +111,42 @@ public class OwnerCatService {
     }
 
     /**
-     * добавление количества дней исп.срока
-     * @return измененные данные
+     * Изменение количества дней испытательного срока
+     * @param id идентификатор владельца
+     * @param number количество дней, на которое изменяется (1 - 14, 2 - 30)
+     * @return владелец с измененным испытательным сроком
      */
     public OwnerCat changeNumberOfReportDays(Long id, Long number) {
-        OwnerCat owner = new OwnerCat();
-        if (owner.getId() != null) {
-            if (find(owner.getId()) != null) {
-                owner.setNumberOfReportDays(owner.getNumberOfReportDays() + number);
-                return repository.save(owner);
-            }
+        OwnerCat ownerCat = repository.findById(id).orElseThrow(() -> {
+            log.error("There is not owner dog with id = {}", id);
+            return new OwnerCatNotFoundException();
+        });
+        if (ownerCat.getNumberOfReportDays() == null) {
+            throw new RuntimeException();
         }
-        log.error("Request owner cat is not found");
-        throw new OwnerCatNotFoundException();
-    }
+        if (number == 1) {
+            ownerCat.setNumberOfReportDays(ownerCat.getNumberOfReportDays() + 14);
+            SendMessage message = new SendMessage(ownerCat.getChatId(), "Вам продлили период испытательного срока на 14 дней");
 
+        } else if (number == 2) {
+            ownerCat.setNumberOfReportDays(ownerCat.getNumberOfReportDays() + 30);
+            SendMessage message = new SendMessage(ownerCat.getChatId(), "Вам продлили период испытательного срока на 30 дней");
+        }
+        return repository.save(ownerCat);
+    }
+    /**
+     * Изменение статуса владельца
+     * @param id идентификатор владельца
+     * @param status выбираемый статус
+     * @return владелец с измененным статусом
+     */
+    public OwnerCat updateStatus(Long id, OwnerStatus status) {
+        log.info("Request to update owner dog status {}", status);
+        OwnerCat ownerDog = repository.findById(id).orElseThrow(() -> {
+            log.error("There is not owner dog with id = {}", id);
+            return new OwnerCatNotFoundException();
+        });
+        ownerDog.setStatus(status);
+        return repository.save(ownerDog);
+    }
 }
