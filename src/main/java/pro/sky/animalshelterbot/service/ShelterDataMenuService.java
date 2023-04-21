@@ -94,9 +94,10 @@ public class ShelterDataMenuService {
                 " \n Email: animalshelterastaba@gmail.com  \n";
 
         String dataMessageKittenShelter = "  Доброго времени суток! Наши контактные данные:" +
-                "\n Адрес: г. Астана, Сарыарка район, Коктал ж/м, ул. Аккорган, 5в. " +
-                " \n Часы работы приюта: ежедневно с 11:00 до 18:00 \n Тел.: +7‒702‒481‒01‒58" +
-                " \n Email: animalshelterastaba@gmail.com  \n";
+                "\n Адрес: г. Алматы, ул. Ыкылас, Дом 8б. " +
+                " \n Часы работы приюта: ежедневно с 10:00 до 18:00 \n Тел.: +7‒702‒262‒39‒82" +
+                " \n Сайт kotopesoff.kz  \n"+
+                " \n Email: wotdpress@kotopesoff.kz  \n";
 
         String pathDog = "src/main/resources/shelterInfo/map.jpg";
         String pathKitten = "src/main/resources/shelterInfo/map.jpg";
