@@ -15,7 +15,7 @@ public enum Commands {
     LIST_DOCUMENTS("/list_documents", "\uD83D\uDCCB Список документов", generateCallbackData()),
     DATING_RULES("/dating_rules", "\uD83E\uDD1D Правила знакомства", generateCallbackData()),
     REPORT_FORM("/report_form", "\uD83D\uDD16 Отправить отчет", generateCallbackData()),
-    CALL_VOLUNTEER("/volunteer", "\uD83C\uDD98 Позвать волонтера", generateCallbackData()),
+    VOLUNTEER("/volunteer", "\uD83C\uDD98 Позвать волонтера", generateCallbackData()),
     INFO("/info", "ℹ️ Информация о приюте", generateCallbackData()),
     ANIMAL_INFO("/animal_info", "ℹ️ Информация как взять питомца", generateCallbackData()),
     SUBMIT_REPORT("/submit_report", "\uD83D\uDCDD Прислать отчет", generateCallbackData()),

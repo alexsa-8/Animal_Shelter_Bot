@@ -73,8 +73,8 @@ public class ShelterInfoMenuService {
 
         );
         inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton(Commands.CALL_VOLUNTEER.getDescription())
-                        .callbackData(Commands.CALL_VOLUNTEER.getCallbackData())
+                new InlineKeyboardButton(Commands.VOLUNTEER.getDescription())
+                        .callbackData(Commands.VOLUNTEER.getCallbackData())
 
         );
         inlineKeyboardMarkup.addRow(

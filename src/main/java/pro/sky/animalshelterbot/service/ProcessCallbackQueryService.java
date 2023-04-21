@@ -115,7 +115,7 @@ public class ProcessCallbackQueryService {
             case BACK:
                 telegramBot.execute(startMenuService.startMenu(update));
                 break;
-            case CALL_VOLUNTEER:
+            case VOLUNTEER:
                 telegramBot.execute(startMenuService.volunteerMenu(update));
                 break;
             // Информационное меню приюта (shelterInfoMenuService)

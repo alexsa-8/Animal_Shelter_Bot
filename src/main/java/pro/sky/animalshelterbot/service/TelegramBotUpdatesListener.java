@@ -69,7 +69,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         telegramBot.execute(new SetMyCommands(
                 new BotCommand(Commands.START.getTitle(), Commands.START.getDescription()),
                 new BotCommand(Commands.INFO.getTitle(), Commands.INFO.getDescription()),
-                new BotCommand(Commands.CALL_VOLUNTEER.getTitle(), Commands.CALL_VOLUNTEER.getDescription())
+                new BotCommand(Commands.VOLUNTEER.getTitle(), Commands.VOLUNTEER.getDescription())
         ));
     }
 

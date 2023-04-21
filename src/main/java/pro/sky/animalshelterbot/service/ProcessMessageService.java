@@ -82,7 +82,7 @@ public class ProcessMessageService {
             case INFO:
                 info(update);
                 break;
-            case CALL_VOLUNTEER:
+            case VOLUNTEER:
                 volunteerMenu(update);
                 break;
         }
@@ -155,13 +155,13 @@ public class ProcessMessageService {
      * @param update доступное обновление
      * @return сообщение пользователю
      */
-    private SendMessage volunteerMenu(Update update) {
+    private void volunteerMenu(Update update) {
 
         logger.info("Launched method: volunteer, for user with id: " +
                 update.message().chat().id());
 
-        SendMessage volunteer = new SendMessage(update.callbackQuery().message().chat().id(), "Волонтер скоро с вами свяжется\uD83D\uDE09");
-        return volunteer;
+        telegramBot.execute(new SendMessage(update.message().chat().id(),
+                "Волонтер скоро с вами свяжется\uD83D\uDE09"));
     }
 
     private void createContactInDB(Update update){
