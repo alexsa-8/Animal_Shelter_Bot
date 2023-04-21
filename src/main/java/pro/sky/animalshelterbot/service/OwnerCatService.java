@@ -54,6 +54,19 @@ public class OwnerCatService {
     }
 
     /**
+     * Поиск владельца кота в БД по chat id
+     * <br>
+     * Используется метод репозитория {@link OwnerCatRepository#findById(Object)}
+     * @param chatId идентификатор владельца
+     * @throws OwnerCatNotFoundException, если владелец с указанным chat id не найден
+     * @return найденный владелец
+     */
+    public OwnerCat findByChatId(Long chatId){
+        log.info("Request to getting owner dog  by chat chat id {}", chatId);
+        return repository.findByChatId(chatId);
+    }
+
+    /**
      * Изменение данных владельца кота в БД
      * <br>
      * Используется метод репозитория {@link OwnerCatRepository#save(Object)}

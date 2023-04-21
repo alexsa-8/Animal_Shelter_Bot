@@ -67,6 +67,14 @@ public class OwnerCat {
     @Column(name = "number_of_report_days" )
     private Long numberOfReportDays;
 
+    public OwnerCat(Long chatId, String name, String phone) {
+        this.chatId = chatId;
+        this.name = name;
+        this.phone = phone;
+    }
+
+    public OwnerCat(){}
+
     public Long getId() {
         return id;
     }

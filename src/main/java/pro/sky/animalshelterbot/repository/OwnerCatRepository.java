@@ -9,4 +9,5 @@ import pro.sky.animalshelterbot.entity.OwnerCat;
  * @author Gubina Marina
  */
 public interface OwnerCatRepository extends JpaRepository<OwnerCat,Long> {
+    OwnerCat findByChatId(Long chatId);
 }
