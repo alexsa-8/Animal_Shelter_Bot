@@ -65,8 +65,8 @@ public class StartMenuService {
                         .callbackData(Commands.SUBMIT_REPORT.getCallbackData())
         );
         inlineKeyboardMarkup.addRow(
-                new InlineKeyboardButton(Commands.CALL_VOLUNTEER.getDescription())
-                        .callbackData(Commands.CALL_VOLUNTEER.getCallbackData())
+                new InlineKeyboardButton(Commands.VOLUNTEER.getDescription())
+                        .callbackData(Commands.VOLUNTEER.getCallbackData())
         );
         inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton("\uD83D\uDCE2 Расскажи о нас")

@@ -69,7 +69,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         telegramBot.execute(new SetMyCommands(
                 new BotCommand(Commands.START.getTitle(), Commands.START.getDescription()),
                 new BotCommand(Commands.INFO.getTitle(), Commands.INFO.getDescription()),
-                new BotCommand(Commands.CALL_VOLUNTEER.getTitle(), Commands.CALL_VOLUNTEER.getDescription())
+                new BotCommand(Commands.VOLUNTEER.getTitle(), Commands.VOLUNTEER.getDescription())
         ));
     }
 
@@ -107,8 +107,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         if (update.message() != null) {
             if(update.message().photo() != null || update.message().caption()!=null){
                 sendReportMenuService.downloadReport(update);
-            }
-            else {processMessageService.processMessage(update);}
+            } else {processMessageService.processMessage(update);}
         }
         else if (update.callbackQuery() != null) {
             processCallbackQueryService.processCallbackQuery(update);

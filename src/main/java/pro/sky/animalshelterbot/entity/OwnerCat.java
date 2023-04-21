@@ -6,15 +6,15 @@ import javax.persistence.*;
 import java.util.Objects;
 
 /**
- * Класс OwnerDog, представляет сущность владельца питомца(собаки)
+ * Класс OwnerCat, представляет сущность владельца питомца(кота)
  * @author Marina Gubina
  */
 @Entity
-@Table(name = "owner_dog")
-public class OwnerDog {
+@Table(name = "owner_cat")
+public class OwnerCat {
 
     /**
-     * Поле: идентификационный номер владельца
+     * Поле: идентификационный номер владельца кота
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,31 +22,31 @@ public class OwnerDog {
     private Long id;
 
     /**
-     * Поле: номер чата владельца
+     * Поле: номер чата владельца кота
      */
     @Column(name = "chat_id", nullable = false)
     private Long chatId;
 
     /**
-     * Поле: имя владельца
+     * Поле: имя владельца кота
      */
     @Column(name = "name", nullable = false)
     private String name;
 
     /**
-     * Поле: номер телефона владельца
+     * Поле: номер телефона владельца кота
      */
     @Column(name = "phone", nullable = false)
     private String phone;
 
     /**
-     * Поле: возраст владельца
+     * Поле: возраст владельца кота
      */
     @Column(name = "age", nullable = false)
     private int age;
 
     /**
-     * Поле: статус владельца
+     * Поле: статус владельца кота
      * @see OwnerStatus
      */
     @Enumerated(EnumType.STRING)
@@ -54,13 +54,12 @@ public class OwnerDog {
     private OwnerStatus status;
 
     /**
-     * Поле: имеющаяся собака
-     *
-     * @see Dog
+     * Поле: имеющийся кот
+     * @see Cat
      */
     @OneToOne
-    @JoinColumn(name = "dog_id")
-    private Dog dog;
+    @JoinColumn(name = "cat_id")
+    private Cat cat;
 
     /**
      * Поле: количество дней испытательного срока
@@ -68,32 +67,12 @@ public class OwnerDog {
     @Column(name = "number_of_report_days" )
     private Long numberOfReportDays;
 
-    public OwnerDog(Long chatId, String name, String phone, Long numberOfReportDays) {
-        this.chatId = chatId;
-        this.name = name;
-        this.phone = phone;
-        this.numberOfReportDays = numberOfReportDays;
-    }
-
-    public OwnerDog(Long chatId, String name, String phone) {
-        this.chatId = chatId;
-        this.name = name;
-        this.phone = phone;
-    }
-
-    public OwnerDog() {
-    }
-
-    public Dog getDog() {
-        return dog;
-    }
-
-    public void setDog(Dog dog) {
-        this.dog = dog;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getChatId() {
@@ -128,16 +107,20 @@ public class OwnerDog {
         this.age = age;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public OwnerStatus getStatus() {
         return status;
     }
 
     public void setStatus(OwnerStatus status) {
         this.status = status;
+    }
+
+    public Cat getCat() {
+        return cat;
+    }
+
+    public void setCat(Cat cat) {
+        this.cat = cat;
     }
 
     public Long getNumberOfReportDays() {
@@ -152,25 +135,25 @@ public class OwnerDog {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OwnerDog ownerDog = (OwnerDog) o;
-        return age == ownerDog.age && Objects.equals(id, ownerDog.id) && Objects.equals(chatId, ownerDog.chatId) && Objects.equals(name, ownerDog.name) && Objects.equals(phone, ownerDog.phone) && status == ownerDog.status && Objects.equals(dog, ownerDog.dog) && Objects.equals(numberOfReportDays, ownerDog.numberOfReportDays);
+        OwnerCat ownerCat = (OwnerCat) o;
+        return age == ownerCat.age && Objects.equals(id, ownerCat.id) && Objects.equals(chatId, ownerCat.chatId) && Objects.equals(name, ownerCat.name) && Objects.equals(phone, ownerCat.phone) && status == ownerCat.status && Objects.equals(cat, ownerCat.cat) && Objects.equals(numberOfReportDays, ownerCat.numberOfReportDays);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, chatId, name, phone, age, status, dog, numberOfReportDays);
+        return Objects.hash(id, chatId, name, phone, age, status, cat, numberOfReportDays);
     }
 
     @Override
     public String toString() {
-        return "OwnerDog{" +
+        return "OwnerCat{" +
                 "id=" + id +
                 ", chatId=" + chatId +
                 ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
                 ", age=" + age +
                 ", status=" + status +
-                ", dog=" + dog +
+                ", cat=" + cat +
                 ", numberOfReportDays=" + numberOfReportDays +
                 '}';
     }
