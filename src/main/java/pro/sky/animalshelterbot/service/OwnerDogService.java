@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.entity.OwnerDog;
-import pro.sky.animalshelterbot.exception.DogNotFoundException;
 import pro.sky.animalshelterbot.exception.OwnerDogNotFoundException;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
@@ -72,7 +71,7 @@ public class OwnerDogService {
             }
         }
         log.error("Request owner dog is not found");
-        throw new DogNotFoundException();
+        throw new OwnerDogNotFoundException();
     }
 
     /**
@@ -98,7 +97,7 @@ public class OwnerDogService {
     }
 
     /**
-     * @param ownerDog добавление количества дней исп.срока
+     * добавление количества дней исп.срока
      * @return измененные данные
      */
     public OwnerDog changeNumberOfReportDays(Long id, Long number) {
@@ -110,7 +109,7 @@ public class OwnerDogService {
             }
         }
         log.error("Request owner dog is not found");
-        throw new DogNotFoundException();
+        throw new OwnerDogNotFoundException();
     }
 
 }

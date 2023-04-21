@@ -10,27 +10,24 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
-import pro.sky.animalshelterbot.constant.PetStatus;
-import pro.sky.animalshelterbot.entity.OwnerDog;
-import pro.sky.animalshelterbot.entity.OwnerDog;
-import pro.sky.animalshelterbot.service.OwnerDogService;
+import pro.sky.animalshelterbot.entity.OwnerCat;
+import pro.sky.animalshelterbot.service.OwnerCatService;
 
 import java.util.Collection;
 
 /**
- * Контроллер OwnerDogController
- * Контроллер используется для добавления, редактирования, удаления и поиска владельца собаки в БД через REST-запросы
- * @see OwnerDogService
- * @author Kilikova Anna
+ * Контроллер OwnerCatController
+ * Контроллер используется для добавления, редактирования, удаления и поиска владельца кота в БД через REST-запросы
+ * @see OwnerCatService
+ * @author Gubina Marina
  */
 
 @RestController
-@RequestMapping("owners_dog")
-public class OwnerDogController {
+@RequestMapping("owners_cat")
+public class OwnerCatController {
+    private final OwnerCatService service;
 
-    private final OwnerDogService service;
-
-    public OwnerDogController(OwnerDogService service) {
+    public OwnerCatController(OwnerCatService service) {
         this.service = service;
     }
 
@@ -40,16 +37,16 @@ public class OwnerDogController {
                     description = "Добавленный владелец",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = OwnerDog.class)
+                            schema = @Schema(implementation = OwnerCat.class)
                     )
             ),
-            tags = "Владельцы собак"
+            tags = "Владельцы котов"
     )
     @PostMapping
-    public OwnerDog create(@RequestBody OwnerDog ownerDog,
+    public OwnerCat create(@RequestBody OwnerCat owner,
                            @Parameter(description = "Установка статуса владельцу", example = "IN_SEARCH")
                            @RequestParam(name = "Статус") OwnerStatus status) {
-        return service.create(ownerDog, status);
+        return service.create(owner, status);
     }
 
     @Operation(
@@ -60,7 +57,7 @@ public class OwnerDogController {
                             description = "Найденный владелец",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = OwnerDog.class)
+                                    schema = @Schema(implementation = OwnerCat.class)
                             )
                     ),
                     @ApiResponse(
@@ -68,18 +65,18 @@ public class OwnerDogController {
                             description = "Владелец не найден",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = OwnerDog.class))
+                                    schema = @Schema(implementation = OwnerCat.class))
                     )
             },
-            tags = "Владельцы собак"
+            tags = "Владельцы котов"
     )
     @GetMapping("{id}")
-    public ResponseEntity<OwnerDog> find(@PathVariable Long id) {
-        OwnerDog ownerDog = service.find(id);
-        if (ownerDog == null) {
+    public ResponseEntity<OwnerCat> find(@PathVariable Long id) {
+        OwnerCat owner = service.find(id);
+        if (owner == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(ownerDog);
+        return ResponseEntity.ok(owner);
     }
 
     @Operation(
@@ -90,7 +87,7 @@ public class OwnerDogController {
                             description = "Измененный владелец",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = OwnerDog.class)
+                                    schema = @Schema(implementation = OwnerCat.class)
                             )
                     ),
                     @ApiResponse(
@@ -98,20 +95,20 @@ public class OwnerDogController {
                             description = "Владелец не найден",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = OwnerDog.class))
+                                    schema = @Schema(implementation = OwnerCat.class))
                     )
             },
-            tags = "Владельцы собак"
+            tags = "Владельцы котов"
     )
     @PutMapping
-    public ResponseEntity<OwnerDog> update(@RequestBody OwnerDog ownerDog,
+    public ResponseEntity<OwnerCat> update(@RequestBody OwnerCat ownerCat,
                                            @Parameter(description = "Установка статуса владельца", example = "IN_SEARCH")
                                            @RequestParam(name = "Статус") OwnerStatus status) {
-        OwnerDog ownerDog1 = service.update(ownerDog, status);
-        if (ownerDog1 == null) {
+        OwnerCat ownerCat1 = service.update(ownerCat, status);
+        if (ownerCat1 == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(ownerDog1);
+        return ResponseEntity.ok(ownerCat1);
     }
 
     @Operation(
@@ -122,7 +119,7 @@ public class OwnerDogController {
                             description = "Удаленный владелец",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = OwnerDog.class)
+                                    schema = @Schema(implementation = OwnerCat.class)
                             )
                     ),
                     @ApiResponse(
@@ -130,10 +127,10 @@ public class OwnerDogController {
                             description = "Владелец не найден",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = OwnerDog.class))
+                                    schema = @Schema(implementation = OwnerCat.class))
                     )
             },
-            tags = "Владельцы собак"
+            tags = "Владельцы котов"
     )
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable long id) {
@@ -149,24 +146,24 @@ public class OwnerDogController {
                             description = "Полученные владельцы",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    array =@ArraySchema(schema = @Schema(implementation = OwnerDog.class))
+                                    array =@ArraySchema(schema = @Schema(implementation = OwnerCat.class))
                             )
                     )
             },
-            tags = "Владельцы собак"
+            tags = "Владельцы котов"
     )
     @GetMapping
-    public ResponseEntity<Collection<OwnerDog>> getAll() {
+    public ResponseEntity<Collection<OwnerCat>> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
 
     @PutMapping("/days")
-    public ResponseEntity<OwnerDog> changeDays(@RequestParam Long id,
-                                          @RequestParam Long numberDays) {
-        OwnerDog ownerDog1 = service.changeNumberOfReportDays(id, numberDays);
-        if (ownerDog1 == null) {
+    public ResponseEntity<OwnerCat> changeDays(@RequestParam Long id,
+                                               @RequestParam Long numberDays) {
+        OwnerCat ownerCat1 = service.changeNumberOfReportDays(id, numberDays);
+        if (ownerCat1 == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(ownerDog1);
+        return ResponseEntity.ok(ownerCat1);
     }
 }
