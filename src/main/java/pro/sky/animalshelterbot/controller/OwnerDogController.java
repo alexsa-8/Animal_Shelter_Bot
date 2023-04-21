@@ -13,6 +13,7 @@ import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.constant.PetStatus;
 import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.entity.OwnerDog;
+import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.service.OwnerDogService;
 
 import java.util.Collection;
@@ -223,5 +224,40 @@ public class OwnerDogController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(ownerDog1);
+    }
+
+    @Operation(
+            summary = "Уведомление владельцу от волонтера",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Уведомляемый владелец",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = OwnerDog.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Владелец не найден",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = OwnerDog.class))
+                    )
+            },
+            tags = "Владельцы собак")
+
+    @PutMapping("/probation/{id}")
+    public ResponseEntity<OwnerDog> noticeToOwners(@Parameter(description = "Введите id владельца", example = "1")
+                                                   @PathVariable Long id,
+                                                   @Parameter(description = "1 - отчет плохо заполнен. " +
+                                                           "2  - прошел испытальельный срок. 3 - не прошел испытательный срок",
+                                                           example = "1")
+                                                   @RequestParam Long number) {
+        OwnerDog ownerDog = service.noticeToOwners(id, number);
+        if (ownerDog == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ownerDog);
     }
 }

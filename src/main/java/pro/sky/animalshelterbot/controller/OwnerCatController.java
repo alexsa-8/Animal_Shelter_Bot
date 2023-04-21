@@ -178,7 +178,7 @@ public class OwnerCatController {
             tags = "Владельцы котов")
 
     @PutMapping("/days/{id}")
-    public ResponseEntity<OwnerCat> changeDays(@Parameter(description = "Введите id пользователя", example = "1")
+    public ResponseEntity<OwnerCat> changeDays(@Parameter(description = "Введите id владельца", example = "1")
                                                @PathVariable Long id,
                                                @Parameter(description = "1 - увеличить испытательный срок на 14 дней." +
                                                        "2  - увеличить испытательный срок на 30 дней", example = "1")
@@ -212,11 +212,46 @@ public class OwnerCatController {
             tags = "Владельцы котов"
     )
     @PutMapping("/status/{id}")
-    public ResponseEntity<OwnerCat> updateStatus(@Parameter(description = "Введите id пользователя", example = "1")
+    public ResponseEntity<OwnerCat> updateStatus(@Parameter(description = "Введите id владельца", example = "1")
                                                  @PathVariable Long id,
                                                  @Parameter(description = "Выберете статус владельца", example = "IN_SEARCH")
                                                  @RequestParam (name = "Статус") OwnerStatus status) {
         OwnerCat ownerCat = service.updateStatus(id, status);
+        if (ownerCat == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ownerCat);
+    }
+
+    @Operation(
+            summary = "Уведомление владельцу от волонтера",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Уведомляемый владелец",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = OwnerCat.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Владелец не найден",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = OwnerCat.class))
+                    )
+            },
+            tags = "Владельцы котов")
+
+    @PutMapping("/probation/{id}")
+    public ResponseEntity<OwnerCat> noticeToOwners(@Parameter(description = "Введите id владельца", example = "1")
+                                               @PathVariable Long id,
+                                               @Parameter(description = "1 - отчет плохо заполнен. " +
+                                                       "2  - прошел испытальельный срок. 3 - не прошел испытательный срок",
+                                                       example = "1")
+                                               @RequestParam Long number) {
+        OwnerCat ownerCat = service.noticeToOwners(id, number);
         if (ownerCat == null) {
             return ResponseEntity.notFound().build();
         }

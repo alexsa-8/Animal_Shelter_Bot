@@ -3,10 +3,10 @@ package pro.sky.animalshelterbot.service;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.entity.OwnerDog;
+import pro.sky.animalshelterbot.exception.NumberNotFoundException;
 import pro.sky.animalshelterbot.exception.OwnerDogNotFoundException;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 
@@ -129,6 +129,8 @@ public class OwnerDogService {
         } else if (number == 2) {
             ownerDog.setNumberOfReportDays(ownerDog.getNumberOfReportDays() + 30);
             SendMessage message = new SendMessage(ownerDog.getChatId(), "Вам продлили период испытательного срока на 30 дней");
+        } else {
+            throw new NumberNotFoundException();
         }
         return repository.save(ownerDog);
     }
@@ -149,5 +151,24 @@ public class OwnerDogService {
         return repository.save(ownerDog);
     }
 
-
+    public OwnerDog noticeToOwners(Long id, Long number) {
+        OwnerDog ownerDog = repository.findById(id).orElseThrow(() -> {
+            log.error("There is not owner dog with id = {}", id);
+            return new OwnerDogNotFoundException();
+        });
+        if (number == 1) {
+            SendMessage message = new SendMessage(ownerDog.getChatId(), "«Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо. " +
+                    "Пожалуйста, подойди ответственнее к этому занятию. " +
+                    "В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного».");
+        } else if (number == 2) {
+            ownerDog.setStatus(OwnerStatus.APPROVED);
+            SendMessage message = new SendMessage(ownerDog.getChatId(), "Вы прошли испытательный срок.");
+        } else if (number == 3) {
+            ownerDog.setStatus(OwnerStatus.IN_BLACK_LIST);
+            SendMessage message = new SendMessage(ownerDog.getChatId(), "Вы не прошли испытательный срок.");
+        } else {
+            throw new NumberNotFoundException();
+        }
+        return repository.save(ownerDog);
+    }
 }

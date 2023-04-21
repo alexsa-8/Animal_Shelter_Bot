@@ -6,9 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.entity.OwnerCat;
-import pro.sky.animalshelterbot.entity.OwnerCat;
+import pro.sky.animalshelterbot.exception.NumberNotFoundException;
 import pro.sky.animalshelterbot.exception.OwnerCatNotFoundException;
-import pro.sky.animalshelterbot.exception.OwnerDogNotFoundException;
 import pro.sky.animalshelterbot.repository.OwnerCatRepository;
 
 import java.util.Collection;
@@ -118,7 +117,7 @@ public class OwnerCatService {
      */
     public OwnerCat changeNumberOfReportDays(Long id, Long number) {
         OwnerCat ownerCat = repository.findById(id).orElseThrow(() -> {
-            log.error("There is not owner dog with id = {}", id);
+            log.error("There is not owner cat with id = {}", id);
             return new OwnerCatNotFoundException();
         });
         if (ownerCat.getNumberOfReportDays() == null) {
@@ -141,12 +140,33 @@ public class OwnerCatService {
      * @return владелец с измененным статусом
      */
     public OwnerCat updateStatus(Long id, OwnerStatus status) {
-        log.info("Request to update owner dog status {}", status);
+        log.info("Request to update owner cat status {}", status);
         OwnerCat ownerDog = repository.findById(id).orElseThrow(() -> {
-            log.error("There is not owner dog with id = {}", id);
+            log.error("There is not owner cat with id = {}", id);
             return new OwnerCatNotFoundException();
         });
         ownerDog.setStatus(status);
         return repository.save(ownerDog);
+    }
+
+    public OwnerCat noticeToOwners(Long id, Long number) {
+        OwnerCat ownerCat = repository.findById(id).orElseThrow(() -> {
+            log.error("There is not owner cat with id = {}", id);
+            return new OwnerCatNotFoundException();
+        });
+        if (number == 1) {
+            SendMessage message = new SendMessage(ownerCat.getChatId(), "«Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо. " +
+                    "Пожалуйста, подойди ответственнее к этому занятию. " +
+                    "В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного».");
+        } else if (number == 2) {
+            ownerCat.setStatus(OwnerStatus.APPROVED);
+            SendMessage message = new SendMessage(ownerCat.getChatId(), "Вы прошли испытательный срок.");
+        } else if (number == 3) {
+            ownerCat.setStatus(OwnerStatus.IN_BLACK_LIST);
+            SendMessage message = new SendMessage(ownerCat.getChatId(), "Вы не прошли испытательный срок.");
+        } else {
+            throw new NumberNotFoundException();
+        }
+        return repository.save(ownerCat);
     }
 }
