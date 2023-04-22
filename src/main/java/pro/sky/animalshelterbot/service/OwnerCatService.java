@@ -136,7 +136,7 @@ public class OwnerCatService {
             bot.execute(new SendMessage(ownerCat.getChatId(), "Вам продлили период испытательного срока на 14 дней"));
 
         } else if (number == 2) {
-            log.info("The trial period has been extended by 14 days, id = {}", id);
+            log.info("The trial period has been extended by 30 days, id = {}", id);
             ownerCat.setNumberOfReportDays(ownerCat.getNumberOfReportDays() + 30);
             bot.execute(new SendMessage(ownerCat.getChatId(), "Вам продлили период испытательного срока на 30 дней"));
         }
