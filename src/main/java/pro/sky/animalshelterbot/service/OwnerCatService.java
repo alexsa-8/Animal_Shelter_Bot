@@ -131,12 +131,12 @@ public class OwnerCatService {
             throw new ProbationNotSpecifiedException();
         }
         if (number == 1) {
-            log.info("The trial period has been extended by 14 days {}", id);
+            log.info("The trial period has been extended by 14 days, id = {}", id);
             ownerCat.setNumberOfReportDays(ownerCat.getNumberOfReportDays() + 14);
             bot.execute(new SendMessage(ownerCat.getChatId(), "Вам продлили период испытательного срока на 14 дней"));
 
         } else if (number == 2) {
-            log.info("The trial period has been extended by 14 days {}", id);
+            log.info("The trial period has been extended by 14 days, id = {}", id);
             ownerCat.setNumberOfReportDays(ownerCat.getNumberOfReportDays() + 30);
             bot.execute(new SendMessage(ownerCat.getChatId(), "Вам продлили период испытательного срока на 30 дней"));
         }
@@ -170,17 +170,17 @@ public class OwnerCatService {
             return new OwnerCatNotFoundException();
         });
         if (number == 1) {
-            log.info("Notification owner cat about bad report {}", id);
+            log.info("Notification owner cat about bad report, id = {}", id);
             bot.execute(new SendMessage(ownerCat.getChatId(), "«Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо. " +
                     "Пожалуйста, подойди ответственнее к этому занятию. " +
                     "В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного».")
             );
         } else if (number == 2) {
-            log.info("Successful completion of the probationary period {}", id);
+            log.info("Successful completion of the probationary period, id = {}", id);
             ownerCat.setStatus(OwnerStatus.APPROVED);
             bot.execute(new SendMessage(ownerCat.getChatId(), "Вы прошли испытательный срок."));
         } else if (number == 3) {
-            log.info("The probationary period has not passed {}", id);
+            log.info("The probationary period has not passed, id = {}", id);
             ownerCat.setStatus(OwnerStatus.IN_BLACK_LIST);
             bot.execute(new SendMessage(ownerCat.getChatId(), "Вы не прошли испытательный срок."));
             String pathDog = "src/main/resources/list_documents/Manual.pdf";
