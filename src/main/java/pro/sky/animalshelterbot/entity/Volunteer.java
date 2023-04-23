@@ -24,12 +24,12 @@ public class Volunteer {
 
     @Column(name = "chat_id")
     private Long chatId;
+
     /**
      * Поле: имя волонтёра
      */
     @Column(name = "name", nullable = false)
     private String name;
-
     /**
      * Поле: телефон волонтёра
      */
@@ -124,6 +124,7 @@ public class Volunteer {
     public String toString() {
         return "Volunteer{" +
                 "id=" + id +
+                ", chatId=" + chatId +
                 ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
                 ", status=" + status +
