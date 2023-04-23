@@ -94,7 +94,7 @@ public class ShelterDataMenuService {
                 " \n Email: animalshelterastaba@gmail.com  \n";
 
         String dataMessageKittenShelter = "  Доброго времени суток! Наши контактные данные:" +
-                "\n Адрес: г. Алматы, ул. Спортивная дом 3, кв 6. " +
+                "\n Адрес: г. Алматы, ул. Спортивная дом 3 " +
                 " \n Часы работы приюта: ежедневно с 10:00 до 18:00 \n Тел.: +7‒702‒262‒39‒82" +
                 " \n Сайт kotopesoff.kz  \n"+
                 " \n Email: wotdpress@kotopesoff.kz  \n";
