@@ -41,6 +41,10 @@ public class ShelterDataMenuService {
 
         );
         inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.CAR_PASS.getDescription())
+                        .callbackData(Commands.CAR_PASS.getCallbackData())
+        );
+        inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton(Commands.BACK.getDescription())
                         .callbackData(Commands.BACK.getCallbackData())
         );
@@ -117,5 +121,26 @@ public class ShelterDataMenuService {
         return photo;
     }
 
+    /**
+     * Метод, выдающий номер телефона для оформления пропуска на машину
+     *
+     * @param update доступное обновление
+     * @return номер телефона для оформления пропуска
+     */
+    public SendMessage carPass(Update update){
 
+        String contactDogShelter = "+7‒702‒481‒01‒58";
+        String contactCatShelter = "+7‒702‒262‒39‒82";
+        String pass;
+
+        if (ProcessCallbackQueryService.isDog()) {
+            pass = contactDogShelter;
+        } else {
+            pass = contactCatShelter;
+        }
+
+        String registrationPass = "Позвоните по этому номеру телефона и оформите пропуск на машину: " + pass;
+        SendMessage sendMessage = new SendMessage(update.callbackQuery().message().chat().id(),registrationPass);
+        return sendMessage;
+    }
 }
