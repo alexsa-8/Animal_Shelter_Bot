@@ -100,7 +100,7 @@ public class ShelterDataMenuService {
                 " \n Email: wotdpress@kotopesoff.kz  \n";
 
         String pathDog = "src/main/resources/shelterInfo/map.jpg";
-        String pathKitten = "src/main/resources/shelterInfo/map.jpg";
+        String pathKitten = "src/main/resources/shelterInfo/mapCatShelter.jpg";
         File map;
         SendPhoto photo;
 
