@@ -13,6 +13,7 @@ import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.constant.PetStatus;
 import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.entity.OwnerDog;
+import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.service.OwnerDogService;
 
 import java.util.Collection;
@@ -104,10 +105,8 @@ public class OwnerDogController {
             tags = "Владельцы собак"
     )
     @PutMapping
-    public ResponseEntity<OwnerDog> update(@RequestBody OwnerDog ownerDog,
-                                           @Parameter(description = "Установка статуса владельца", example = "IN_SEARCH")
-                                           @RequestParam(name = "Статус") OwnerStatus status) {
-        OwnerDog ownerDog1 = service.update(ownerDog, status);
+    public ResponseEntity<OwnerDog> update(@RequestBody OwnerDog ownerDog) {
+        OwnerDog ownerDog1 = service.update(ownerDog);
         if (ownerDog1 == null) {
             return ResponseEntity.notFound().build();
         }
@@ -160,13 +159,105 @@ public class OwnerDogController {
         return ResponseEntity.ok(service.getAll());
     }
 
-    @PutMapping("/days")
-    public ResponseEntity<OwnerDog> changeDays(@RequestParam Long id,
+    @Operation(
+            summary = "Увеличение дней испытательного срока",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Измененный владелец",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = OwnerDog.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Владелец не найден",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = OwnerDog.class))
+                    )
+            },
+            tags = "Владельцы собак")
+
+    @PutMapping("/days/{id}")
+    public ResponseEntity<OwnerDog> changeDays(@Parameter(description = "Введите id пользователя", example = "1")
+                                               @PathVariable Long id,
+                                               @Parameter(description = "1 - увеличить испытательный срок на 14 дней." +
+                                                       "2  - увеличить испытательный срок на 30 дней", example = "1")
                                           @RequestParam Long numberDays) {
         OwnerDog ownerDog1 = service.changeNumberOfReportDays(id, numberDays);
         if (ownerDog1 == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(ownerDog1);
+    }
+
+    @Operation(
+            summary = "Изменение статуса  владельца",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Измененный владелец",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = OwnerDog.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Владелец не найден",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = OwnerDog.class))
+                    )
+            },
+            tags = "Владельцы собак"
+    )
+    @PutMapping("/status/{id}")
+    public ResponseEntity<OwnerDog> updateStatus(@Parameter(description = "Введите id пользователя", example = "1")
+                                                     @PathVariable Long id,
+                                                 @Parameter(description = "Выберете статус владельца", example = "IN_SEARCH")
+                                                 @RequestParam (name = "Статус") OwnerStatus status) {
+        OwnerDog ownerDog1 = service.updateStatus(id, status);
+        if (ownerDog1 == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ownerDog1);
+    }
+
+    @Operation(
+            summary = "Уведомление владельцу от волонтера",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Уведомляемый владелец",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = OwnerDog.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Владелец не найден",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = OwnerDog.class))
+                    )
+            },
+            tags = "Владельцы собак")
+
+    @PutMapping("/probation/{id}")
+    public ResponseEntity<OwnerDog> noticeToOwners(@Parameter(description = "Введите id владельца", example = "1")
+                                                   @PathVariable Long id,
+                                                   @Parameter(description = "1 - отчет плохо заполнен. " +
+                                                           "2  - прошел испытальельный срок. 3 - не прошел испытательный срок",
+                                                           example = "1")
+                                                   @RequestParam Long number) {
+        OwnerDog ownerDog = service.noticeToOwners(id, number);
+        if (ownerDog == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ownerDog);
     }
 }

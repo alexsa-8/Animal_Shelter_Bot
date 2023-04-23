@@ -1,13 +1,19 @@
 package pro.sky.animalshelterbot.service;
 
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.request.SendDocument;
+import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.entity.OwnerCat;
+import pro.sky.animalshelterbot.exception.NumberNotFoundException;
 import pro.sky.animalshelterbot.exception.OwnerCatNotFoundException;
+import pro.sky.animalshelterbot.exception.ProbationNotSpecifiedException;
 import pro.sky.animalshelterbot.repository.OwnerCatRepository;
 
+import java.io.File;
 import java.util.Collection;
 
 /**
@@ -18,11 +24,13 @@ import java.util.Collection;
 
 @Service
 public class OwnerCatService {
+    private final TelegramBot bot;
     private final OwnerCatRepository repository;
 
     private final static Logger log = LoggerFactory.getLogger(OwnerCat.class);
 
-    public OwnerCatService(OwnerCatRepository repository) {
+    public OwnerCatService(TelegramBot bot, OwnerCatRepository repository) {
+        this.bot = bot;
         this.repository = repository;
     }
 
@@ -71,15 +79,13 @@ public class OwnerCatService {
      * <br>
      * Используется метод репозитория {@link OwnerCatRepository#save(Object)}
      * @param owner изменяемый владелец
-     * @param status статус владельца (изменить или оставить прежним)
      * @throws OwnerCatNotFoundException, если указанный владелец кота не найден
      * @return измененный владелец кота
      */
-    public OwnerCat update(OwnerCat owner, OwnerStatus status) {
+    public OwnerCat update(OwnerCat owner) {
         log.info("Request to update owner cat  {}", owner);
         if (owner.getId() != null) {
             if (find(owner.getId()) != null) {
-                owner.setStatus(status);
                 return repository.save(owner);
             }
         }
@@ -110,19 +116,81 @@ public class OwnerCatService {
     }
 
     /**
-     * добавление количества дней исп.срока
-     * @return измененные данные
+     * Изменение количества дней испытательного срока
+     * @param id идентификатор владельца
+     * @param number количество дней, на которое изменяется (1 - 14, 2 - 30)
+     * @return владелец с измененным испытательным сроком
      */
     public OwnerCat changeNumberOfReportDays(Long id, Long number) {
-        OwnerCat owner = new OwnerCat();
-        if (owner.getId() != null) {
-            if (find(owner.getId()) != null) {
-                owner.setNumberOfReportDays(owner.getNumberOfReportDays() + number);
-                return repository.save(owner);
-            }
+        OwnerCat ownerCat = repository.findById(id).orElseThrow(() -> {
+            log.error("There is not owner cat with id = {}", id);
+            return new OwnerCatNotFoundException();
+        });
+        if (ownerCat.getNumberOfReportDays() == null) {
+            log.error("Owner has no probation, id = {}", id);
+            throw new ProbationNotSpecifiedException();
         }
-        log.error("Request owner cat is not found");
-        throw new OwnerCatNotFoundException();
+        if (number == 1) {
+            log.info("The trial period has been extended by 14 days, id = {}", id);
+            ownerCat.setNumberOfReportDays(ownerCat.getNumberOfReportDays() + 14);
+            bot.execute(new SendMessage(ownerCat.getChatId(), "Вам продлили период испытательного срока на 14 дней"));
+
+        } else if (number == 2) {
+            log.info("The trial period has been extended by 30 days, id = {}", id);
+            ownerCat.setNumberOfReportDays(ownerCat.getNumberOfReportDays() + 30);
+            bot.execute(new SendMessage(ownerCat.getChatId(), "Вам продлили период испытательного срока на 30 дней"));
+        }
+        return repository.save(ownerCat);
+    }
+    /**
+     * Изменение статуса владельца
+     * @param id идентификатор владельца
+     * @param status выбираемый статус
+     * @return владелец с измененным статусом
+     */
+    public OwnerCat updateStatus(Long id, OwnerStatus status) {
+        log.info("Request to update owner cat status {}", status);
+        OwnerCat ownerDog = repository.findById(id).orElseThrow(() -> {
+            log.error("There is not owner cat with id = {}", id);
+            return new OwnerCatNotFoundException();
+        });
+        ownerDog.setStatus(status);
+        return repository.save(ownerDog);
     }
 
+    /**
+     * Уведомление владельцу от волонтера
+     * @param id идентификатор владельца
+     * @param number номер команды
+     * @return измененные данные владельца + уведомление
+     */
+    public OwnerCat noticeToOwners(Long id, Long number) {
+        OwnerCat ownerCat = repository.findById(id).orElseThrow(() -> {
+            log.error("There is not owner cat with id = {}", id);
+            return new OwnerCatNotFoundException();
+        });
+        if (number == 1) {
+            log.info("Notification owner cat about bad report, id = {}", id);
+            bot.execute(new SendMessage(ownerCat.getChatId(), "«Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо. " +
+                    "Пожалуйста, подойди ответственнее к этому занятию. " +
+                    "В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного».")
+            );
+        } else if (number == 2) {
+            log.info("Successful completion of the probationary period, id = {}", id);
+            ownerCat.setStatus(OwnerStatus.APPROVED);
+            bot.execute(new SendMessage(ownerCat.getChatId(), "Вы прошли испытательный срок."));
+        } else if (number == 3) {
+            log.info("The probationary period has not passed, id = {}", id);
+            ownerCat.setStatus(OwnerStatus.IN_BLACK_LIST);
+            bot.execute(new SendMessage(ownerCat.getChatId(), "Вы не прошли испытательный срок."));
+            String pathDog = "src/main/resources/list_documents/Manual.pdf";
+            File file = new File(pathDog);
+            SendDocument document = new SendDocument(ownerCat.getChatId(), file);
+            document.caption("Ознакомьтесь с инструкцией");
+            bot.execute(document);
+        } else {
+            throw new NumberNotFoundException();
+        }
+        return repository.save(ownerCat);
+    }
 }

@@ -171,7 +171,7 @@ public class SendReportMenuService {
         }
     }
 
-    @Scheduled(cron = "0 0/3 * * * *")
+    @Scheduled(cron = "0 0 14 ? * *")
     public void sendNotificationDog() {
         logger.info("Requests report to OwnerDog");
         for (Report report : reportService.findNewReports()) {

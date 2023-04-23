@@ -78,7 +78,7 @@ public class RecommendationMenuService {
                 update.callbackQuery().message().chat().id());
 
         String pathDog = "src/main/resources/recommendations/Recommendations_of_Transportation.pdf";
-        String pathKitten = "src/main/resources/recommendations/Recommendations_of_Transportation.pdf";
+        String pathKitten = "src/main/resources/recommendations/Recommendations_of_Transportation_Cats.pdf";
         File recommendation;
         SendDocument sendDocument;
         if (ProcessCallbackQueryService.isDog()) {
@@ -110,7 +110,7 @@ public class RecommendationMenuService {
                 update.callbackQuery().message().chat().id());
 
         String pathDog = "src/main/resources/recommendations/Recommendations_for_Dog.pdf";
-        String pathKitten = "src/main/resources/recommendations/Recommendations_for_Dog.pdf";
+        String pathKitten = "src/main/resources/recommendations/Recommendations_for_Cat.pdf";
         File recommendation;
         SendDocument sendDocument;
 
@@ -143,7 +143,7 @@ public class RecommendationMenuService {
                 update.callbackQuery().message().chat().id());
 
         String pathDog = "src/main/resources/recommendations/Recommendations_for_Puppy.pdf";
-        String pathKitten = "src/main/resources/recommendations/Recommendations_for_Puppy.pdf";
+        String pathKitten = "src/main/resources/recommendations/Recommendations_for_Kittens.pdf";
         File recommendation;
         SendDocument sendDocument;
         if (ProcessCallbackQueryService.isDog()) {
@@ -175,7 +175,7 @@ public class RecommendationMenuService {
                 update.callbackQuery().message().chat().id());
 
         String pathDog = "src/main/resources/recommendations/Recommendations_for_Disabled_Dog.pdf";
-        String pathKitten = "src/main/resources/recommendations/Recommendations_for_Disabled_Dog.pdf";
+        String pathKitten = "src/main/resources/recommendations/Recommendations_for_Disabled_Cat.pdf";
         File recommendation;
         SendDocument sendDocument;
 
