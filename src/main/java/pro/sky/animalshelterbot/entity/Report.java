@@ -80,6 +80,7 @@ public class Report {
         this.animalDiet = animalDiet;
         this.generalInfo = generalInfo;
         this.changeBehavior = changeBehavior;
+        this.dateMessage = date;
         this.reportStatus = ReportStatus.REPORT_POSTED;
     }
 
