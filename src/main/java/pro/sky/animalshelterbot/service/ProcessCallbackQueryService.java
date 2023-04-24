@@ -171,12 +171,15 @@ public class ProcessCallbackQueryService {
             case SHELTER_DATA:
                 telegramBot.execute(shelterDataMenuService.shelterData(update));
                 break;
+            case CAR_PASS:
+                telegramBot.execute(shelterDataMenuService.carPass(update));
+                break;
             // Меню отправки отчета (sendReportMenuService)
             case SUBMIT_REPORT:
                 telegramBot.execute(sendReportMenuService.submitReportMenu(update));
                 break;
             case REPORT_FORM:
-                 telegramBot.execute(sendReportMenuService.reportForm(update));
+                telegramBot.execute(sendReportMenuService.reportForm(update));
                 break;
             default:
                 telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
@@ -186,6 +189,7 @@ public class ProcessCallbackQueryService {
 
     /**
      * Если пользователь выбирает собачий приют, возвращается true, иначе false
+     *
      * @return boolean значение выбора приюта
      */
     public static boolean isDog() {
