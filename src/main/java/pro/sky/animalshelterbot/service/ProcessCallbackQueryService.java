@@ -127,7 +127,7 @@ public class ProcessCallbackQueryService {
                 telegramBot.execute(shelterInfoMenuService.datingRules(update));
                 break;
             case LIST_DOCUMENTS:
-                telegramBot.execute(shelterInfoMenuService.listDocuments(update));
+                shelterInfoMenuService.listDocuments(update);
                 break;
             case CONTACT_DETAILS:
                 telegramBot.execute(shelterInfoMenuService.contactDetails(update));
@@ -166,7 +166,7 @@ public class ProcessCallbackQueryService {
                 telegramBot.execute(shelterDataMenuService.shelterInfoMenu(update));
                 break;
             case SHELTER_RECOMMENDATIONS:
-                telegramBot.execute(shelterDataMenuService.shelterRecommendation(update));
+                shelterDataMenuService.shelterRecommendation(update);
                 break;
             case SHELTER_DATA:
                 telegramBot.execute(shelterDataMenuService.shelterData(update));
