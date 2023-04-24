@@ -1,5 +1,6 @@
 package pro.sky.animalshelterbot.service;
 
+import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
@@ -17,9 +18,18 @@ import java.io.File;
 public class ShelterDataMenuService {
 
     /**
+     * Поле: телеграм бот
+     */
+    private final TelegramBot telegramBot;
+
+    /**
      * Поле: объект, который запускает события журнала.
      */
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+
+    public ShelterDataMenuService(TelegramBot telegramBot) {
+        this.telegramBot = telegramBot;
+    }
 
     /**
      * Метод для запуска меню
@@ -52,29 +62,29 @@ public class ShelterDataMenuService {
      * Метод, выдающий рекомендации о технике безопасности пользователю
      *
      * @param update доступное обновление
-     * @return документ с рекомендации по технике безопасности
      */
-    public SendDocument shelterRecommendation(Update update) {
+    public void shelterRecommendation(Update update) {
 
         logger.info("Launched method: shelter_recommendation, for user with id: " +
                 update.callbackQuery().message().chat().id());
 
         String pathDog = "src/main/resources/shelterInfo/Safety_in_shelter.pdf";
-        String pathKitten = "src/main/resources/shelterInfo/Safety_in_shelter.pdf";
-        File recommendation;
+        String informationCatShelter = "✅ Работники и посетители приюта обязаны соблюдать правила личной гигиены, " +
+                "в том числе мыть руки с дезинфицирующими средствами после общения с животными.\n" +
+                "❌ Нахождение на территории в излишне возбужденном состоянии, а также в состоянии алкогольного, " +
+                "наркотического или медикаментозного опьянения строго запрещено.";
+
 
         if (ProcessCallbackQueryService.isDog()) {
-            recommendation = new File(pathDog);
+            File recommendation = new File(pathDog);
+            SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+                    recommendation);
+            sendDocument.caption("Рекомендации по технике безопасности на территории " +
+                    "приюта в прикрепленном документе \u2191 ");
+            telegramBot.execute(sendDocument);
         } else {
-            recommendation = new File(pathKitten);
+            telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), informationCatShelter));
         }
-
-        SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
-                recommendation);
-        sendDocument.caption("Рекомендации по технике безопасности на территории " +
-                "приюта в прикрепленном документе \u2191 ");
-
-        return sendDocument;
     }
 
     /**

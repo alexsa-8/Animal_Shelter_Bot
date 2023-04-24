@@ -1,5 +1,6 @@
 package pro.sky.animalshelterbot.service;
 
+import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
@@ -28,9 +29,18 @@ import java.io.File;
 public class ShelterInfoMenuService {
 
     /**
+     * Поле: телеграм бот
+     */
+    private final TelegramBot telegramBot;
+
+    /**
      * Поле: объект, который запускает события журнала.
      */
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+
+    public ShelterInfoMenuService(TelegramBot telegramBot) {
+        this.telegramBot = telegramBot;
+    }
 
     /**
      * Метод, вызывающий подменю по животным
@@ -132,7 +142,7 @@ public class ShelterInfoMenuService {
      * @param update доступное обновление
      * @return сообщение c документом пользователю
      */
-    public SendDocument listDocuments(Update update) {
+    public void listDocuments(Update update) {
 
         logger.info("Launched method: list_documents, for user with id: " +
                 update.callbackQuery().message().chat().id());
@@ -140,21 +150,27 @@ public class ShelterInfoMenuService {
         String path = "src/main/resources/list_documents/Take_the_dog.pdf";
         File listDocuments = new File(path);
 
-        SendDocument sendDocument;
+        String catDocuments = "Как взять котика?\n" +
+                "1️⃣ Почитайте условия\n" +
+                "Мы отдаем подопечных в новый дом только на условиях ответственного содержания животных\n" +
+                "\n" +
+                "2️⃣ Запишитесь на собеседование\n" +
+                "Запишитесь и пройдите дистанционное собеседование в удобное время или сразу приезжайте в приют\n" +
+                "\n" +
+                "3️⃣ Заберите котика\n" +
+                "Выберите пушистого друга и приезжайте знакомиться!";
 
         if (ProcessCallbackQueryService.isDog()) {
-            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
+            SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                     listDocuments);
             sendDocument.caption("Из неообходимых документов Вам потребуется только ПАСПОРТ\n" +
                     "\nНо прежде чем вы соберетесь на такой важный шаг, не только для себя, " +
                     "но и для вашего будущего питомца, просим Вас ознакомиться с информацие в прикрепленном документе \u2191");
+            telegramBot.execute(sendDocument);
         } else {
-            sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
-                    listDocuments);
-            sendDocument.caption(" Все про документы для оформления котенка");
+            telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(), catDocuments));
         }
 
-        return sendDocument;
     }
 
     /**
