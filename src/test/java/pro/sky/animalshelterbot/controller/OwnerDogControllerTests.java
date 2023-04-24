@@ -1,7 +1,6 @@
 package pro.sky.animalshelterbot.controller;
 
 import org.json.JSONObject;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,21 +12,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
-import pro.sky.animalshelterbot.constant.PetStatus;
-import pro.sky.animalshelterbot.controller.DogController;
-import pro.sky.animalshelterbot.controller.OwnerDogController;
-import pro.sky.animalshelterbot.entity.Dog;
 import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.repository.DogRepository;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
-import pro.sky.animalshelterbot.repository.ReportRepository;
+import pro.sky.animalshelterbot.repository.ReportDogRepository;
 import pro.sky.animalshelterbot.service.DogService;
 import pro.sky.animalshelterbot.service.OwnerDogService;
-import pro.sky.animalshelterbot.service.ReportService;
+import pro.sky.animalshelterbot.service.ReportDogService;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -45,14 +37,14 @@ public class OwnerDogControllerTests {
     @MockBean
     private OwnerDogRepository ownerDogRepository;
     @MockBean
-    private ReportRepository reportRepository;
+    private ReportDogRepository reportDogRepository;
 
     @SpyBean
     private DogService dogService;
     @SpyBean
     private OwnerDogService ownerDogService;
     @SpyBean
-    private ReportService reportService;
+    private ReportDogService reportDogService;
 
 
     @InjectMocks
@@ -60,7 +52,7 @@ public class OwnerDogControllerTests {
     @InjectMocks
     private OwnerDogController ownerDogController;
     @InjectMocks
-    private ReportController reportController;
+    private ReportDogController reportDogController;
 
     @Test
     public void testOwnerDog() throws Exception {
