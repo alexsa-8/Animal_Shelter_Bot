@@ -15,10 +15,10 @@ import pro.sky.animalshelterbot.constant.PetStatus;
 import pro.sky.animalshelterbot.entity.Dog;
 import pro.sky.animalshelterbot.repository.DogRepository;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
-import pro.sky.animalshelterbot.repository.ReportRepository;
+import pro.sky.animalshelterbot.repository.ReportDogRepository;
 import pro.sky.animalshelterbot.service.DogService;
 import pro.sky.animalshelterbot.service.OwnerDogService;
-import pro.sky.animalshelterbot.service.ReportService;
+import pro.sky.animalshelterbot.service.ReportDogService;
 
 import java.util.*;
 
@@ -37,14 +37,14 @@ public class DogControllerTests {
     @MockBean
     private OwnerDogRepository ownerDogRepository;
     @MockBean
-    private ReportRepository reportRepository;
+    private ReportDogRepository reportDogRepository;
 
     @SpyBean
     private DogService dogService;
     @SpyBean
     private OwnerDogService ownerDogService;
     @SpyBean
-    private ReportService reportService;
+    private ReportDogService reportDogService;
 
 
     @InjectMocks
@@ -52,7 +52,7 @@ public class DogControllerTests {
     @InjectMocks
     private OwnerDogController ownerDogController;
     @InjectMocks
-    private ReportController reportController;
+    private ReportDogController reportDogController;
 
     @Test
     public void testDog() throws Exception {

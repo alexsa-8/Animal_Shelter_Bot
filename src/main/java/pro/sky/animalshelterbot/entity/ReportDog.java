@@ -10,12 +10,12 @@ import java.util.Objects;
 import static javax.persistence.GenerationType.IDENTITY;
 
 /**
- * Класс Report, представляет сущность отчета
+ * Класс ReportDog, представляет сущность отчета по собакам
  * @author Gubina Marina
  */
 @Entity
-@Table(name = "report")
-public class Report {
+@Table(name = "report_dog")
+public class ReportDog {
 
     /**
      * Поле: идентификационный номер отчета
@@ -60,7 +60,6 @@ public class Report {
     @Column(name = "date_message", nullable = false)
     private LocalDate dateMessage;
 
-
     /**
      * Поле: статус отчета
      * @see ReportStatus
@@ -73,8 +72,8 @@ public class Report {
     @JoinColumn(name = "owner_dog_id")
     private OwnerDog ownerDog;
 
-    public Report(Long chatId, byte[] photo, String animalDiet,
-                  String generalInfo, String changeBehavior, LocalDate date) {
+    public ReportDog(Long chatId, byte[] photo, String animalDiet,
+                     String generalInfo, String changeBehavior, LocalDate date) {
         this.chatId = chatId;
         this.photo = photo;
         this.animalDiet = animalDiet;
@@ -84,7 +83,7 @@ public class Report {
         this.reportStatus = ReportStatus.REPORT_POSTED;
     }
 
-    public Report(){
+    public ReportDog(){
 
     }
 
@@ -164,8 +163,8 @@ public class Report {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Report report = (Report) o;
-        return Objects.equals(id, report.id) && Objects.equals(chatId, report.chatId) && Arrays.equals(photo, report.photo) && Objects.equals(animalDiet, report.animalDiet) && Objects.equals(generalInfo, report.generalInfo) && Objects.equals(changeBehavior, report.changeBehavior) && Objects.equals(dateMessage, report.dateMessage) && reportStatus == report.reportStatus;
+        ReportDog reportDog = (ReportDog) o;
+        return Objects.equals(id, reportDog.id) && Objects.equals(chatId, reportDog.chatId) && Arrays.equals(photo, reportDog.photo) && Objects.equals(animalDiet, reportDog.animalDiet) && Objects.equals(generalInfo, reportDog.generalInfo) && Objects.equals(changeBehavior, reportDog.changeBehavior) && Objects.equals(dateMessage, reportDog.dateMessage) && reportStatus == reportDog.reportStatus;
     }
 
     @Override
@@ -177,7 +176,7 @@ public class Report {
 
     @Override
     public String toString() {
-        return "Report{" +
+        return "ReportDog{" +
                 "id=" + id +
                 ", chatId=" + chatId +
                 ", photo=" + Arrays.toString(photo) +

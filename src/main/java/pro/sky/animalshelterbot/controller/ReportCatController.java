@@ -9,24 +9,25 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.animalshelterbot.constant.ReportStatus;
-import pro.sky.animalshelterbot.entity.Report;
-import pro.sky.animalshelterbot.service.ReportService;
+import pro.sky.animalshelterbot.entity.ReportCat;
+import pro.sky.animalshelterbot.service.ReportCatService;
 
 import java.util.Collection;
 
 /**
- * Контроллер ReportController
- * Контроллер используется для добавления, редактирования, удаления и поиска отчетов в БД через REST-запросы
- * @see ReportService
+ * Контроллер ReportCatController
+ * Контроллер используется для добавления, редактирования, удаления
+ * и поиска отчетов по котам в БД через REST-запросы
+ * @see ReportCatService
  * @author Gubina Marina
  */
 @RestController
-@RequestMapping("/reports")
-public class ReportController {
+@RequestMapping("/reports_cat")
+public class ReportCatController {
 
-    private final ReportService service;
+    private final ReportCatService service;
 
-    public ReportController(ReportService service){
+    public ReportCatController(ReportCatService service){
         this.service = service;
     }
 
@@ -36,14 +37,14 @@ public class ReportController {
                     description = "Добавленный отчет",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Report.class)
+                            schema = @Schema(implementation = ReportCat.class)
                     )
             ),
-            tags = "Отчеты"
+            tags = "Отчеты по котам"
     )
     @PostMapping
-    public Report createReport(@RequestBody Report report){
-        return service.createReport(report);
+    public ReportCat createReport(@RequestBody ReportCat reportCat){
+        return service.createReport(reportCat);
     }
 
     @Operation(
@@ -54,7 +55,7 @@ public class ReportController {
                             description = "Найденный отчет",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report.class)
+                                    schema = @Schema(implementation = ReportCat.class)
                             )
                     ),
                     @ApiResponse(
@@ -62,18 +63,18 @@ public class ReportController {
                             description = "Отчет не найден",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report.class))
+                                    schema = @Schema(implementation = ReportCat.class))
                     )
             },
-            tags = "Отчеты"
+            tags = "Отчеты по котам"
     )
     @GetMapping("/{id}")
-    public ResponseEntity<Report> findReport(@PathVariable Long id){
-        Report report = service.findReport(id);
-        if(report == null){
+    public ResponseEntity<ReportCat> findReport(@PathVariable Long id){
+        ReportCat reportCat = service.findReport(id);
+        if(reportCat == null){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(report);
+        return ResponseEntity.ok(reportCat);
     }
 
     @Operation(
@@ -84,7 +85,7 @@ public class ReportController {
                             description = "Измененный отчет",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report.class)
+                                    schema = @Schema(implementation = ReportCat.class)
                             )
                     ),
                     @ApiResponse(
@@ -92,21 +93,21 @@ public class ReportController {
                             description = "Отчет не найден",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report.class))
+                                    schema = @Schema(implementation = ReportCat.class))
                     )
             },
-            tags = "Отчеты"
+            tags = "Отчеты по котам"
     )
     @PutMapping
-    public ResponseEntity<Report> updateReport(
-            @RequestBody Report report,
+    public ResponseEntity<ReportCat> updateReport(
+            @RequestBody ReportCat reportCat,
             @Parameter(description = "Введите статус отчета")
             @RequestParam(name = "Статус")ReportStatus status){
-        Report report1 = service.updateReport(report, status);
-        if(report1 == null){
+        ReportCat reportCat1 = service.updateReport(reportCat, status);
+        if(reportCat1 == null){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(report1);
+        return ResponseEntity.ok(reportCat1);
     }
 
     @Operation(
@@ -117,7 +118,7 @@ public class ReportController {
                             description = "Удаленный отчет",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report.class)
+                                    schema = @Schema(implementation = ReportCat.class)
                             )
                     ),
                     @ApiResponse(
@@ -125,10 +126,10 @@ public class ReportController {
                             description = "Отчет не найден",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report.class))
+                                    schema = @Schema(implementation = ReportCat.class))
                     )
             },
-            tags = "Отчеты"
+            tags = "Отчеты по котам"
     )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReport(@PathVariable Long id){
@@ -144,14 +145,14 @@ public class ReportController {
                             description = "Все отчеты из БД",
                             content = @Content(
                                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = Report.class)
+                                    schema = @Schema(implementation = ReportCat.class)
                             )
                     )
             },
-            tags = "Отчеты"
+            tags = "Отчеты по котам"
     )
     @GetMapping
-    public ResponseEntity<Collection<Report>> getAll(){
+    public ResponseEntity<Collection<ReportCat>> getAll(){
         return ResponseEntity.ok(service.getAllReport());
     }
 }
