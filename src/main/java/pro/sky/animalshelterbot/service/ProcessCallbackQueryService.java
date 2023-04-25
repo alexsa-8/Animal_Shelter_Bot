@@ -174,6 +174,9 @@ public class ProcessCallbackQueryService {
             case CAR_PASS:
                 telegramBot.execute(shelterDataMenuService.carPass(update));
                 break;
+            case CHOOSING_A_PET:
+                telegramBot.execute(shelterDataMenuService.choosingAPet(update));
+                break;
             // Меню отправки отчета (sendReportMenuService)
             case SUBMIT_REPORT:
                 telegramBot.execute(sendReportMenuService.submitReportMenu(update));
