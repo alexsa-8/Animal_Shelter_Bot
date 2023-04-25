@@ -56,6 +56,10 @@ public class ShelterDataMenuService {
                         .callbackData(Commands.CAR_PASS.getCallbackData())
         );
         inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.CHOOSING_A_PET.getDescription())
+                        .callbackData(Commands.CHOOSING_A_PET.getCallbackData())
+        );
+        inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton(Commands.BACK.getDescription())
                         .callbackData(Commands.BACK.getCallbackData())
         );
