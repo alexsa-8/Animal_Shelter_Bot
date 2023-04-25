@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.request.SendChatAction;
 import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
@@ -160,12 +159,12 @@ public class ShelterDataMenuService {
     }
 
     /**
-     * Метод, выдающий номер телефона для оформления пропуска на машину
+     * Метод, выдающий ссылку на приют для выбора питомца
      *
      * @param update доступное обновление
-     * @return номер телефона для оформления пропуска
+     * @return ссылка на приют для выбора питомца
      */
-    public SendChatAction choosingAPet(Update update){
+    public SendMessage choosingAPet(Update update){
 
         String petDog = "https://kotopesoff.kz/pets/dogs";
         String petCat = "https://kotopesoff.kz/pets/cats";
@@ -178,7 +177,7 @@ public class ShelterDataMenuService {
         }
 
         String selectedPet = "Нажав на эту ссылку Вы попадёте в приют, где можете выбрать питомца: " + pet;
-        SendChatAction sendChatAction = new SendChatAction  (update.callbackQuery().message().chat().id(),selectedPet);
-        return sendChatAction;
+        SendMessage sendMessage = new SendMessage  (update.callbackQuery().message().chat().id(),selectedPet);
+        return sendMessage;
     }
 }
