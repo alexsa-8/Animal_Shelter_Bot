@@ -55,6 +55,10 @@ public class ShelterDataMenuService {
                         .callbackData(Commands.CAR_PASS.getCallbackData())
         );
         inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.CHOOSING_A_PET.getDescription())
+                        .callbackData(Commands.CHOOSING_A_PET.getCallbackData())
+        );
+        inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton(Commands.BACK.getDescription())
                         .callbackData(Commands.BACK.getCallbackData())
         );
@@ -151,6 +155,29 @@ public class ShelterDataMenuService {
 
         String registrationPass = "Позвоните по этому номеру телефона и оформите пропуск на машину: " + pass;
         SendMessage sendMessage = new SendMessage(update.callbackQuery().message().chat().id(),registrationPass);
+        return sendMessage;
+    }
+
+    /**
+     * Метод, выдающий ссылку на приют для выбора питомца
+     *
+     * @param update доступное обновление
+     * @return ссылка на приют для выбора питомца
+     */
+    public SendMessage choosingAPet(Update update){
+
+        String petDog = "https://kotopesoff.kz/pets/dogs";
+        String petCat = "https://kotopesoff.kz/pets/cats";
+        String pet;
+
+        if (ProcessCallbackQueryService.isDog()) {
+            pet = petDog;
+        } else {
+            pet = petCat;
+        }
+
+        String selectedPet = "Нажав на эту ссылку Вы попадёте в приют, где можете выбрать питомца: " + pet;
+        SendMessage sendMessage = new SendMessage  (update.callbackQuery().message().chat().id(),selectedPet);
         return sendMessage;
     }
 }
