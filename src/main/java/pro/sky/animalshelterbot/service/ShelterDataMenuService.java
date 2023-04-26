@@ -166,8 +166,8 @@ public class ShelterDataMenuService {
      */
     public SendMessage choosingAPet(Update update){
 
-        String petDog = "https://kotopesoff.kz/pets/dogs";
-        String petCat = "https://kotopesoff.kz/pets/cats";
+        String petDog = "\uD83D\uDC36 Для выбора собаки в приюте, нажмите на эту ссылку: https://kotopesoff.kz/pets/dogs";
+        String petCat = "\uD83D\uDC31 Для выбора кошки в приюте, нажмите на эту ссылку: https://kotopesoff.kz/pets/cats";
         String pet;
 
         if (ProcessCallbackQueryService.isDog()) {
@@ -176,7 +176,7 @@ public class ShelterDataMenuService {
             pet = petCat;
         }
 
-        String selectedPet = "Нажав на эту ссылку Вы попадёте в приют, где можете выбрать питомца: " + pet;
+        String selectedPet = pet;
         SendMessage sendMessage = new SendMessage  (update.callbackQuery().message().chat().id(),selectedPet);
         return sendMessage;
     }

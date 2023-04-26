@@ -43,7 +43,7 @@ public enum Commands {
     LIST_CYNOLOGISTS("/list_cynologists", "\uD83D\uDCCB Список проверенных кинологов", generateCallbackData()),
     REASONS_REFUSAL("/reasons_refusal", "❌ Причины отказа в усыновлении", generateCallbackData()),
     CAR_PASS("/car_pass", "\uD83D\uDC6E\u200D♂️ Оформите пропуск на машину для посещения приюта", generateCallbackData()),
-    CHOOSING_A_PET("/choosing_a_pet", "Выберите питомца", generateCallbackData());
+    CHOOSING_A_PET("/choosing_a_pet", "\uD83D\uDC31 Выберите питомца \uD83D\uDC36", generateCallbackData());
 
 
     /**
