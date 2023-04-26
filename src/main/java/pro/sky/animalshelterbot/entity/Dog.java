@@ -49,6 +49,9 @@ public class Dog {
     @Column(name = "status")
     private PetStatus status;
 
+    @ManyToOne
+    @JoinColumn(name = "shelter_id")
+    private Shelter shelter;
 
     /**
      * Конструктор с параметрами для создания объекта "собака"

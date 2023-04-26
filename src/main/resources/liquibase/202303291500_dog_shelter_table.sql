@@ -140,3 +140,11 @@ CREATE TABLE report_cat
     date_message    DATE,
     owner_cat_id    BIGINT REFERENCES owner_cat(id)
 );
+
+-- changeset klikli:9
+
+ALTER TABLE dog
+    ADD COLUMN shelter_id BIGINT;
+
+ALTER TABLE cat
+    ADD COLUMN shelter_id BIGINT;

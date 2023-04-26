@@ -47,6 +47,10 @@ public class Cat {
     @Column(name = "status")
     private PetStatus status;
 
+    @ManyToOne
+    @JoinColumn(name = "shelter_id")
+    private Shelter shelter;
+
     public Cat(Long id, String name, Integer age, String breed, PetStatus status) {
         this.id = id;
         this.name = name;
