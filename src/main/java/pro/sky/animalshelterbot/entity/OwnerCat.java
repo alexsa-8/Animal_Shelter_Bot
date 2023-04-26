@@ -73,6 +73,16 @@ public class OwnerCat {
         this.phone = phone;
     }
 
+    public OwnerCat(Long id, Long chatId, String name, String phone, int age, OwnerStatus status, Long numberOfReportDays) {
+        this.id = id;
+        this.chatId = chatId;
+        this.name = name;
+        this.phone = phone;
+        this.age = age;
+        this.status = status;
+        this.numberOfReportDays = numberOfReportDays;
+    }
+
     public OwnerCat(){}
 
     public Long getId() {
