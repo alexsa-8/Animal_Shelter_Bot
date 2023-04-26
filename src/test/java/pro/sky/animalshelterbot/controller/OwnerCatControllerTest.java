@@ -33,14 +33,17 @@ public class OwnerCatControllerTest {
 
     @MockBean
     private OwnerCatRepository repository;
+    @MockBean
     private CatRepository catRepository;
 
     @SpyBean
     private OwnerCatService service;
+    @SpyBean
     private CatService catService;
 
     @InjectMocks
     private OwnerCatController controller;
+    @InjectMocks
     private CatController catController;
 
 

@@ -47,6 +47,17 @@ public class Cat {
     @Column(name = "status")
     private PetStatus status;
 
+    public Cat(Long id, String name, Integer age, String breed, PetStatus status) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.breed = breed;
+        this.status = status;
+    }
+
+    public Cat() {
+    }
+
     public Long getId() {
         return id;
     }
