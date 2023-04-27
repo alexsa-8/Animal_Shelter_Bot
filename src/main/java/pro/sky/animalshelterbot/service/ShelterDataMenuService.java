@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.repository.UserRepository;
 
 import java.io.File;
 
@@ -27,8 +28,20 @@ public class ShelterDataMenuService {
      */
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    public ShelterDataMenuService(TelegramBot telegramBot) {
+    /**
+     * Поле: репозиторий пользователей
+     */
+    private final UserRepository userRepository;
+
+    /**
+     * Конструктор
+     *
+     * @param telegramBot    телеграм бот
+     * @param userRepository репозиторий пользователей
+     */
+    public ShelterDataMenuService(TelegramBot telegramBot, UserRepository userRepository) {
         this.telegramBot = telegramBot;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -83,7 +96,7 @@ public class ShelterDataMenuService {
                 "наркотического или медикаментозного опьянения строго запрещено.";
 
 
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             File recommendation = new File(pathDog);
             SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                     recommendation);
@@ -122,7 +135,7 @@ public class ShelterDataMenuService {
         File map;
         SendPhoto photo;
 
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             map = new File(pathDog);
             photo = new SendPhoto(update.callbackQuery().message().chat().id(), map);
             photo.caption(dataMessageDogShelter + " Схема проезда до нашего приюта \u2191");
@@ -147,7 +160,7 @@ public class ShelterDataMenuService {
         String contactCatShelter = "+7‒702‒262‒39‒82";
         String pass;
 
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             pass = contactDogShelter;
         } else {
             pass = contactCatShelter;
@@ -170,7 +183,7 @@ public class ShelterDataMenuService {
         String petCat = "\uD83D\uDC31 Для выбора кошки в приюте, нажмите на эту ссылку: https://kotopesoff.kz/pets/cats";
         String pet;
 
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             pet = petDog;
         } else {
             pet = petCat;

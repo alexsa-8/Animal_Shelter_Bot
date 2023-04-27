@@ -13,6 +13,7 @@ import pro.sky.animalshelterbot.constant.Commands;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.entity.OwnerCat;
 import pro.sky.animalshelterbot.entity.OwnerDog;
+import pro.sky.animalshelterbot.repository.UserRepository;
 
 /**
  * Сервис ProcessMessageService
@@ -47,16 +48,26 @@ public class ProcessMessageService {
     private final OwnerCatService ownerCatService;
 
     /**
+     * Поле: репозиторий пользователей
+     */
+    private final UserRepository userRepository;
+
+    /**
      * Конструктор
      *
      * @param telegramBot     телеграм бот
      * @param ownerDogService сервис владельца собаки
      * @param ownerCatService сервис владельца кота
+     * @param userRepository  репозиторий пользователей
      */
-    public ProcessMessageService(TelegramBot telegramBot, OwnerDogService ownerDogService, OwnerCatService ownerCatService) {
+    public ProcessMessageService(TelegramBot telegramBot,
+                                 OwnerDogService ownerDogService,
+                                 OwnerCatService ownerCatService,
+                                 UserRepository userRepository) {
         this.telegramBot = telegramBot;
         this.ownerDogService = ownerDogService;
         this.ownerCatService = ownerCatService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -178,7 +189,7 @@ public class ProcessMessageService {
 
         Long chatId = update.message().chat().id();
 
-        if (ProcessCallbackQueryService.isDog == true &&
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog() &&
         ownerDogService.findByChatId(chatId) == null){
             ownerDogService.create(new OwnerDog(chatId,
                 update.message().contact().firstName(),
