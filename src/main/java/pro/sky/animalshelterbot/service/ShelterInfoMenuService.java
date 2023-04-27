@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.repository.UserRepository;
 
 import java.io.File;
 
@@ -38,8 +39,20 @@ public class ShelterInfoMenuService {
      */
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    public ShelterInfoMenuService(TelegramBot telegramBot) {
+    /**
+     * Поле: репозиторий пользователей
+     */
+    private final UserRepository userRepository;
+
+    /**
+     * Конструктор
+     *
+     * @param telegramBot телеграм бот
+     * @param userRepository репозиторий пользователей
+     */
+    public ShelterInfoMenuService(TelegramBot telegramBot, UserRepository userRepository) {
         this.telegramBot = telegramBot;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -67,7 +80,7 @@ public class ShelterInfoMenuService {
                         .callbackData(Commands.RECOMMENDATIONS.getCallbackData())
 
         );
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             inlineKeyboardMarkup.addRow(
                     new InlineKeyboardButton(Commands.ADVICES.getDescription())
                             .callbackData(Commands.ADVICES.getCallbackData())
@@ -125,7 +138,7 @@ public class ShelterInfoMenuService {
                 "✅Бывает ли на улице и любит ли сбегать туда.\n";
 
         SendMessage message;
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             message = new SendMessage(update.callbackQuery().message().chat().id(),
                     dogDatingRules);
         } else {
@@ -160,7 +173,7 @@ public class ShelterInfoMenuService {
                 "3️⃣ Заберите котика\n" +
                 "Выберите пушистого друга и приезжайте знакомиться!";
 
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             SendDocument sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                     listDocuments);
             sendDocument.caption("Из неообходимых документов Вам потребуется только ПАСПОРТ\n" +
