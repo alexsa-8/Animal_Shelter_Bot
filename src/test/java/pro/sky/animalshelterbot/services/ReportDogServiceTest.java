@@ -8,10 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalshelterbot.constant.ReportStatus;
-import pro.sky.animalshelterbot.entity.Report;
+import pro.sky.animalshelterbot.entity.ReportDog;
 import pro.sky.animalshelterbot.exception.ReportNotFoundException;
-import pro.sky.animalshelterbot.repository.ReportRepository;
-import pro.sky.animalshelterbot.service.ReportService;
+import pro.sky.animalshelterbot.repository.ReportDogRepository;
+import pro.sky.animalshelterbot.service.ReportDogService;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -22,46 +22,46 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ReportServiceTest {
+public class ReportDogServiceTest {
 
     @Mock
-    private ReportRepository repository;
+    private ReportDogRepository repository;
 
     @InjectMocks
-    private ReportService service;
+    private ReportDogService service;
 
-    private Report report1;
-    private Report report2;
+    private ReportDog reportDog1;
+    private ReportDog reportDog2;
 
     @BeforeEach
     public void setUp(){
         byte[] photo = {3,1};
-        report1 = new Report(1L,photo,"Animal diet",
+        reportDog1 = new ReportDog(1L,photo,"Animal diet",
                 "Info","change behavior", LocalDate.now());
 
-        report2 = new Report(2L,photo,"other diet",
+        reportDog2 = new ReportDog(2L,photo,"other diet",
                 "Info","other behavior", LocalDate.now());
     }
 
     @Test
     public void shouldCreateReport(){
-        when(repository.save(report1)).thenReturn(report1);
-        assertEquals(report1,service.createReport(report1));
+        when(repository.save(reportDog1)).thenReturn(reportDog1);
+        assertEquals(reportDog1,service.createReport(reportDog1));
     }
 
     @Test
     public void shouldDownloadReport(){
         byte[] photo = {3,1};
-        when(repository.save(report1)).thenReturn(report1);
-        assertEquals(report1,service.downloadReport(1L,
+        when(repository.save(reportDog1)).thenReturn(reportDog1);
+        assertEquals(reportDog1,service.downloadReport(1L,
                 "Animal diet", "Info",
                 "change behavior",photo, LocalDate.now()));
     }
 
     @Test
     public void shouldFindReport(){
-        when(repository.findById(1L)).thenReturn(Optional.ofNullable(report1));
-        assertEquals(report1,service.findReport(1L));
+        when(repository.findById(1L)).thenReturn(Optional.ofNullable(reportDog1));
+        assertEquals(reportDog1,service.findReport(1L));
     }
 
     @Test
@@ -72,19 +72,19 @@ public class ReportServiceTest {
 
     @Test
     public void shouldUpdateReport(){
-        when(repository.findById(1L)).thenReturn(Optional.ofNullable(report1));
+        when(repository.findById(1L)).thenReturn(Optional.ofNullable(reportDog1));
 
-        report1.setId(1L);
-        Report expected = report1;
+        reportDog1.setId(1L);
+        ReportDog expected = reportDog1;
         expected.setReportStatus(ReportStatus.REPORT_ACCEPTED);
-        assertEquals(expected,service.updateReport(report1,ReportStatus.REPORT_ACCEPTED));
+        assertEquals(expected,service.updateReport(reportDog1,ReportStatus.REPORT_ACCEPTED));
     }
 
     @Test
     public void shouldGetExceptionWhenUpdate(){
-        report1.setId(null);
+        reportDog1.setId(null);
         assertThrows(ReportNotFoundException.class,
-                () -> service.updateReport(report1,ReportStatus.REPORT_ACCEPTED));
+                () -> service.updateReport(reportDog1,ReportStatus.REPORT_ACCEPTED));
     }
 
     @Test
@@ -95,11 +95,11 @@ public class ReportServiceTest {
 
     @Test
     public void shouldGetAllReports(){
-        Collection<Report> reports = new ArrayList<>();
-        reports.add(report1);
-        reports.add(report2);
+        Collection<ReportDog> reportDogs = new ArrayList<>();
+        reportDogs.add(reportDog1);
+        reportDogs.add(reportDog2);
 
-        when(repository.findAll()).thenReturn((List<Report>) reports);
-        assertEquals(reports,service.getAllReport());
+        when(repository.findAll()).thenReturn((List<ReportDog>) reportDogs);
+        assertEquals(reportDogs,service.getAllReport());
     }
 }
