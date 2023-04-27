@@ -8,6 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.entity.OwnerDog;
+import pro.sky.animalshelterbot.entity.User;
+import pro.sky.animalshelterbot.repository.OwnerCatRepository;
+import pro.sky.animalshelterbot.repository.OwnerDogRepository;
+import pro.sky.animalshelterbot.repository.UserRepository;
 
 /**
  * Сервис ProcessCallbackQueryService
@@ -62,9 +67,9 @@ public class ProcessCallbackQueryService {
     private final SendReportMenuService sendReportMenuService;
 
     /**
-     * Поле: выбор приюта
+     * Поле: репозиторий пользователей
      */
-    static boolean isDog = true;
+    private final UserRepository userRepository;
 
     /**
      * Конструктор
@@ -76,6 +81,7 @@ public class ProcessCallbackQueryService {
      * @param startMenuService          сервис стартового меню
      * @param shelterDataMenuService    сервис меню данных о приюте
      * @param sendReportMenuService     сервис меню отправки отчета
+     * @param userRepository            репозиторий пользователей
      */
     public ProcessCallbackQueryService(TelegramBot telegramBot,
                                        ShelterInfoMenuService shelterInfoMenuService,
@@ -83,7 +89,7 @@ public class ProcessCallbackQueryService {
                                        AdvicesMenuService advicesMenuService,
                                        StartMenuService startMenuService,
                                        ShelterDataMenuService shelterDataMenuService,
-                                       SendReportMenuService sendReportMenuService) {
+                                       SendReportMenuService sendReportMenuService, OwnerDogRepository ownerDogRepository, OwnerCatRepository ownerCatRepository, UserRepository userRepository) {
 
         this.telegramBot = telegramBot;
         this.shelterInfoMenuService = shelterInfoMenuService;
@@ -92,6 +98,7 @@ public class ProcessCallbackQueryService {
         this.startMenuService = startMenuService;
         this.shelterDataMenuService = shelterDataMenuService;
         this.sendReportMenuService = sendReportMenuService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -110,8 +117,29 @@ public class ProcessCallbackQueryService {
         switch (Commands.valueOf(command)) {
             // Стартовое меню (startMenuService)
             case TAKE_A_KITTEN:
-                isDog = false;
+                if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()) == null) {
+                    userRepository.save(new User(update.callbackQuery().message().chat().id(),
+                            update.callbackQuery().message().chat().firstName(),
+                            false));
+                } else {
+                    User user = userRepository.findUserByChatId(update.callbackQuery().message().chat().id());
+                    user.setIsDog(false);
+                    userRepository.save(user);
+                }
+                telegramBot.execute(startMenuService.startMenu(update));
+                break;
             case TAKE_THE_DOG:
+                if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()) == null) {
+                    userRepository.save(new User(update.callbackQuery().message().chat().id(),
+                            update.callbackQuery().message().chat().firstName(),
+                            true));
+                } else {
+                    User user = userRepository.findUserByChatId(update.callbackQuery().message().chat().id());
+                    user.setIsDog(true);
+                    userRepository.save(user);
+                }
+                telegramBot.execute(startMenuService.startMenu(update));
+                break;
             case BACK:
                 telegramBot.execute(startMenuService.startMenu(update));
                 break;
@@ -176,19 +204,11 @@ public class ProcessCallbackQueryService {
                 telegramBot.execute(sendReportMenuService.submitReportMenu(update));
                 break;
             case REPORT_FORM:
-                 telegramBot.execute(sendReportMenuService.reportForm(update));
+                telegramBot.execute(sendReportMenuService.reportForm(update));
                 break;
             default:
                 telegramBot.execute(new SendMessage(update.callbackQuery().message().chat().id(),
                         "Упс... что-то пошло не так, мы скоро решим проблему, не переживайте"));
         }
-    }
-
-    /**
-     * Если пользователь выбирает собачий приют, возвращается true, иначе false
-     * @return boolean значение выбора приюта
-     */
-    public static boolean isDog() {
-        return isDog;
     }
 }

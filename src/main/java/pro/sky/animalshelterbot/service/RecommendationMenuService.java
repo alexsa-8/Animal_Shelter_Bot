@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.repository.UserRepository;
 
 import java.io.File;
 
@@ -29,6 +30,20 @@ public class RecommendationMenuService {
      * Поле: объект, который запускает события журнала.
      */
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+
+    /**
+     * Поле: репозиторий пользователей
+     */
+    private final UserRepository userRepository;
+
+    /**
+     * Конструктор
+     *
+     * @param userRepository репозиторий пользователей
+     */
+    public RecommendationMenuService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Метод для запуска меню
@@ -81,7 +96,7 @@ public class RecommendationMenuService {
         String pathKitten = "src/main/resources/recommendations/Recommendations_of_Transportation_Cats.pdf";
         File recommendation;
         SendDocument sendDocument;
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             recommendation = new File(pathDog);
             sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                     recommendation);
@@ -114,7 +129,7 @@ public class RecommendationMenuService {
         File recommendation;
         SendDocument sendDocument;
 
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             recommendation = new File(pathDog);
             sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                     recommendation);
@@ -146,7 +161,7 @@ public class RecommendationMenuService {
         String pathKitten = "src/main/resources/recommendations/Recommendations_for_Kittens.pdf";
         File recommendation;
         SendDocument sendDocument;
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             recommendation = new File(pathDog);
             sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                     recommendation);
@@ -179,7 +194,7 @@ public class RecommendationMenuService {
         File recommendation;
         SendDocument sendDocument;
 
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             recommendation = new File(pathDog);
             sendDocument = new SendDocument(update.callbackQuery().message().chat().id(),
                     recommendation);
