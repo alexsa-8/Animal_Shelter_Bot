@@ -160,7 +160,7 @@ public class ShelterDataMenuService {
         String contactCatShelter = "+7‒702‒262‒39‒82";
         String pass;
 
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             pass = contactDogShelter;
         } else {
             pass = contactCatShelter;
@@ -183,7 +183,7 @@ public class ShelterDataMenuService {
         String petCat = "https://kotopesoff.kz/pets/cats";
         String pet;
 
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             pet = petDog;
         } else {
             pet = petCat;

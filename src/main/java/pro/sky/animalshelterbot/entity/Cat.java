@@ -67,6 +67,9 @@ public class Cat {
         this.status = status;
     }
 
+    public Cat() {
+    }
+
     public Long getId() {
         return id;
     }
