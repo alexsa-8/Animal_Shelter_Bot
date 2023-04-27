@@ -154,7 +154,10 @@ public class OwnerCat {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OwnerCat ownerCat = (OwnerCat) o;
-        return age == ownerCat.age && Objects.equals(id, ownerCat.id) && Objects.equals(chatId, ownerCat.chatId) && Objects.equals(name, ownerCat.name) && Objects.equals(phone, ownerCat.phone) && status == ownerCat.status && Objects.equals(cat, ownerCat.cat) && Objects.equals(numberOfReportDays, ownerCat.numberOfReportDays);
+        return age == ownerCat.age && Objects.equals(id, ownerCat.id) && Objects.equals(chatId, ownerCat.chatId)
+                && Objects.equals(name, ownerCat.name) && Objects.equals(phone, ownerCat.phone)
+                && status == ownerCat.status && Objects.equals(cat, ownerCat.cat)
+                && Objects.equals(numberOfReportDays, ownerCat.numberOfReportDays);
     }
 
     @Override

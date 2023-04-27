@@ -13,6 +13,7 @@ import java.util.Collection;
 /**
  * Сервис VolunteerService
  * Сервис используется для создания, редактирования, удаления, получения волонтёра и списка волонтёров из БД,
+ *
  * @author Rogozin Alexandr
  */
 @Service
@@ -29,8 +30,9 @@ public class VolunteerService {
      * Создание волонтёра и сохранение его в БД
      * <br>
      * Используется метод репозитория {@link VolunteerRepository#save(Object)}
+     *
      * @param volunteer создается объект волонтёр
-     * @param status устанавливается статус волонтёр
+     * @param status    устанавливается статус волонтёр
      * @return созданный волонтёр
      */
     public Volunteer create(Volunteer volunteer, VolunteerStatus status) {
@@ -43,9 +45,10 @@ public class VolunteerService {
      * Поиск волонтёра в БД по id
      * <br>
      * Используется метод репозитория {@link VolunteerRepository#findById(Object)}
+     *
      * @param id идентификатор волонтёра
-     * @throws VolunteerNotFoundException, если волонтёр с указанным id не найден
      * @return найденный волонтёр
+     * @throws VolunteerNotFoundException, если волонтёр с указанным id не найден
      */
     public Volunteer find(Long id) {
         LOGGER.info("Request to get a volunteer by id {}", id);
@@ -56,27 +59,31 @@ public class VolunteerService {
      * Изменение данных волонтёра в БД
      * <br>
      * Используется метод репозитория {@link VolunteerRepository#save(Object)}
+     *
      * @param volunteer изменяемый волонтёр
-     * @param status статус волонтёра (изменить или оставить прежним)
-     * @throws VolunteerNotFoundException, если указанный волонтёр не найден
+     * @param status    статус волонтёра (изменить или оставить прежним)
      * @return измененный волонтёр
+     * @throws VolunteerNotFoundException, если указанный волонтёр не найден
      */
     public Volunteer update(Volunteer volunteer, VolunteerStatus status) {
         LOGGER.info("Request to update the volunteer  {}", volunteer);
         if (volunteer.getId() != null) {
             if (find(volunteer.getId()) != null) {
                 volunteer.setStatus(status);
-                return repository.save(volunteer);
+//                return repository.save(volunteer);
             }
+        } else {
+            LOGGER.error("The volunteer on the application was not found");
+            throw new VolunteerNotFoundException();
         }
-        LOGGER.error("The volunteer on the application was not found");
-        throw new VolunteerNotFoundException();
+        return volunteer;
     }
 
     /**
      * Получение списка волонтёров из БД
      * <br>
      * Используется метод репозитория {@link VolunteerRepository#findAll()}
+     *
      * @return список волонтёров
      */
     public Collection<Volunteer> getAll() {
@@ -88,6 +95,7 @@ public class VolunteerService {
      * Удаление волонтёра из БД по id
      * <br>
      * Используется метод репозитория {@link VolunteerRepository#delete(Object)}
+     *
      * @param id идентификатор волонтёра
      */
     public void delete(Long id) {

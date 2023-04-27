@@ -7,6 +7,7 @@ import java.util.Objects;
 
 /**
  * Класс Cat, представляет сущность кошки
+ *
  * @author Gubina Marina
  */
 @Entity
@@ -41,6 +42,7 @@ public class Cat {
 
     /**
      * Поле: статус кошки
+     *
      * @see PetStatus
      */
     @Enumerated(EnumType.STRING)
@@ -51,6 +53,17 @@ public class Cat {
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 
+
+    /**
+     * Конструктор с параметрами для создания объекта "кошки"
+     *
+     * @param id     идентификационный номер
+     * @param name   имя
+     * @param age    возраст
+     * @param breed  порода
+     * @param status статус
+     */
+     
     public Cat(Long id, String name, Integer age, String breed, PetStatus status) {
         this.id = id;
         this.name = name;
