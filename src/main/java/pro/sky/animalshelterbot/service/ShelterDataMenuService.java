@@ -51,6 +51,14 @@ public class ShelterDataMenuService {
 
         );
         inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.CAR_PASS.getDescription())
+                        .callbackData(Commands.CAR_PASS.getCallbackData())
+        );
+        inlineKeyboardMarkup.addRow(
+                new InlineKeyboardButton(Commands.CHOOSING_A_PET.getDescription())
+                        .callbackData(Commands.CHOOSING_A_PET.getCallbackData())
+        );
+        inlineKeyboardMarkup.addRow(
                 new InlineKeyboardButton(Commands.BACK.getDescription())
                         .callbackData(Commands.BACK.getCallbackData())
         );
@@ -104,12 +112,13 @@ public class ShelterDataMenuService {
                 " \n Email: animalshelterastaba@gmail.com  \n";
 
         String dataMessageKittenShelter = "  Доброго времени суток! Наши контактные данные:" +
-                "\n Адрес: г. Астана, Сарыарка район, Коктал ж/м, ул. Аккорган, 5в. " +
-                " \n Часы работы приюта: ежедневно с 11:00 до 18:00 \n Тел.: +7‒702‒481‒01‒58" +
-                " \n Email: animalshelterastaba@gmail.com  \n";
+                "\n Адрес: г. Алматы, ул. Спортивная дом 3 " +
+                " \n Часы работы приюта: ежедневно с 10:00 до 18:00 \n Тел.: +7‒702‒262‒39‒82" +
+                " \n Сайт kotopesoff.kz  \n"+
+                " \n Email: wotdpress@kotopesoff.kz  \n";
 
         String pathDog = "src/main/resources/shelterInfo/map.jpg";
-        String pathKitten = "src/main/resources/shelterInfo/map.jpg";
+        String pathKitten = "src/main/resources/shelterInfo/mapCatShelter.jpg";
         File map;
         SendPhoto photo;
 
@@ -126,5 +135,49 @@ public class ShelterDataMenuService {
         return photo;
     }
 
+    /**
+     * Метод, выдающий номер телефона для оформления пропуска на машину
+     *
+     * @param update доступное обновление
+     * @return номер телефона для оформления пропуска
+     */
+    public SendMessage carPass(Update update){
 
+        String contactDogShelter = "+7‒702‒481‒01‒58";
+        String contactCatShelter = "+7‒702‒262‒39‒82";
+        String pass;
+
+        if (ProcessCallbackQueryService.isDog()) {
+            pass = contactDogShelter;
+        } else {
+            pass = contactCatShelter;
+        }
+
+        String registrationPass = "Позвоните по этому номеру телефона и оформите пропуск на машину: " + pass;
+        SendMessage sendMessage = new SendMessage(update.callbackQuery().message().chat().id(),registrationPass);
+        return sendMessage;
+    }
+
+    /**
+     * Метод, выдающий ссылку на приют для выбора питомца
+     *
+     * @param update доступное обновление
+     * @return ссылка на приют для выбора питомца
+     */
+    public SendMessage choosingAPet(Update update){
+
+        String petDog = "https://kotopesoff.kz/pets/dogs";
+        String petCat = "https://kotopesoff.kz/pets/cats";
+        String pet;
+
+        if (ProcessCallbackQueryService.isDog()) {
+            pet = petDog;
+        } else {
+            pet = petCat;
+        }
+
+        String selectedPet = "Нажав на эту ссылку Вы попадёте в приют, где можете выбрать питомца: " + pet;
+        SendMessage sendMessage = new SendMessage  (update.callbackQuery().message().chat().id(),selectedPet);
+        return sendMessage;
+    }
 }

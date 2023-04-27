@@ -15,10 +15,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
+import pro.sky.animalshelterbot.entity.ReportCat;
 import pro.sky.animalshelterbot.entity.ReportDog;
 import pro.sky.animalshelterbot.entity.Volunteer;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 import pro.sky.animalshelterbot.repository.OwnerCatRepository;
+import pro.sky.animalshelterbot.repository.ReportCatRepository;
 import pro.sky.animalshelterbot.repository.ReportDogRepository;
 
 import java.io.IOException;
@@ -63,6 +65,7 @@ public class SendReportMenuService {
 
     private Volunteer volunteer;
     private final ReportDogRepository repository;
+    private final ReportCatRepository catRepository;
 
     private static final Pattern REPORT_PATTERN = Pattern.compile(
             "([А-яA-z\\s\\d\\D]+):(\\s)([А-яA-z\\s\\d\\D]+)\n" +
@@ -75,16 +78,18 @@ public class SendReportMenuService {
     /**
      * Конструктор
      *
-     * @param telegramBot          телеграм бот
-     * @param reportDogService     сервис отчетов по собакам
-     * @param reportCatService     сервис отчетов по котам
+     * @param telegramBot      телеграм бот
+     * @param reportDogService сервис отчетов по собакам
+     * @param reportCatService сервис отчетов по котам
+     * @param catRepository репозиторий отчетов по котам
      */
     public SendReportMenuService(TelegramBot telegramBot, ReportDogService reportDogService, ReportCatService reportCatService,
-                                 ReportDogRepository repository, OwnerDogRepository ownerDogRepository, OwnerCatRepository ownerCatRepository) {
+                                 ReportDogRepository repository, ReportCatRepository catRepository, OwnerDogRepository ownerDogRepository, OwnerCatRepository ownerCatRepository) {
         this.telegramBot = telegramBot;
         this.reportDogService = reportDogService;
         this.reportCatService = reportCatService;
         this.repository = repository;
+        this.catRepository = catRepository;
         this.ownerDogRepository = ownerDogRepository;
         this.ownerCatRepository = ownerCatRepository;
     }
@@ -218,6 +223,34 @@ public class SendReportMenuService {
                 SendMessage sendMessage = new SendMessage(ownerDogId, reportDog.getOwnerDog().getName() + "! поздравляем," +
                         "испытательный срок в 30 дней для собаки " + reportDog.getOwnerDog().getDog().getName() +
                         " (id: " + reportDog.getOwnerDog().getDog().getId() + ") закончен");
+                telegramBot.execute(sendMessage);
+            }
+        }
+        logger.info("Requests report to OwnerCat");
+        for (ReportCat reportCat : reportCatService.findNewReports()) {
+            Long ownerCatId = reportCat.getOwnerCat().getId();
+            long daysBetween = DAYS.between(LocalDate.now(), reportCat.getDateMessage());
+            if (reportCat.getDateMessage().isBefore(LocalDate.now().minusDays(1))) {
+                SendMessage sendMessage = new SendMessage(volunteer.getChatId(), "Отчет о кошке "
+                        + reportCat.getOwnerCat().getCat().getName() + " (id: " + reportCat.getOwnerCat().getCat().getId() + ") от владельца "
+                        + reportCat.getOwnerCat().getName() + " (id: " + ownerCatId + ") не поступал уже " + daysBetween + " дней. "
+                        + "Дата последнего отчета: " + reportCat.getDateMessage());
+                telegramBot.execute(sendMessage);
+            }
+            if (reportCat.getDateMessage().equals(LocalDate.now().minusDays(1))) {
+                SendMessage sendToOwner = new SendMessage(reportCat.getOwnerCat().getChatId(), "Дорогой владелец, " +
+                        "не забудь сегодня отправить отчет");
+                telegramBot.execute(sendToOwner);
+            }
+        }
+        for (ReportCat reportCat : reportCatService.findOldReports()) {
+            Long ownerCatId = reportCat.getOwnerCat().getId();
+            if (reportCat.getDateMessage().equals(LocalDate.now().minusDays(30))) {
+                catRepository.save(reportCat);
+                reportCat.getOwnerCat().setStatus(OwnerStatus.APPROVED);
+                SendMessage sendMessage = new SendMessage(ownerCatId, reportCat.getOwnerCat().getName() + "! поздравляем," +
+                        "испытательный срок в 30 дней для кошки " + reportCat.getOwnerCat().getCat().getName() +
+                        " (id: " + reportCat.getOwnerCat().getCat().getId() + ") закончен");
                 telegramBot.execute(sendMessage);
             }
         }

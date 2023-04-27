@@ -26,10 +26,13 @@ import java.util.Collection;
 @RestController
 @RequestMapping("volunteer")
 public class VolunteerController {
-    private final VolunteerService service;
+    private VolunteerService service;
 
     public VolunteerController(VolunteerService service) {
         this.service = service;
+    }
+
+    public VolunteerController() {
     }
 
     @Operation(
