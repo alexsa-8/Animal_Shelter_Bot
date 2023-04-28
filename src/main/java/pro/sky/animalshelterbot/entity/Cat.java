@@ -49,6 +49,10 @@ public class Cat {
     @Column(name = "status")
     private PetStatus status;
 
+    @ManyToOne
+    @JoinColumn(name = "shelter_id")
+    private Shelter shelter;
+
 
     /**
      * Конструктор с параметрами для создания объекта "кошки"
@@ -59,6 +63,7 @@ public class Cat {
      * @param breed  порода
      * @param status статус
      */
+     
     public Cat(Long id, String name, Integer age, String breed, PetStatus status) {
         this.id = id;
         this.name = name;
