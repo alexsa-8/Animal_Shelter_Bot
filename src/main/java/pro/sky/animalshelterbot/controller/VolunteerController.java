@@ -26,13 +26,10 @@ import java.util.Collection;
 @RestController
 @RequestMapping("volunteer")
 public class VolunteerController {
-    private VolunteerService service;
+    private final VolunteerService service;
 
     public VolunteerController(VolunteerService service) {
         this.service = service;
-    }
-
-    public VolunteerController() {
     }
 
     @Operation(
@@ -76,8 +73,7 @@ public class VolunteerController {
             tags = "Волонтёры"
     )
     @GetMapping("{id}")
-    public ResponseEntity<Volunteer> find(@Parameter(description = "Ввод id волонтёра", name = "ID волонтёра")
-                                          @PathVariable Long id) {
+    public ResponseEntity<Volunteer> find(@PathVariable Long id) {
         Volunteer volunteer = service.find(id);
         if (volunteer == null) {
             return ResponseEntity.notFound().build();
@@ -111,7 +107,7 @@ public class VolunteerController {
     public ResponseEntity<Volunteer> update(@RequestBody Volunteer volunteer,
                                             @Parameter(description = "Установка статуса волонтёра", example = "ON_LINE")
                                             @RequestParam(name = "Статус") VolunteerStatus status) {
-        Volunteer volunteer1 = service.create(volunteer, status);
+        Volunteer volunteer1 = service.update(volunteer, status);
         if (volunteer1 == null) {
             return ResponseEntity.notFound().build();
         }
@@ -140,9 +136,9 @@ public class VolunteerController {
             },
             tags = "Волонтёры"
     )
+
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteVolunteer(@Parameter(description = "Ввод id волонтёра", name = "ID волонтёра")
-                                                @PathVariable long id) {
+    public ResponseEntity<Void> deleteVolunteer(@PathVariable long id) {
         service.delete(id);
         return ResponseEntity.ok().build();
     }
