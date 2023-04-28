@@ -60,6 +60,7 @@ class VolunteerServiceTest {
     @Test
     void update() {
         when(repository.findById(1L)).thenReturn(Optional.ofNullable(volunteer1));
+        when(repository.save(volunteer1)).thenReturn(volunteer1);
 
         volunteer1.setId(1L);
         Volunteer expected = volunteer1;
