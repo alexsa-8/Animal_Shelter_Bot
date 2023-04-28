@@ -20,7 +20,7 @@ import java.util.Collection;
 public class VolunteerService {
     private final VolunteerRepository repository;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(Volunteer.class);
+    private final static Logger log = LoggerFactory.getLogger(VolunteerService.class);
 
     public VolunteerService(VolunteerRepository repository) {
         this.repository = repository;
@@ -36,7 +36,7 @@ public class VolunteerService {
      * @return созданный волонтёр
      */
     public Volunteer create(Volunteer volunteer, VolunteerStatus status) {
-        LOGGER.info("Request to create a volunteer {}", volunteer);
+        log.info("Request to create a volunteer {}", volunteer);
         volunteer.setStatus(status);
         return repository.save(volunteer);
     }
@@ -51,7 +51,7 @@ public class VolunteerService {
      * @throws VolunteerNotFoundException, если волонтёр с указанным id не найден
      */
     public Volunteer find(Long id) {
-        LOGGER.info("Request to get a volunteer by id {}", id);
+        log.info("Request to get a volunteer by id {}", id);
         return repository.findById(id).orElseThrow(VolunteerNotFoundException::new);
     }
 
@@ -66,17 +66,15 @@ public class VolunteerService {
      * @throws VolunteerNotFoundException, если указанный волонтёр не найден
      */
     public Volunteer update(Volunteer volunteer, VolunteerStatus status) {
-        LOGGER.info("Request to update the volunteer  {}", volunteer);
+        log.info("Request to update the volunteer  {}", volunteer);
         if (volunteer.getId() != null) {
             if (find(volunteer.getId()) != null) {
                 volunteer.setStatus(status);
-//                return repository.save(volunteer);
+                return repository.save(volunteer);
             }
-        } else {
-            LOGGER.error("The volunteer on the application was not found");
-            throw new VolunteerNotFoundException();
         }
-        return volunteer;
+        log.error("The volunteer on the application was not found");
+        throw new VolunteerNotFoundException();
     }
 
     /**
@@ -87,7 +85,7 @@ public class VolunteerService {
      * @return список волонтёров
      */
     public Collection<Volunteer> getAll() {
-        LOGGER.info("Request to receive all volunteers");
+        log.info("Request to receive all volunteers");
         return repository.findAll();
     }
 
@@ -99,7 +97,7 @@ public class VolunteerService {
      * @param id идентификатор волонтёра
      */
     public void delete(Long id) {
-        LOGGER.info("Request to delete a volunteer by id {}", id);
+        log.info("Request to delete a volunteer by id {}", id);
         repository.deleteById(id);
     }
 }

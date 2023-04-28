@@ -8,6 +8,7 @@ import java.util.Objects;
 
 /**
  * Класс Volunteer, представляет сущность волонтёра
+ *
  * @author Rogozin Alexandr
  */
 
@@ -47,6 +48,7 @@ public class Volunteer {
 
     /**
      * Конструктор с параметрами для создания объекта "волонтёр"
+     *
      * @param id     идентификационный номер
      * @param name   имя
      * @param phone  телефон
@@ -63,8 +65,6 @@ public class Volunteer {
     /**
      * Конструктор без параметров для создания объекта "волонтёр"
      */
-    public Volunteer(Long chatId, String name, String phone) {
-    }
 
     public Volunteer() {
     }
@@ -77,7 +77,9 @@ public class Volunteer {
         this.chatId = chatId;
     }
 
-    public Long getId() {return id;}
+    public Long getId() {
+        return id;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -91,9 +93,7 @@ public class Volunteer {
         this.name = name;
     }
 
-    public String getPhone() {
-        return phone;
-    }
+    public String getPhone() { return phone; }
 
     public void setPhone(String phone) {
         this.phone = phone;
@@ -112,12 +112,12 @@ public class Volunteer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Volunteer volunteer = (Volunteer) o;
-        return Objects.equals(id, volunteer.id) && Objects.equals(name, volunteer.name) && Objects.equals(phone, volunteer.phone) && status == volunteer.status;
+        return Objects.equals(id, volunteer.id) && Objects.equals(chatId, volunteer.chatId) && Objects.equals(name, volunteer.name) && Objects.equals(phone, volunteer.phone) && status == volunteer.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, phone, status);
+        return Objects.hash(id, chatId, name, phone, status);
     }
 
     @Override
