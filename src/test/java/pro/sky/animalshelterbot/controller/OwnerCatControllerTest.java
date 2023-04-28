@@ -1,5 +1,6 @@
 package pro.sky.animalshelterbot.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -13,38 +14,30 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.entity.OwnerCat;
-import pro.sky.animalshelterbot.repository.CatRepository;
 import pro.sky.animalshelterbot.repository.OwnerCatRepository;
-import pro.sky.animalshelterbot.service.CatService;
 import pro.sky.animalshelterbot.service.OwnerCatService;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest
+@WebMvcTest(OwnerCatController.class)
 public class OwnerCatControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private ObjectMapper objectMapper;
     @MockBean
     private OwnerCatRepository repository;
+
     @MockBean
-    private CatRepository catRepository;
-
-    @SpyBean
     private OwnerCatService service;
-    @SpyBean
-    private CatService catService;
 
-    @InjectMocks
-    private OwnerCatController controller;
-    @InjectMocks
-    private CatController catController;
 
 
     @Test
@@ -64,7 +57,7 @@ public class OwnerCatControllerTest {
         when(repository.save(any(OwnerCat.class))).thenReturn(ownerCat);
         when(repository.findById(eq(id))).thenReturn(Optional.of(ownerCat));
         when(repository.existsById(eq(id))).thenReturn(true);
-
+        when(repository.findAll()).thenReturn(List.of(ownerCat));
         mvc.perform(MockMvcRequestBuilders
                         .post("/owners_cat")
                         .content(object.toString())
@@ -98,17 +91,14 @@ public class OwnerCatControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
+
         mvc.perform(MockMvcRequestBuilders
                         .get("/owners_cat")
                         .content(object.toString())
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(List.of(ownerCat))));
 
-//        mvc.perform(MockMvcRequestBuilders
-//                        .put("/days" + id)
-//                        .content(object.toString())
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk());
 
     }
 }

@@ -38,7 +38,7 @@ public class OwnerDogControllerTest {
     private OwnerDogRepository repository;
     @MockBean
     private DogRepository dogRepository;
-    @SpyBean
+    @MockBean
     private OwnerDogService service;
     @SpyBean
     private DogService dogService;

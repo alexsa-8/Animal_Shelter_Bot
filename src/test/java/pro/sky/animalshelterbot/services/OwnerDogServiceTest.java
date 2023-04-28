@@ -13,6 +13,8 @@ import pro.sky.animalshelterbot.constant.PetStatus;
 import pro.sky.animalshelterbot.entity.Dog;
 import pro.sky.animalshelterbot.entity.OwnerCat;
 import pro.sky.animalshelterbot.entity.OwnerDog;
+import pro.sky.animalshelterbot.exception.CatNotFoundException;
+import pro.sky.animalshelterbot.exception.OwnerDogNotFoundException;
 import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 import pro.sky.animalshelterbot.service.OwnerDogService;
 
@@ -22,7 +24,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,7 +73,18 @@ public class OwnerDogServiceTest {
         OwnerDog expected = ownerDog;
         assertEquals(expected, service.updateStatus(ownerDog.getId(), OwnerStatus.APPROVED));
     }
+    @Test
+    public void shouldGetExceptionWhenUpdate(){
+        ownerDog.setId(null);
+        assertThrows(OwnerDogNotFoundException.class,
+                () -> service.update(ownerDog));
+    }
 
+    @Test
+    public void shouldGetExceptionsWhenNotFound(){
+        when(repository.findById(anyLong())).thenThrow(new OwnerDogNotFoundException());
+        assertThrows(OwnerDogNotFoundException.class, () -> service.find(anyLong()));
+    }
     @Test
     void findOwnerDogTest() {
         when(repository.findById(1L)).thenReturn(Optional.ofNullable(ownerDog));
