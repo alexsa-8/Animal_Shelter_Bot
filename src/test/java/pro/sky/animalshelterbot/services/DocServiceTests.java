@@ -30,7 +30,7 @@ public class DocServiceTests {
     @InjectMocks
     private DogService dogService;
 
-    private Dog dog = new Dog(1L, "Name", 10, "Breed", PetStatus.FREE);
+    private final Dog dog = new Dog(1L, "Name", 10, "Breed", PetStatus.FREE);
 
     @Test
     public void checkCreateDog() {
