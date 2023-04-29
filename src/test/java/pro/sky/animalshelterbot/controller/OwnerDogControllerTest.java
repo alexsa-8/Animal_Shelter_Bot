@@ -51,17 +51,18 @@ public class OwnerDogControllerTest {
         final String name = "Bob";
         final String phone = "+79805647855";
         final int age = 18;
-        final OwnerStatus status = OwnerStatus.IN_SEARCH;
+        final OwnerStatus status = OwnerStatus.APPROVED;
         final long numberOfReportDays = 14L;
         final Dog dog = new Dog();
         final JSONObject object = new JSONObject();
+        final JSONObject object2 = new JSONObject();
         final OwnerDog ownerDog = new OwnerDog();
         object.put("id", id);
         object.put("chatId", chatId);
         object.put("name", name);
         object.put("phone", phone);
         object.put("age", age);
-        object.put("dog", dog);
+        object.put("dog", object2);
         object.put("status", status);
         object.put("numberOfReportDays", numberOfReportDays);
 
@@ -70,6 +71,12 @@ public class OwnerDogControllerTest {
         dog.setAge(1);
         dog.setBreed("mops");
         dog.setStatus(PetStatus.FREE);
+
+        object2.put("id", 2L);
+        object2.put("name", "Dog");
+        object2.put("age", 1);
+        object2.put("breed", "mops");
+        object2.put("status", PetStatus.FREE);
 
         ownerDog.setId(id);
         ownerDog.setChatId(chatId);
@@ -92,14 +99,14 @@ public class OwnerDogControllerTest {
                         .content(object.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .param("Статус", String.valueOf(OwnerStatus.IN_SEARCH)))
+                        .param("Статус", String.valueOf(status)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.chatId").value(chatId))
                 .andExpect(jsonPath("$.name").value(name))
                 .andExpect(jsonPath("$.phone").value(phone))
                 .andExpect(jsonPath("$.age").value(age))
-                .andExpect(jsonPath("$.status").value(status))
+                .andExpect(jsonPath("$.status").value(status.toString()))
                 .andExpect(jsonPath("$.dog").value(dog))
                 .andExpect(jsonPath("$.numberOfReportDays").value(numberOfReportDays));
 
