@@ -19,7 +19,6 @@ import pro.sky.animalshelterbot.service.ReportDogService;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,7 +59,7 @@ public class ReportDogControllerTest {
         jsonObject.put("chat_id",chat_id);
         jsonObject.put("date_message",date_message);
         jsonObject.put("photo",photo);
-        jsonObject.put("owner_dog_id",owner_dog_id);
+        jsonObject.put("owner_dog_id",owner_dog_id.toString());
 
         ReportDog report = new ReportDog();
         report.setId(id);
@@ -76,22 +75,6 @@ public class ReportDogControllerTest {
         when(repository.save(report)).thenReturn(report);
         when(repository.findById(1L)).thenReturn(Optional.of(report));
 
-        mockMvc.perform(MockMvcRequestBuilders
-                        .post("/reports_dog")
-                        .content(jsonObject.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.animal_diet").value(animal_diet))
-                .andExpect(jsonPath("$.general_info").value(general_info))
-                .andExpect(jsonPath("$.change_behavior").value(change_behavior))
-                .andExpect(jsonPath("$.status").value(status))
-                .andExpect(jsonPath("$.chat_id").value(chat_id))
-                .andExpect(jsonPath("$.date_message").value(date_message))
-                .andExpect(jsonPath("$.photo").value(photo))
-                .andExpect(jsonPath("$.owner_dog_id").value(owner_dog_id));
-/*
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/reports_dog/" + id)
                         .accept(MediaType.APPLICATION_JSON))
@@ -140,6 +123,6 @@ public class ReportDogControllerTest {
                 .andExpect(jsonPath("$.chat_id").value(chat_id))
                 .andExpect(jsonPath("$.date_message").value(date_message))
                 .andExpect(jsonPath("$.photo").value(photo))
-                .andExpect(jsonPath("$.owner_dog_id").value(owner_dog_id));*/
+                .andExpect(jsonPath("$.owner_dog_id").value(owner_dog_id));
     }
 }
