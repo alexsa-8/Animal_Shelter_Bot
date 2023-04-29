@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.Commands;
+import pro.sky.animalshelterbot.repository.UserRepository;
 
 
 /**
@@ -29,6 +30,20 @@ public class StartMenuService {
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     /**
+     * Поле: репозиторий пользователей
+     */
+    private final UserRepository userRepository;
+
+    /**
+     * Конструктор
+     *
+     * @param userRepository репозиторий пользователей
+     */
+    public StartMenuService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    /**
      * Метод для запуска меню
      *
      * @param update доступное обновление
@@ -36,7 +51,7 @@ public class StartMenuService {
      */
     public SendMessage startMenu(Update update) {
         String message;
-        if (ProcessCallbackQueryService.isDog()) {
+        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog()) {
             logger.info("Launched method: start_menu, for dog shelter");
 
             message = "Отлично, мы с радостью поможем подобрать тебе щенка, " +

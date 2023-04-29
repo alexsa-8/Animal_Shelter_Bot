@@ -153,7 +153,10 @@ public class OwnerDog {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OwnerDog ownerDog = (OwnerDog) o;
-        return age == ownerDog.age && Objects.equals(id, ownerDog.id) && Objects.equals(chatId, ownerDog.chatId) && Objects.equals(name, ownerDog.name) && Objects.equals(phone, ownerDog.phone) && status == ownerDog.status && Objects.equals(dog, ownerDog.dog) && Objects.equals(numberOfReportDays, ownerDog.numberOfReportDays);
+        return age == ownerDog.age && Objects.equals(id, ownerDog.id) && Objects.equals(chatId, ownerDog.chatId)
+                && Objects.equals(name, ownerDog.name) && Objects.equals(phone, ownerDog.phone)
+                && status == ownerDog.status && Objects.equals(dog, ownerDog.dog)
+                && Objects.equals(numberOfReportDays, ownerDog.numberOfReportDays);
     }
 
     @Override
