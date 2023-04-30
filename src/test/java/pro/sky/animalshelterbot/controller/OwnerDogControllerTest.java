@@ -1,5 +1,6 @@
 package pro.sky.animalshelterbot.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,6 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class OwnerDogControllerTest {
     @Autowired
     private MockMvc mvc;
+    @Autowired
+    private ObjectMapper objectMapper;
     @MockBean
     private OwnerDogRepository repository;
     @MockBean
@@ -46,107 +50,84 @@ public class OwnerDogControllerTest {
 
     @Test
     public void ownerDogControllerTest() throws Exception {
-        final long id = 1L;
-        final long chatId = 14447774L;
-        final String name = "Bob";
-        final String phone = "+79805647855";
-        final int age = 18;
-        final OwnerStatus status = OwnerStatus.APPROVED;
-        final long numberOfReportDays = 14L;
-        final Dog dog = new Dog();
-        final JSONObject object = new JSONObject();
-        final JSONObject object2 = new JSONObject();
-        final OwnerDog ownerDog = new OwnerDog();
-        object.put("id", id);
-        object.put("chatId", chatId);
-        object.put("name", name);
-        object.put("phone", phone);
-        object.put("age", age);
-        object.put("dog", object2);
-        object.put("status", status);
-        object.put("numberOfReportDays", numberOfReportDays);
+        OwnerDog ownerDog = new OwnerDog();
+        ownerDog.setId(1L);
+        ownerDog.setName("Bob");
+        ownerDog.setAge(18);
+        ownerDog.setPhone("+79805647855");
+        ownerDog.setChatId(14447774L);
+        ownerDog.setStatus(OwnerStatus.PROBATION);
+        ownerDog.setNumberOfReportDays(14L);
 
+
+        Dog dog = new Dog();
         dog.setId(2L);
         dog.setName("Dog");
         dog.setAge(1);
         dog.setBreed("mops");
-        dog.setStatus(PetStatus.FREE);
-
-        object2.put("id", 2L);
-        object2.put("name", "Dog");
-        object2.put("age", 1);
-        object2.put("breed", "mops");
-        object2.put("status", PetStatus.FREE);
-
-        ownerDog.setId(id);
-        ownerDog.setChatId(chatId);
-        ownerDog.setName(name);
-        ownerDog.setPhone(phone);
-        ownerDog.setStatus(status);
-        ownerDog.setAge(age);
         ownerDog.setDog(dog);
-        ownerDog.setNumberOfReportDays(numberOfReportDays);
 
-        when(repository.save(ownerDog)).thenReturn(ownerDog);
-        when(dogRepository.save(dog)).thenReturn(dog);
-        when(service.create(ownerDog,status)).thenReturn(ownerDog);
-        when(dogService.createDog(dog, PetStatus.FREE)).thenReturn(dog);
-        when(repository.findById(any(Long.class))).thenReturn(Optional.of(ownerDog));
-        when(repository.existsById(eq(id))).thenReturn(true);
+        OwnerStatus status = OwnerStatus.IN_SEARCH;
 
-        mvc.perform(MockMvcRequestBuilders
-                        .post("/owners_dog")
-                        .content(object.toString())
+        String jsonRequest = new ObjectMapper().writeValueAsString(ownerDog);
+
+        mvc.perform(post("/owners_dog")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .param("Статус", String.valueOf(status)))
+                        .content(jsonRequest)
+                        .param("Статус", status.name()))
+                .andExpect(status().isOk());
+
+        when(service.find(ownerDog.getId())).thenReturn(ownerDog);
+
+        mvc.perform(get("/owners_dog/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.chatId").value(chatId))
-                .andExpect(jsonPath("$.name").value(name))
-                .andExpect(jsonPath("$.phone").value(phone))
-                .andExpect(jsonPath("$.age").value(age))
-                .andExpect(jsonPath("$.status").value(status.toString()))
-                .andExpect(jsonPath("$.dog").value(dog))
-                .andExpect(jsonPath("$.numberOfReportDays").value(numberOfReportDays));
+                .andExpect(jsonPath("$.id").value(ownerDog.getId()))
+                .andExpect(jsonPath("$.chatId").value(ownerDog.getChatId()))
+                .andExpect(jsonPath("$.name").value(ownerDog.getName()))
+                .andExpect(jsonPath("$.phone").value(ownerDog.getPhone()))
+                .andExpect(jsonPath("$.age").value(ownerDog.getAge()))
+                .andExpect(jsonPath("$.status").value(ownerDog.getStatus() != null ? ownerDog.getStatus().name() : null))
+                .andExpect(jsonPath("$.numberOfReportDays").value(ownerDog.getNumberOfReportDays()))
+                .andExpect(jsonPath("$.dog.name").value(dog.getName()))
+                .andExpect(jsonPath("$.dog.id").value(dog.getId()))
+                .andExpect(jsonPath("$.dog.age").value(dog.getAge()))
+                .andExpect(jsonPath("$.dog.breed").value(dog.getBreed()))
+                .andExpect(jsonPath("$.dog.status").value(dog.getStatus() != null ? dog.getStatus().name() : null));
+
+
+        ownerDog.setPhone("+79822445544");
+        String requestPayload = objectMapper.writeValueAsString(ownerDog);
+
+        mvc.perform(put("/owners_dog")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestPayload))
+                .andExpect(status().isNotFound());
 
         mvc.perform(MockMvcRequestBuilders
-                        .get("/owners_dog" + id)
+                        .delete("/owners_dog/1")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.chatId").value(chatId))
-                .andExpect(jsonPath("$.name").value(name))
-                .andExpect(jsonPath("$.phone").value(phone))
-                .andExpect(jsonPath("$.age").value(age))
-                .andExpect(jsonPath("$.status").value(status))
-                .andExpect(jsonPath("$.dog").value(dog))
-                .andExpect(jsonPath("$.numberOfReportDays").value(numberOfReportDays));
+                .andExpect(status().isOk());
 
-        mvc.perform(MockMvcRequestBuilders
-                        .put("/owners_dog")
-                        .content(object.toString())
+        mvc.perform(get("/owners_dog")
+                        .content(jsonRequest)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        when(repository.findById(eq(1L))).thenReturn(Optional.empty());
+        mvc.perform(MockMvcRequestBuilders.get("/owners_dog/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.chatId").value(chatId))
-                .andExpect(jsonPath("$.name").value(name))
-                .andExpect(jsonPath("$.phone").value(phone))
-                .andExpect(jsonPath("$.age").value(age))
-                .andExpect(jsonPath("$.status").value(status))
-                .andExpect(jsonPath("$.dog").value(dog))
-                .andExpect(jsonPath("$.numberOfReportDays").value(numberOfReportDays));
-
-        mvc.perform(MockMvcRequestBuilders
-                        .delete("/owners_dog/" + id)
-                        .content(object.toString())
-                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        mvc.perform(MockMvcRequestBuilders
-                        .get("/owners_dog")
-                        .content(object.toString())
-                        .accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/owners_dog/{id}", 1))
                 .andExpect(status().isOk());
+
+        mvc.perform(put("/owners_dog/days/{id}", 1))
+                .andExpect(status().isBadRequest());
+
+        mvc.perform(put("/owners_dog/status/{id}", 1))
+                .andExpect(status().isBadRequest());
+
+        mvc.perform(put("/owners_dog/probation/{id}", 1))
+                .andExpect(status().isBadRequest());
     }
 }
