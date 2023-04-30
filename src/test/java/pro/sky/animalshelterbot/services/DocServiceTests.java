@@ -8,7 +8,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalshelterbot.constant.PetStatus;
 import pro.sky.animalshelterbot.entity.Dog;
+import pro.sky.animalshelterbot.exception.CatNotFoundException;
 import pro.sky.animalshelterbot.exception.DogNotFoundException;
+import pro.sky.animalshelterbot.exception.OwnerCatNotFoundException;
 import pro.sky.animalshelterbot.repository.DogRepository;
 import pro.sky.animalshelterbot.service.DogService;
 
@@ -18,6 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +33,7 @@ public class DocServiceTests {
     @InjectMocks
     private DogService dogService;
 
-    private Dog dog = new Dog(1L, "Name", 10, "Breed", PetStatus.FREE);
+    private final Dog dog = new Dog(1L, "Name", 10, "Breed", PetStatus.FREE);
 
     @Test
     public void checkCreateDog() {
@@ -56,6 +59,19 @@ public class DocServiceTests {
         dog2.setStatus(PetStatus.BUSY);
 
         assertEquals(dog2, dogService.updateDog(dog, PetStatus.BUSY));
+    }
+
+    @Test
+    public void shouldGetExceptionsWhenNotFound(){
+        when(dogRepository.findById(anyLong())).thenThrow(new DogNotFoundException());
+        assertThrows(DogNotFoundException.class, () -> dogService.findDog(anyLong()));
+    }
+
+    @Test
+    public void shouldGetExceptionWhenUpdate(){
+        dog.setId(null);
+        assertThrows(DogNotFoundException.class,
+                () -> dogService.updateDog(dog,PetStatus.FREE));
     }
 
     @Test

@@ -12,11 +12,10 @@ import java.util.Collection;
  * @author Gubina Marina
  */
 public interface ReportCatRepository extends JpaRepository<ReportCat, Long> {
-
     @Query(value="select distinct  on (owner_cat_id) * from report_cat order by owner_cat_id, date_message desc ", nativeQuery = true)
     Collection<ReportCat> findReports();
 
-    @Query(value="select distinct  on (owner_cat_id) * from report_cat order by owner_cat_id, date_message ", nativeQuery = true)
+    @Query(value="select distinct  on (owner_cat_id) * from report_cat order by owner_cat_id, date_message desc ", nativeQuery = true)
     Collection<ReportCat>findFirstReports();
 
 }
