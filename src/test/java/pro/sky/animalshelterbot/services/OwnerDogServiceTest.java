@@ -93,8 +93,8 @@ public class OwnerDogServiceTest {
 
     @Test
     void findOwnerDogByChatIdTest() {
-        when(repository.findById(1L)).thenReturn(Optional.ofNullable(ownerDog));
-        assertEquals(ownerDog, service.findByChatId(5544114L));
+        when(repository.findByChatId(5544114L)).thenReturn(ownerDog);
+        assertEquals(ownerDog,service.findByChatId(5544114L));
     }
 
     @Test

@@ -89,7 +89,7 @@ public class OwnerCatServiceTest {
 
     @Test
     void findOwnerCatByChatIdTest() {
-        when(repository.findById(1L)).thenReturn(Optional.ofNullable(ownerCat));
+        when(repository.findByChatId(5544114L)).thenReturn(ownerCat);
         assertEquals(ownerCat,service.findByChatId(5544114L));
     }
 
