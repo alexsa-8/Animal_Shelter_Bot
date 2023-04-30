@@ -8,9 +8,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
-import pro.sky.animalshelterbot.constant.ReportStatus;
+import pro.sky.animalshelterbot.entity.Dog;
 import pro.sky.animalshelterbot.entity.OwnerCat;
-import pro.sky.animalshelterbot.entity.ReportDog;
+
+import pro.sky.animalshelterbot.entity.OwnerDog;
+import pro.sky.animalshelterbot.exception.OwnerCatNotFoundException;
+import pro.sky.animalshelterbot.exception.OwnerDogNotFoundException;
 import pro.sky.animalshelterbot.repository.OwnerCatRepository;
 import pro.sky.animalshelterbot.service.OwnerCatService;
 
@@ -19,6 +22,7 @@ import java.util.Collection;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -51,10 +55,31 @@ public class OwnerCatServiceTest {
 
     @Test
     void updateOwnerCatTest() {
-        when(repository.findById(any(Long.class))).thenReturn(Optional.of(ownerCat));
+        when(repository.findById(any(Long.class))).thenReturn(Optional.ofNullable(ownerCat));
+        when(repository.save(any(OwnerCat.class))).thenReturn(ownerCat);
         ownerCat.setId(1L);
         OwnerCat expected = ownerCat;
         assertEquals(expected,service.update(ownerCat));
+    }
+    @Test
+    public void shouldGetExceptionWhenUpdate(){
+        ownerCat.setId(null);
+        assertThrows(OwnerCatNotFoundException.class,
+                () -> service.update(ownerCat));
+    }
+
+    @Test
+    public void shouldGetExceptionsWhenNotFound(){
+        when(repository.findById(anyLong())).thenThrow(new OwnerCatNotFoundException());
+        assertThrows(OwnerCatNotFoundException.class, () -> service.find(anyLong()));
+    }
+    @Test
+    void update2OwnerCatTest() {
+        when(repository.findById(any(Long.class))).thenReturn(Optional.ofNullable(ownerCat));
+        when(repository.save(any(OwnerCat.class))).thenReturn(ownerCat);
+        ownerCat.setStatus(OwnerStatus.APPROVED);
+        OwnerCat expected = ownerCat;
+        assertEquals(expected, service.updateStatus(ownerCat.getId(), OwnerStatus.APPROVED));
     }
     @Test
     void findOwnerCatTest() {
@@ -64,7 +89,7 @@ public class OwnerCatServiceTest {
 
     @Test
     void findOwnerCatByChatIdTest() {
-        when(repository.findById(1L)).thenReturn(Optional.ofNullable(ownerCat));
+        when(repository.findByChatId(5544114L)).thenReturn(ownerCat);
         assertEquals(ownerCat,service.findByChatId(5544114L));
     }
 

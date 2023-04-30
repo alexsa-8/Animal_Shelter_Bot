@@ -9,6 +9,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalshelterbot.constant.VolunteerStatus;
 import pro.sky.animalshelterbot.entity.Volunteer;
+import pro.sky.animalshelterbot.exception.DogNotFoundException;
+import pro.sky.animalshelterbot.exception.OwnerCatNotFoundException;
+import pro.sky.animalshelterbot.exception.VolunteerNotFoundException;
 import pro.sky.animalshelterbot.repository.VolunteerRepository;
 import pro.sky.animalshelterbot.service.VolunteerService;
 
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,6 +55,18 @@ class VolunteerServiceTest {
         assertEquals(expected,service.create(volunteer1,status1));
     }
 
+    @Test
+    public void shouldGetExceptionWhenUpdate(){
+        volunteer1.setId(null);
+        assertThrows(VolunteerNotFoundException.class,
+                () -> service.update(volunteer1,VolunteerStatus.ON_LINE));
+    }
+
+    @Test
+    public void shouldGetExceptionsWhenNotFound(){
+        when(repository.findById(anyLong())).thenThrow(new VolunteerNotFoundException());
+        assertThrows(VolunteerNotFoundException.class, () -> service.find(anyLong()));
+    }
     @Test
     void find() {
         when(repository.findById(1L)).thenReturn(Optional.ofNullable(volunteer1));
