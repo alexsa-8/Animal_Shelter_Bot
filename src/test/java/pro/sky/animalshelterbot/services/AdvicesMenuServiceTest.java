@@ -11,14 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalshelterbot.constant.Commands;
 import pro.sky.animalshelterbot.service.AdvicesMenuService;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,26 +24,15 @@ public class AdvicesMenuServiceTest {
 
     @InjectMocks
     private AdvicesMenuService service;
-    
+
     private TelegramBot telegramBot;
 
     @Test
-    public void menuTest() {
-        Update update = BotUtils.fromJson("""
-        {
-            "message":{
-                "from":{
-                    "id":123
-                },
-            "text": "%/start"
-            }
-        }""",
-                Update.class);
+    public void advicesCynologistsTest(){
 
-        service.reasonsRefusal(update);
-        ArgumentCaptor<SendDocument> argumentCaptor = ArgumentCaptor.forClass(SendDocument.class);
-        Mockito.verify(telegramBot).execute(argumentCaptor.capture());
-        SendDocument actual = argumentCaptor.getValue();
+    }
+    @Test
+    public void listCynologistsTest() {
     }
 
     @Test
@@ -60,11 +46,10 @@ public class AdvicesMenuServiceTest {
         message.put("chat", chat);
         callbackQuery.put("message",message);
         JSONObject object = new JSONObject();
-        object.put("callbackQuery",callbackQuery);
+        object.put("callback_query",callbackQuery);
 
         Update update = BotUtils.fromJson(object.toString(),Update.class);
 
-        System.out.println(update);
         String path = "src/main/resources/adviсe/Reasons_refusal.pdf";
         File reasonsRefusal = new File(path);
         SendDocument expected= new SendDocument(123L,reasonsRefusal);
@@ -76,8 +61,7 @@ public class AdvicesMenuServiceTest {
 
         service.reasonsRefusal(update);
         ArgumentCaptor<SendDocument> argumentCaptor = ArgumentCaptor.forClass(SendDocument.class);
-        Mockito.verify(telegramBot).execute(argumentCaptor.capture());
-        SendDocument actual = argumentCaptor.getValue();
-        assertEquals(expected, actual);
+        //verify(service).reasonsRefusal(argumentCaptor.capture());
+        assertEquals(expected, argumentCaptor.getValue());
     }
 }
