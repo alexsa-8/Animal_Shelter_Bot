@@ -1,124 +1,115 @@
 package pro.sky.animalshelterbot.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.JSONObject;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.constant.ReportStatus;
-import pro.sky.animalshelterbot.entity.Cat;
-import pro.sky.animalshelterbot.entity.OwnerCat;
 import pro.sky.animalshelterbot.entity.ReportCat;
-import pro.sky.animalshelterbot.repository.CatRepository;
-import pro.sky.animalshelterbot.repository.OwnerCatRepository;
 import pro.sky.animalshelterbot.repository.ReportCatRepository;
-import pro.sky.animalshelterbot.service.CatService;
-import pro.sky.animalshelterbot.service.OwnerCatService;
 import pro.sky.animalshelterbot.service.ReportCatService;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReportCatController.class)
 public class ReportCatControllerTest {
+
     @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private OwnerCatRepository repository;
-    @MockBean
-    private ReportCatRepository reportCatRepository;
-    @MockBean
-    private CatRepository catRepository;
-    @MockBean
-    private OwnerCatService service;
+    private MockMvc mockMvc;
 
     @MockBean
-    private ReportCatService reportCatService;
+    private ReportCatRepository repository;
 
-    @MockBean
-    private CatService catService;
+    @SpyBean
+    private ReportCatService service;
+
+    @InjectMocks
+    private ReportCatController controller;
 
     @Test
-    public void create() throws Exception {
-        OwnerCat ownerCat = new OwnerCat();
-        ownerCat.setId(1L);
-        ownerCat.setName("Bob");
-        ownerCat.setAge(18);
-        ownerCat.setPhone("+79805647855");
-        ownerCat.setChatId(14447774L);
-        ownerCat.setStatus(OwnerStatus.PROBATION);
-        ownerCat.setNumberOfReportDays(14L);
+    public void test() throws Exception{
+        final long id = 1L;
+        final String animalDiet = "diet";
+        final String generalInfo = "info";
+        final String changeBehavior = "behavior";
+        final ReportStatus reportStatus = ReportStatus.REPORT_ACCEPTED;
+        final Long chat_id = 12345L;
+        final LocalDate dateMessage = LocalDate.now();
+        final byte[] photo = new byte[]{0};
 
-        Cat cat = new Cat();
-        cat.setId(2L);
-        cat.setName("Villy");
-        cat.setAge(1);
-        cat.setBreed("british");
-        ownerCat.setCat(cat);
-        ownerCat.setStatus(OwnerStatus.IN_SEARCH);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id",id);
+        jsonObject.put("animalDiet",animalDiet);
+        jsonObject.put("generalInfo",generalInfo);
+        jsonObject.put("changeBehavior",changeBehavior);
+        jsonObject.put("reportStatus",reportStatus);
+        jsonObject.put("chatId",chat_id);
+        jsonObject.put("dateMessage",dateMessage);
+        jsonObject.put("photo", Arrays.toString(photo));
 
-        ReportCat reportCat = new ReportCat();
-        reportCat.setId(1L);
-        reportCat.setChatId(11444L);
-        reportCat.setPhoto(new byte[]{1,2,3});
-        reportCat.setAnimalDiet("eat");
-        reportCat.setChangeBehavior("no");
-        reportCat.setGeneralInfo("ok");
-        reportCat.setOwnerCat(ownerCat);
-        LocalDate dateM = LocalDate.of(2023,4, 30);
-        reportCat.setDateMessage(dateM);
-        reportCat.setReportStatus(ReportStatus.REPORT_POSTED);
+        ReportCat report = new ReportCat(chat_id,photo,animalDiet,generalInfo,
+                changeBehavior,dateMessage);
+        report.setId(id);
+        report.setReportStatus(reportStatus);
 
+        when(repository.save(any(ReportCat.class))).thenReturn(report);
+        when(repository.findById(any(Long.class))).thenReturn(Optional.of(report));
+        when(repository.existsById(eq(id))).thenReturn(true);
 
-        when(reportCatRepository.save(reportCat)).thenReturn(reportCat);
-        when(catRepository.save(cat)).thenReturn(cat);
-        when(repository.save(ownerCat)).thenReturn(ownerCat);
-        when(repository.existsById(eq(1L))).thenReturn(true);
-
-        mvc.perform(MockMvcRequestBuilders
-                        .post("/reports_cat")
-                        .content(reportCat.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/reports_cat/" + id)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.animalDiet").value(animalDiet))
+                .andExpect(jsonPath("$.generalInfo").value(generalInfo))
+                .andExpect(jsonPath("$.changeBehavior").value(changeBehavior))
+                .andExpect(jsonPath("$.reportStatus").value(reportStatus.toString()))
+                .andExpect(jsonPath("$.chatId").value(chat_id))
+                .andExpect(jsonPath("$.dateMessage").value(dateMessage.toString()))
+                ;
 
-        mvc.perform(MockMvcRequestBuilders
-                .get("/reports_cat/1")
-                        .content(reportCat.toString())
+        report.setReportStatus(ReportStatus.REPORT_REJECTED);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/reports_cat/" + id)
+                        .content(jsonObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("Статус", String.valueOf(ReportStatus.REPORT_REJECTED)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.animalDiet").value(animalDiet))
+                .andExpect(jsonPath("$.generalInfo").value(generalInfo))
+                .andExpect(jsonPath("$.changeBehavior").value(changeBehavior))
+                .andExpect(jsonPath("$.reportStatus").value(ReportStatus.REPORT_REJECTED.toString()))
+                .andExpect(jsonPath("$.chatId").value(chat_id))
+                .andExpect(jsonPath("$.dateMessage").value(dateMessage.toString()))
+        ;
 
-        mvc.perform(MockMvcRequestBuilders
-                .delete("/reports_cat/1")
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/reports_cat/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        mvc.perform(MockMvcRequestBuilders
-                        .get("/reports_cat"))
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/reports_cat")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
-
-
-
     }
-
-
 }

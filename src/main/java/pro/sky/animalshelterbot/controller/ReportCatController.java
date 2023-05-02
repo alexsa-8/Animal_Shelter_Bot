@@ -32,22 +32,6 @@ public class ReportCatController {
     }
 
     @Operation(
-            summary = "Добавление отчета в БД",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Добавленный отчет",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ReportCat.class)
-                    )
-            ),
-            tags = "Отчеты по котам"
-    )
-    @PostMapping
-    public ReportCat createReport(@RequestBody ReportCat reportCat){
-        return service.createReport(reportCat);
-    }
-
-    @Operation(
             summary = "Поиск отчета в базе данных по id",
             responses = {
                     @ApiResponse(
@@ -98,16 +82,16 @@ public class ReportCatController {
             },
             tags = "Отчеты по котам"
     )
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<ReportCat> updateReport(
-            @RequestBody ReportCat reportCat,
+            @PathVariable Long id,
             @Parameter(description = "Введите статус отчета")
             @RequestParam(name = "Статус")ReportStatus status){
-        ReportCat reportCat1 = service.updateReport(reportCat, status);
-        if(reportCat1 == null){
+        ReportCat reportCat = service.updateReport(id, status);
+        if(reportCat == null){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(reportCat1);
+        return ResponseEntity.ok(reportCat);
     }
 
     @Operation(
