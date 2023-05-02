@@ -31,6 +31,7 @@ public class ReportDogControllerTest {
     @MockBean
     private ReportDogRepository reportDogRepository;
     @MockBean
+
     private DogRepository dogRepository;
     @MockBean
     private OwnerDogService service;
@@ -82,7 +83,8 @@ public class ReportDogControllerTest {
                         .content(reportDog.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
+               .andExpect(status().isBadRequest());
+ 
 
         mvc.perform(MockMvcRequestBuilders
                         .get("/reports_dog/1")
@@ -95,6 +97,7 @@ public class ReportDogControllerTest {
                         .delete("/reports_dog/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+
                 .andExpect(status().isOk());
 
         mvc.perform(MockMvcRequestBuilders
@@ -102,3 +105,4 @@ public class ReportDogControllerTest {
                 .andExpect(status().isOk());
     }
 }
+

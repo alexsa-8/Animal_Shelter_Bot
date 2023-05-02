@@ -158,6 +158,7 @@ public class OwnerDogService {
             return new OwnerDogNotFoundException();
         });
         ownerDog.setStatus(status);
+        bot.execute(new SendMessage(ownerDog.getChatId(), "Вам присвоен статус " + ownerDog.getStatus().getDescription()));
         return repository.save(ownerDog);
     }
 
