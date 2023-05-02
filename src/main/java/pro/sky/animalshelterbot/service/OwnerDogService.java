@@ -157,8 +157,9 @@ public class OwnerDogService {
             log.error("There is not owner dog with id = {}", id);
             return new OwnerDogNotFoundException();
         });
+        ownerDog.setNumberOfReportDays(30L);
         ownerDog.setStatus(status);
-        bot.execute(new SendMessage(ownerDog.getChatId(), "Вам присвоен статус " + ownerDog.getStatus().getDescription()));
+        bot.execute(new SendMessage(ownerDog.getChatId(), "Вам присвоен статус " +ownerDog.getStatus().getDescription()));
         return repository.save(ownerDog);
     }
 
