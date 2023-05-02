@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ReportDogControllerTest.class)
+@WebMvcTest(ReportDogController.class)
 public class ReportDogControllerTest {
     @Autowired
     private MockMvc mvc;
@@ -31,7 +31,8 @@ public class ReportDogControllerTest {
     @MockBean
     private ReportDogRepository reportDogRepository;
     @MockBean
-    private DogRepository repository1;
+
+    private DogRepository dogRepository;
     @MockBean
     private OwnerDogService service;
 
@@ -45,36 +46,35 @@ public class ReportDogControllerTest {
     public void create() throws Exception {
         OwnerDog ownerDog = new OwnerDog();
         ownerDog.setId(1L);
-        ownerDog.setName("Bob");
+        ownerDog.setName("Alex");
         ownerDog.setAge(18);
-        ownerDog.setPhone("+79805647855");
-        ownerDog.setChatId(14447774L);
+        ownerDog.setPhone("+79001112233");
+        ownerDog.setChatId(1L);
         ownerDog.setStatus(OwnerStatus.PROBATION);
-        ownerDog.setNumberOfReportDays(14L);
+        ownerDog.setNumberOfReportDays(1L);
 
         Dog dog = new Dog();
         dog.setId(2L);
-        dog.setName("Villy");
+        dog.setName("Tobik");
         dog.setAge(1);
-        dog.setBreed("mops");
+        dog.setBreed("dog");
         ownerDog.setDog(dog);
         ownerDog.setStatus(OwnerStatus.IN_SEARCH);
 
         ReportDog reportDog = new ReportDog();
         reportDog.setId(1L);
-        reportDog.setChatId(11444L);
+        reportDog.setChatId(1L);
         reportDog.setPhoto(new byte[]{1,2,3});
-        reportDog.setAnimalDiet("eat");
-        reportDog.setChangeBehavior("no");
-        reportDog.setGeneralInfo("ok");
+        reportDog.setAnimalDiet("animalDiet");
+        reportDog.setChangeBehavior("changeBehavior");
+        reportDog.setGeneralInfo("generalInfo");
         reportDog.setOwnerDog(ownerDog);
-        LocalDate dateM = LocalDate.of(2023,4, 30);
+        LocalDate dateM = LocalDate.of(2023,4, 25);
         reportDog.setDateMessage(dateM);
         reportDog.setReportStatus(ReportStatus.REPORT_POSTED);
 
-
         when(reportDogRepository.save(reportDog)).thenReturn(reportDog);
-        when(repository1.save(dog)).thenReturn(dog);
+        when(dogRepository.save(dog)).thenReturn(dog);
         when(repository.save(ownerDog)).thenReturn(ownerDog);
         when(repository.existsById(eq(1L))).thenReturn(true);
 
@@ -83,7 +83,8 @@ public class ReportDogControllerTest {
                         .content(reportDog.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+               .andExpect(status().isBadRequest());
+ 
 
         mvc.perform(MockMvcRequestBuilders
                         .get("/reports_dog/1")
@@ -96,16 +97,12 @@ public class ReportDogControllerTest {
                         .delete("/reports_dog/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+
+                .andExpect(status().isOk());
 
         mvc.perform(MockMvcRequestBuilders
                         .get("/reports_dog"))
-                .andExpect(status().isNotFound());
-
-
-
-
+                .andExpect(status().isOk());
     }
-
-
 }
+
