@@ -12,10 +12,8 @@ import java.util.Collection;
  * @author Gubina Marina
  */
 public interface ReportDogRepository extends JpaRepository<ReportDog, Long> {
-
     @Query(value="select distinct  on (owner_dog_id) * from report_dog order by owner_dog_id, date_message desc ", nativeQuery = true)
     Collection<ReportDog> findReports();
-
-    @Query(value="select distinct  on (owner_dog_id) * from report_dog order by owner_dog_id, date_message ", nativeQuery = true)
+    @Query(value="select distinct  on (owner_dog_id) * from report_dog order by owner_dog_id, date_message desc ", nativeQuery = true)
     Collection<ReportDog>findFirstReports();
 }

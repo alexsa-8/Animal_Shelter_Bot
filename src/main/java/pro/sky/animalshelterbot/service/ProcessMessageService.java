@@ -189,20 +189,22 @@ public class ProcessMessageService {
 
         Long chatId = update.message().chat().id();
 
-        if (userRepository.findUserByChatId(update.callbackQuery().message().chat().id()).isDog() &&
-        ownerDogService.findByChatId(chatId) == null){
-            ownerDogService.create(new OwnerDog(chatId,
-                update.message().contact().firstName(),
-                update.message().contact().phoneNumber()),
-                OwnerStatus.IN_SEARCH);}
-        else if(ownerCatService.findByChatId(chatId) == null){
-            ownerCatService.create(new OwnerCat(chatId,
-                            update.message().contact().firstName(),
-                            update.message().contact().phoneNumber()),
-                    OwnerStatus.IN_SEARCH);
-        }
-        telegramBot.execute(new SendMessage(update.message().chat().id(),
+        if (update.message().contact() != null) {
+            if (userRepository.findUserByChatId(update.message().chat().id()).isDog() &&
+                    ownerDogService.findByChatId(chatId) == null) {
+                ownerDogService.create(new OwnerDog(chatId,
+                                update.message().contact().firstName(),
+                                update.message().contact().phoneNumber()),
+                        OwnerStatus.IN_SEARCH);
+            } else if (ownerCatService.findByChatId(chatId) == null) {
+                ownerCatService.create(new OwnerCat(chatId,
+                                update.message().contact().firstName(),
+                                update.message().contact().phoneNumber()),
+                        OwnerStatus.IN_SEARCH);
+            }
+            telegramBot.execute(new SendMessage(update.message().chat().id(),
                     "Мы свяжемся с вами в ближайшее время!"));
+        }
     }
 
 }
