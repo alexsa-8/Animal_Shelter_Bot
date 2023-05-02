@@ -24,7 +24,7 @@
 <h3>Участники проекта:</h3>
 <ul>
 <li><a href="https://github.com/MarinaGubina">Губина Марина</a></li>
-<li><a href="https://github.com/Hi0ta">Анянова Анна</a></li>
+<li><a href="https://github.com/alexsa-8">Рогозин Александр</a></li>
 <li><a href="https://github.com/IlyaB98">Богомолов Илья</a></li>
 <li><a href="https://github.com/klikli19">Киликова Анна</a></li>
 </ul>
