@@ -69,22 +69,22 @@ public class ReportCatService {
     /**
      * Изменение данных отчета в БД
      * Используется метод репозитория {@link ReportCatRepository#save(Object)}
-     * @param reportCat отчет
+     * @param id id отчетa
      * @param status статус отчета
      * @throws ReportNotFoundException, если отчет не найден в БД
      * @return измененный отчет
      */
-    public ReportCat updateReport(ReportCat reportCat, ReportStatus status){
-        log.info("Request to update reportCat {}", reportCat);
-        if(reportCat.getId() != null){
-            if(findReport(reportCat.getId()) != null){
+    public ReportCat updateReport(Long id, ReportStatus status){
+        log.info("Request to update reportCat {}", id);
+        if (id != null) {
+            ReportCat reportCat = findReport(id);
+            if (reportCat != null) {
                 reportCat.setReportStatus(status);
+                return repository.save(reportCat);
             }
         }
-        else{
-            log.error("Request reportDog is not found");
-            throw new ReportNotFoundException();}
-        return reportCat;
+        log.error("Request report cat is not found");
+        throw new ReportNotFoundException();
     }
 
     /**

@@ -75,19 +75,20 @@ public class ReportCatServiceTest {
 
     @Test
     public void shouldUpdateReport(){
-        when(repository.findById(1L)).thenReturn(Optional.ofNullable(reportCat));
-
-        reportCat.setId(1L);
         ReportCat expected = reportCat;
         expected.setReportStatus(ReportStatus.REPORT_ACCEPTED);
-        assertEquals(expected,service.updateReport(reportCat,ReportStatus.REPORT_ACCEPTED));
+
+        when(repository.findById(1L)).thenReturn(Optional.ofNullable(reportCat));
+        when(repository.save(reportCat)).thenReturn(reportCat);
+
+        assertEquals(expected,service.updateReport(1L,ReportStatus.REPORT_ACCEPTED));
     }
 
     @Test
     public void shouldGetExceptionWhenUpdate(){
         reportCat.setId(null);
         assertThrows(ReportNotFoundException.class,
-                () -> service.updateReport(reportCat,ReportStatus.REPORT_ACCEPTED));
+                () -> service.updateReport(null,ReportStatus.REPORT_ACCEPTED));
     }
 
     @Test
