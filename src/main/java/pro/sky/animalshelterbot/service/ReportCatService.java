@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.ReportStatus;
 import pro.sky.animalshelterbot.entity.ReportCat;
 import pro.sky.animalshelterbot.exception.ReportNotFoundException;
+import pro.sky.animalshelterbot.repository.OwnerCatRepository;
 import pro.sky.animalshelterbot.repository.ReportCatRepository;
 
 import java.time.LocalDate;
@@ -21,11 +22,13 @@ import java.util.Collection;
 public class ReportCatService {
 
     private final ReportCatRepository repository;
+    private final OwnerCatRepository ownerCatRepository;
 
     private final static Logger log = LoggerFactory.getLogger(ReportCatService.class);
 
-    public ReportCatService(ReportCatRepository repository) {
+    public ReportCatService(ReportCatRepository repository, OwnerCatRepository ownerCatRepository) {
         this.repository = repository;
+        this.ownerCatRepository = ownerCatRepository;
     }
 
     /**
@@ -50,6 +53,7 @@ public class ReportCatService {
         reportCat.setPhoto(photo);
         reportCat.setDateMessage(date);
         reportCat.setReportStatus(ReportStatus.REPORT_POSTED);
+        reportCat.setOwnerCat(ownerCatRepository.findByChatId(chatId));
 
         return repository.save(reportCat);
     }

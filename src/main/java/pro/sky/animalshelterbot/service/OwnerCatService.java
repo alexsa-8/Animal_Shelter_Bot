@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pro.sky.animalshelterbot.constant.OwnerStatus;
+import pro.sky.animalshelterbot.constant.PetStatus;
 import pro.sky.animalshelterbot.entity.OwnerCat;
 import pro.sky.animalshelterbot.exception.NumberNotFoundException;
 import pro.sky.animalshelterbot.exception.OwnerCatNotFoundException;
@@ -155,6 +156,8 @@ public class OwnerCatService {
             return new OwnerCatNotFoundException();
         });
         ownerDog.setStatus(status);
+        ownerDog.setNumberOfReportDays(30L);
+        bot.execute(new SendMessage(ownerDog.getChatId(), "Вам присвоен статус " + ownerDog.getStatus().getDescription()));
         return repository.save(ownerDog);
     }
 
@@ -178,6 +181,7 @@ public class OwnerCatService {
         } else if (number == 2) {
             log.info("Successful completion of the probationary period, id = {}", id);
             ownerCat.setStatus(OwnerStatus.APPROVED);
+            ownerCat.getCat().setStatus(PetStatus.BUSY);
             bot.execute(new SendMessage(ownerCat.getChatId(), "Вы прошли испытательный срок."));
         } else if (number == 3) {
             log.info("The probationary period has not passed, id = {}", id);
