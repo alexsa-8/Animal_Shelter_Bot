@@ -1,107 +1,127 @@
 package pro.sky.animalshelterbot.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import pro.sky.animalshelterbot.constant.OwnerStatus;
 import pro.sky.animalshelterbot.constant.ReportStatus;
 import pro.sky.animalshelterbot.entity.*;
 import pro.sky.animalshelterbot.repository.*;
 import pro.sky.animalshelterbot.service.*;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReportDogController.class)
 public class ReportDogControllerTest {
     @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private OwnerDogRepository repository;
-    @MockBean
-    private ReportDogRepository reportDogRepository;
-    @MockBean
-
-    private DogRepository dogRepository;
-    @MockBean
-    private OwnerDogService service;
+    private MockMvc mockMvc;
 
     @MockBean
-    private ReportDogService reportDogService;
+    private ReportDogRepository repository;
 
     @MockBean
-    private DogService dogService;
+    private OwnerDogRepository ownerDogRepository;
+
+    @SpyBean
+    private ReportDogService service;
+
+    @InjectMocks
+    private ReportDogController controller;
 
     @Test
-    public void create() throws Exception {
-        OwnerDog ownerDog = new OwnerDog();
-        ownerDog.setId(1L);
-        ownerDog.setName("Alex");
-        ownerDog.setAge(18);
-        ownerDog.setPhone("+79001112233");
-        ownerDog.setChatId(1L);
-        ownerDog.setStatus(OwnerStatus.PROBATION);
-        ownerDog.setNumberOfReportDays(1L);
+    public void test() throws Exception{
+        final long id = 1L;
+        final String animalDiet = "diet";
+        final String generalInfo = "info";
+        final String changeBehavior = "behavior";
+        final ReportStatus reportStatus = ReportStatus.REPORT_ACCEPTED;
+        final Long chat_id = 12345L;
+        final LocalDate dateMessage = LocalDate.now();
+        final byte[] photo = new byte[]{0};
+        final OwnerDog ownerDog = new OwnerDog(1L,"owner","+1234567");
 
-        Dog dog = new Dog();
-        dog.setId(2L);
-        dog.setName("Tobik");
-        dog.setAge(1);
-        dog.setBreed("dog");
-        ownerDog.setDog(dog);
-        ownerDog.setStatus(OwnerStatus.IN_SEARCH);
+        JSONObject owner = new JSONObject();
+        owner.put("chatId",1L);
+        owner.put("name","owner");
+        owner.put("phone","+1234567");
 
-        ReportDog reportDog = new ReportDog();
-        reportDog.setId(1L);
-        reportDog.setChatId(1L);
-        reportDog.setPhoto(new byte[]{1,2,3});
-        reportDog.setAnimalDiet("animalDiet");
-        reportDog.setChangeBehavior("changeBehavior");
-        reportDog.setGeneralInfo("generalInfo");
-        reportDog.setOwnerDog(ownerDog);
-        LocalDate dateM = LocalDate.of(2023,4, 25);
-        reportDog.setDateMessage(dateM);
-        reportDog.setReportStatus(ReportStatus.REPORT_POSTED);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id",id);
+        jsonObject.put("animalDiet",animalDiet);
+        jsonObject.put("generalInfo",generalInfo);
+        jsonObject.put("changeBehavior",changeBehavior);
+        jsonObject.put("reportStatus",reportStatus);
+        jsonObject.put("chatId",chat_id);
+        jsonObject.put("dateMessage",dateMessage);
+        jsonObject.put("photo", Arrays.toString(photo));
+        jsonObject.put("ownerCat", owner);
 
-        when(reportDogRepository.save(reportDog)).thenReturn(reportDog);
-        when(dogRepository.save(dog)).thenReturn(dog);
-        when(repository.save(ownerDog)).thenReturn(ownerDog);
-        when(repository.existsById(eq(1L))).thenReturn(true);
+        ReportDog report = new ReportDog(chat_id,photo,animalDiet,generalInfo,
+                changeBehavior,dateMessage);
+        report.setId(id);
+        report.setReportStatus(reportStatus);
+        report.setOwnerDog(ownerDog);
 
-        mvc.perform(MockMvcRequestBuilders
-                        .post("/reports_dog")
-                        .content(reportDog.toString())
+        when(repository.save(any(ReportDog.class))).thenReturn(report);
+        when(repository.findById(any(Long.class))).thenReturn(Optional.of(report));
+        when(repository.existsById(eq(id))).thenReturn(true);
+        when(ownerDogRepository.findByChatId(anyLong())).thenReturn(ownerDog);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/reports_dog/" + id)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.animalDiet").value(animalDiet))
+                .andExpect(jsonPath("$.generalInfo").value(generalInfo))
+                .andExpect(jsonPath("$.changeBehavior").value(changeBehavior))
+                .andExpect(jsonPath("$.reportStatus").value(reportStatus.toString()))
+                .andExpect(jsonPath("$.chatId").value(chat_id))
+                .andExpect(jsonPath("$.dateMessage").value(dateMessage.toString()))
+                .andExpect(jsonPath("$.ownerDog").value(ownerDog))
+        ;
+
+        report.setReportStatus(ReportStatus.REPORT_REJECTED);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/reports_dog/" + id)
+                        .content(jsonObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("Статус", String.valueOf(ReportStatus.REPORT_REJECTED)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.animalDiet").value(animalDiet))
+                .andExpect(jsonPath("$.generalInfo").value(generalInfo))
+                .andExpect(jsonPath("$.changeBehavior").value(changeBehavior))
+                .andExpect(jsonPath("$.reportStatus").value(ReportStatus.REPORT_REJECTED.toString()))
+                .andExpect(jsonPath("$.chatId").value(chat_id))
+                .andExpect(jsonPath("$.dateMessage").value(dateMessage.toString()))
+                .andExpect(jsonPath("$.ownerDog").value(ownerDog))
+        ;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/reports_dog/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-               .andExpect(status().isBadRequest());
- 
-
-        mvc.perform(MockMvcRequestBuilders
-                        .get("/reports_dog/1")
-                        .content(reportDog.toString())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-
-        mvc.perform(MockMvcRequestBuilders
-                        .delete("/reports_dog/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-
                 .andExpect(status().isOk());
 
-        mvc.perform(MockMvcRequestBuilders
-                        .get("/reports_dog"))
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/reports_dog")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 }

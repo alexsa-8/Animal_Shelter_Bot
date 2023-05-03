@@ -9,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalshelterbot.constant.Commands;
@@ -28,11 +27,56 @@ public class AdvicesMenuServiceTest {
     private TelegramBot telegramBot;
 
     @Test
-    public void advicesCynologistsTest(){
+    public void advicesCynologistsTest() throws JSONException {
+        JSONObject callbackQuery = new JSONObject();
+        String callbackQueryData = Commands.ADVICES_CYNOLOGISTS.getCallbackData();
+        callbackQuery.put("data",callbackQueryData);
+        JSONObject chat = new JSONObject();
+        chat.put("id",123L);
+        JSONObject  message = new JSONObject();
+        message.put("chat", chat);
+        callbackQuery.put("message",message);
+        JSONObject object = new JSONObject();
+        object.put("callback_query",callbackQuery);
 
+        Update update = BotUtils.fromJson(object.toString(),Update.class);
+
+        String path = "src/main/resources/adviсe/Cynologist_adviсes.pdf";
+        File advices = new File(path);
+        SendDocument expected = new SendDocument(update.callbackQuery().message().chat().id(),
+                advices);
+        expected.caption("В этом докуметне, мы собрали ответы на самые важные вопросы по воспитанию " +
+                "и дресеровке вашего питомца \u2191 ");
+
+        SendDocument actual = service.advicesCynologists(update);
+        assertEquals(expected.getFileName(), actual.getFileName());
+        assertEquals(expected.getParameters(), actual.getParameters());
     }
     @Test
-    public void listCynologistsTest() {
+    public void listCynologistsTest() throws JSONException {
+        JSONObject callbackQuery = new JSONObject();
+        String callbackQueryData = Commands.LIST_CYNOLOGISTS.getCallbackData();
+        callbackQuery.put("data",callbackQueryData);
+        JSONObject chat = new JSONObject();
+        chat.put("id",123L);
+        JSONObject  message = new JSONObject();
+        message.put("chat", chat);
+        callbackQuery.put("message",message);
+        JSONObject object = new JSONObject();
+        object.put("callback_query",callbackQuery);
+
+        Update update = BotUtils.fromJson(object.toString(),Update.class);
+
+        String path = "src/main/resources/adviсe/List_of_cynologists.pdf";
+        File listCynologists = new File(path);
+        SendDocument expected = new SendDocument(update.callbackQuery().message().chat().id(),
+                listCynologists);
+        expected.caption("Мы подобрали небольшой список кинологов  \u2191, которые заслужили наше доверие, вы можете смело " +
+                "обращаться к ним за помощью и быть уверенны, что ваш питомец в надежных руках!");
+
+        SendDocument actual = service.listCynologists(update);
+        assertEquals(expected.getFileName(), actual.getFileName());
+        assertEquals(expected.getParameters(), actual.getParameters());
     }
 
     @Test
@@ -59,9 +103,8 @@ public class AdvicesMenuServiceTest {
                 "если они не позволили вам забрать домой понравившегося питомца. \n" +
                 "\nС самыми частыми причинами отказов можете ознакомиться в прикрепленном файле \u2191");
 
-        service.reasonsRefusal(update);
-        ArgumentCaptor<SendDocument> argumentCaptor = ArgumentCaptor.forClass(SendDocument.class);
-        //verify(service).reasonsRefusal(argumentCaptor.capture());
-        assertEquals(expected, argumentCaptor.getValue());
+        SendDocument actual = service.reasonsRefusal(update);
+        assertEquals(expected.getFileName(), actual.getFileName());
+        assertEquals(expected.getParameters(), actual.getParameters());
     }
 }

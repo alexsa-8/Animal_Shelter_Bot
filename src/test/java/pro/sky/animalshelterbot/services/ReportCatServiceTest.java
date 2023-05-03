@@ -8,8 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalshelterbot.constant.ReportStatus;
+import pro.sky.animalshelterbot.entity.OwnerCat;
 import pro.sky.animalshelterbot.entity.ReportCat;
 import pro.sky.animalshelterbot.exception.ReportNotFoundException;
+import pro.sky.animalshelterbot.repository.OwnerCatRepository;
 import pro.sky.animalshelterbot.repository.ReportCatRepository;
 import pro.sky.animalshelterbot.service.ReportCatService;
 
@@ -30,11 +32,17 @@ public class ReportCatServiceTest {
     @Mock
     private ReportCatRepository repository;
 
+    @Mock
+    private OwnerCatRepository ownerCatRepository;
+
     @InjectMocks
     private ReportCatService service;
 
     private ReportCat reportCat;
+
     private ReportCat reportCat1;
+
+    private OwnerCat owner;
 
     @BeforeEach
     public void setUp(){
@@ -44,6 +52,10 @@ public class ReportCatServiceTest {
 
         reportCat1 = new ReportCat(2L,photo,"other diet",
                 "Info","other behavior", LocalDate.now());
+
+        owner = new OwnerCat(1L,"Owner","+1334567");
+
+        reportCat.setOwnerCat(owner);
     }
 
     @Test
@@ -56,6 +68,7 @@ public class ReportCatServiceTest {
     public void shouldDownloadReport(){
         byte[] photo = {3,1};
         when(repository.save(reportCat)).thenReturn(reportCat);
+        when(ownerCatRepository.findByChatId(anyLong())).thenReturn(owner);
         assertEquals(reportCat,service.downloadReport(1L,
                 "Animal diet", "Info",
                 "change behavior",photo, LocalDate.now()));

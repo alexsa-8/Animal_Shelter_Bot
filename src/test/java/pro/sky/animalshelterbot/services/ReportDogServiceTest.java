@@ -8,8 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.animalshelterbot.constant.ReportStatus;
+import pro.sky.animalshelterbot.entity.OwnerDog;
 import pro.sky.animalshelterbot.entity.ReportDog;
 import pro.sky.animalshelterbot.exception.ReportNotFoundException;
+import pro.sky.animalshelterbot.repository.OwnerDogRepository;
 import pro.sky.animalshelterbot.repository.ReportDogRepository;
 import pro.sky.animalshelterbot.service.ReportDogService;
 
@@ -27,11 +29,17 @@ public class ReportDogServiceTest {
     @Mock
     private ReportDogRepository repository;
 
+    @Mock
+    private OwnerDogRepository ownerDogRepository;
+
     @InjectMocks
     private ReportDogService service;
 
     private ReportDog reportDog1;
+
     private ReportDog reportDog2;
+
+    private OwnerDog owner;
 
     @BeforeEach
     public void setUp(){
@@ -41,6 +49,10 @@ public class ReportDogServiceTest {
 
         reportDog2 = new ReportDog(2L,photo,"other diet",
                 "Info","other behavior", LocalDate.now());
+
+        owner = new OwnerDog(1L,"Owner","+1334567");
+
+        reportDog1.setOwnerDog(owner);
     }
 
     @Test
@@ -53,6 +65,7 @@ public class ReportDogServiceTest {
     public void shouldDownloadReport(){
         byte[] photo = {3,1};
         when(repository.save(reportDog1)).thenReturn(reportDog1);
+        when(ownerDogRepository.findByChatId(anyLong())).thenReturn(owner);
         assertEquals(reportDog1,service.downloadReport(1L,
                 "Animal diet", "Info",
                 "change behavior",photo, LocalDate.now()));
@@ -72,19 +85,20 @@ public class ReportDogServiceTest {
 
     @Test
     public void shouldUpdateReport(){
-        when(repository.findById(1L)).thenReturn(Optional.ofNullable(reportDog1));
-
-        reportDog1.setId(1L);
         ReportDog expected = reportDog1;
         expected.setReportStatus(ReportStatus.REPORT_ACCEPTED);
-        assertEquals(expected,service.updateReport(reportDog1,ReportStatus.REPORT_ACCEPTED));
+
+        when(repository.findById(1L)).thenReturn(Optional.ofNullable(reportDog1));
+        when(repository.save(reportDog1)).thenReturn(reportDog1);
+
+        assertEquals(expected,service.updateReport(1L,ReportStatus.REPORT_ACCEPTED));
     }
 
     @Test
     public void shouldGetExceptionWhenUpdate(){
         reportDog1.setId(null);
         assertThrows(ReportNotFoundException.class,
-                () -> service.updateReport(reportDog1,ReportStatus.REPORT_ACCEPTED));
+                () -> service.updateReport(null,ReportStatus.REPORT_ACCEPTED));
     }
 
     @Test
