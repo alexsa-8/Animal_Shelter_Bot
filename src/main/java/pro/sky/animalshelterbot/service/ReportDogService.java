@@ -74,22 +74,22 @@ public class ReportDogService {
     /**
      * Изменение данных отчета в БД
      * Используется метод репозитория {@link ReportDogRepository#save(Object)}
-     * @param reportDog отчет
+     * @param id id отчета
      * @param status статус отчета
      * @throws ReportNotFoundException, если отчет не найден в БД
      * @return измененный отчет
      */
-    public ReportDog updateReport(ReportDog reportDog, ReportStatus status){
-        log.info("Request to update reportDog {}", reportDog);
-        if(reportDog.getId() != null){
-            if(findReport(reportDog.getId()) != null){
+    public ReportDog updateReport(Long id, ReportStatus status){
+        log.info("Request to update reportDog {}", id);
+        if(id != null){
+            ReportDog reportDog = findReport(id);
+            if(reportDog != null){
                 reportDog.setReportStatus(status);
+                return repository.save(reportDog);
             }
         }
-        else{
-            log.error("Request reportDog is not found");
-            throw new ReportNotFoundException();}
-        return reportDog;
+        log.error("Request reportDog is not found");
+        throw new ReportNotFoundException();
     }
 
     /**
