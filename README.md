@@ -21,6 +21,14 @@
   <li>Если пользователь уже обращался к боту ранее, то новое обращение начинается с выбора запроса, с которым пришел пользователь.</li>
 </ul>
 
+ **Для запуска нужно:**
+1. Клонировать проект в среду разработки</li>
+2. Найти в Telegram [@BotFather](https://t.me/BotFather) и запустить.
+4. Ввести команду ```/newbot```  и следовать дальнейшим инструкциям для получения Token.
+5. Настроить БД и прописать значения в файле **[application.properties](src/main/resources/application.properties)**, туда же записываем значение Token.
+6. Запустить метод **main** в файле **[AnimalShelterBotApplication.java](src/main/java/pro/skypro/animalselterbot/AnimalShelterBotApplication.java)**.
+7. Открыть Telegram и ввести команду ```/start```.
+
 <h3>Участники проекта:</h3>
 <ul>
 <li><a href="https://github.com/MarinaGubina">Губина Марина</a></li>
